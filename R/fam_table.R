@@ -1,6 +1,6 @@
 #' Prepares pedigree data for plotting and spatial representation
 #'
-#' @description `fam_table` combines pedigree and sample data for visual ([`PedigreeCMRSatplot`])
+#' @description `fam_table` combines pedigree and sample data for visual ([`ped_satplot`])
 #'  and spatial ([`PreparePedigreeSpatial`]) representation of the pedigree.
 #'
 #' @details

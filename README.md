@@ -18,3 +18,4 @@ Not possible yet
 | *get_colony*    | GetDigestColony      | PedigreeFunctions                        |
 | *org_fams*      | organizePacks        | ParentageWolf2016.Functions              |
 | *fam_table*     | PackTable            | PackPlot -\> ParentageWolf2016.Functions |
+| *oed_satplot*   | PedigreeCMRSatplot   | ParentageWolf2016.Functions              |

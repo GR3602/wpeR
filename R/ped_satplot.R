@@ -1,14 +1,14 @@
 
 #' Mark-Recapture Plot For Pedigree - Saturating
 #'
-#' @description `PedigreeCMRSatplot` creates "capture" history plot of individuals
-#' arranged by families included in data frame created by [`PackTable`] function.
+#' @description `ped_satplot` creates "capture" history plot of individuals
+#' arranged by families included in data frame created by [`fam_table`] function.
 #'
 #' @param date sample collection date. Must be in `Date` format.
 #' @param animal individual animal identifier code.
 #' @param plottingID ID for plotting, because of polygamy same animal can be in more families.
 #' @param sex sex, but can be other parameters - you can set up LegendLabel
-#' @param pack family identifier number.
+#' @param fam family identifier number.
 #' @param polyCluster cluster for polygamous animals, includes all families in
 #' which an individual is reproductive animal
 #' @param isPolygamous logical value (`TRUE`/`FALSE`) that identifies
@@ -18,8 +18,8 @@
 #' @param later_alpha logical value (`TRUE`/`FALSE`) that determines if individual
 #' is reproductive or not in any other (later) family.
 #' @param dead logical value (`TRUE/FALSE`) that identifies if the individual is dead
-#' @param packSpacing Y-axis spacing between packs. Shuld be even number!
-#' @param pClustSpacing Y-axis spacing between packs. Shuld be even number!
+#' @param famSpacing Y-axis spacing between families. Shuld be even number!
+#' @param pClustSpacing Y-axis spacing between families. Shuld be even number!
 #' @param xWhiteSpace fill in
 #' @param xlabel x axis label.
 #' @param ylabel y axis label.
@@ -29,38 +29,38 @@
 #' @param xlegend horizontal position of the legend.
 #' @param ylegend vertical position of the legend.
 #' @param text_size plot text size.
-#' @param pack_label_size family label text size.
+#' @param fam_label_size family label text size.
 #'
 #' @return a graphical representation of detected family members trough time.
 #' @import ggplot2
 #' @export
 #'
 #' @examples
-#' animal_ts <- make.animal.timespan(pack21_samples$AnimalRef,
+#' animal_ts <- anim_timespan(pack21_samples$AnimalRef,
 #'                                   pack21_samples$Date,
 #'                                   pack21_samples$SType,
 #'                                   dead = c("Tissue", "Decomposing Tissue", "Blood"))
 #'
 #' sampledata <- merge(pack21_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
 #'
-#' path <- paste0(system.file("extdata", package = "WildPedigreeExplorer"), "/fake_colony")
+#' path <- paste0(system.file("extdata", package = "wpeR"), "/fake_colony")
 #'
-#' ped_colony <- GetDigestColony(path, sampledata, remove_obsolete_parents = TRUE, out = "FamAgg")
+#' ped_colony <- get_colony(path, sampledata, remove_obsolete_parents = TRUE, out = "FamAgg")
 #'
-#' org_tables <- organizePacks(ped_colony, sampledata, output = "both")
+#' org_tables <- org_fams(ped_colony, sampledata, output = "both")
 #'
-#' pt<-PackTable(org_tables$packs[1,],
-#'               org_tables$packs,
+#' pt<-fam_table(org_tables$fams[1,],
+#'               org_tables$fams,
 #'               org_tables$ped,
 #'               sampledata,
 #'               deadSample = c("Tissue", "Decomposing Tissue", "Blood"))
 #'
 #'
-#' PedigreeCMRSatplot(pt$Date,
+#' ped_satplot(pt$Date,
 #'                    pt$AnimalRef,
 #'                    pt$plottingID,
 #'                    pt$GeneticSex,
-#'                    pt$PackID,
+#'                    pt$FamID,
 #'                    pt$polyCluster,
 #'                    pt$isPolygamous,
 #'                    pt$alpha,
@@ -73,13 +73,13 @@
 #'
 #'
 #'
-PedigreeCMRSatplot = function(date, animal, plottingID, sex, pack, polyCluster, isPolygamous, alpha, later_alpha, dead,
-                              packSpacing = 2, pClustSpacing = 2,
+ped_satplot = function(date, animal, plottingID, sex, fam, polyCluster, isPolygamous, alpha, later_alpha, dead,
+                              famSpacing = 2, pClustSpacing = 2,
                               xWhiteSpace = 100,
                               xlabel="Date", ylabel="Animal",
                               title="Pedigree CMR Graph", subtitle = "",
                               LegendLabel = "Sex",xlegend=0.2, ylegend=0.94,
-                              text_size = 2.5, pack_label_size = 2) {
+                              text_size = 2.5, fam_label_size = 2) {
 
 
   #Mark-Recapture plot for pedigree - saturating
@@ -91,21 +91,21 @@ PedigreeCMRSatplot = function(date, animal, plottingID, sex, pack, polyCluster, 
   #polyCluster - cluster for polygamous animals
   #isPolygamous (boolean) - is the animal polygamous (has >1 mates)
   #alpha (boolean) - is the animal Alpha animal within the pack.
-  #packSpacing, pClustSpacing - Y-axis spacing between packs/polyclusters.
+  #packSpacing, pClustSpacing - Y-axis spacing between families/polyclusters.
   #mark_pcl, mark_pack = mark polycluster and pack in the graph
   #HAS A WRAPPER THAT ORGANIZES DATA!
 
 
   #require(ggplot2, dplyr)
 
-  data=data.frame(date, animal, plottingID, sex, pack, polyCluster, isPolygamous, alpha, later_alpha, dead)
+  data=data.frame(date, animal, plottingID, sex, fam, polyCluster, isPolygamous, alpha, later_alpha, dead)
 
   #NEED THIS TO DEFINE VARIABLES NOT DEFINED BY FUNCTION
   #ELSE check() RETURNS NOTE no visible binding for global variable
   #solution found https://www.r-bloggers.com/2019/08/no-visible-binding-for-global-variable/
-  first <- polyFirst <- packFirst <- Y <- yaxis <- NULL
+  first <- polyFirst <- famFirst <- Y <- yaxis <- NULL
 
-  packlines = NULL #pack / polycluster separation lines
+  famlines = NULL #family / polycluster separation lines
 
 
 
@@ -115,42 +115,42 @@ PedigreeCMRSatplot = function(date, animal, plottingID, sex, pack, polyCluster, 
   data$first = sapply(data$animal, function(x) as.Date(min(data$date[data$animal==x], na.rm=T), origin="1970-01-01"))
   ##first polycluster of the animal
   data$polyFirst = sapply(data$polyCluster, function(x) as.Date(min(data$date[data$polyCluster==x], na.rm=T), origin="1970-01-01"))
-  ##first pack of the animal
-  data$packFirst = sapply(data$pack, function(x) as.Date(min(data$date[data$pack == x], na.rm=T), origin="1970-01-01"))
+  ##first family of the animal
+  data$famFirst = sapply(data$fam, function(x) as.Date(min(data$date[data$fam == x], na.rm=T), origin="1970-01-01"))
 
   #order data correctly, based on clumns created above
   dataOrdered = data |>
-    dplyr::arrange(polyFirst, polyCluster, packFirst, pack, first, plottingID, date)
+    dplyr::arrange(polyFirst, polyCluster, famFirst, fam, first, plottingID, date)
 
   #make Y coordinate for each plottingID
   dataOrdered$yaxis = ordered(dataOrdered$plottingID, levels=unique(dataOrdered$plottingID))
   levels(dataOrdered$yaxis)=1:length(levels(dataOrdered$yaxis))
   dataOrdered$yaxis = as.numeric(dataOrdered$yaxis)
 
-  #make line/label for the first polycluster/pack
+  #make line/label for the first polycluster/family
 
-  packlines = rbind(packlines, data.frame(Y = 1, type = "polyCluster", pack=dataOrdered$pack[1], polyCluster = dataOrdered$polyCluster[1]))
-  dataOrdered$yaxis = dataOrdered$yaxis + packSpacing
+  famlines = rbind(famlines, data.frame(Y = 1, type = "polyCluster", fam=dataOrdered$fam[1], polyCluster = dataOrdered$polyCluster[1]))
+  dataOrdered$yaxis = dataOrdered$yaxis + famSpacing
 
-  #make Y-axis gaps between polyclusters/packs, prepare data for drawing lines
+  #make Y-axis gaps between polyclusters/families, prepare data for drawing lines
 
   for (i in 1:(nrow(dataOrdered)-1)){
 
-    if(dataOrdered$pack[i] != dataOrdered$pack[i+1]) {
-      dataOrdered$yaxis[(i+1):nrow(dataOrdered)] = dataOrdered$yaxis[(i+1):nrow(dataOrdered)] + packSpacing
-      plY = dataOrdered$yaxis[i]+packSpacing/2
-      plType = "Pack"
-      pack = dataOrdered$pack[i+1]
+    if(dataOrdered$fam[i] != dataOrdered$fam[i+1]) {
+      dataOrdered$yaxis[(i+1):nrow(dataOrdered)] = dataOrdered$yaxis[(i+1):nrow(dataOrdered)] + famSpacing
+      plY = dataOrdered$yaxis[i]+famSpacing/2
+      plType = "Family"
+      fam = dataOrdered$fam[i+1]
       polyCluster = dataOrdered$polyCluster[i+1]
 
       if(dataOrdered$polyCluster[i] != dataOrdered$polyCluster[i+1]) {
         dataOrdered$yaxis[(i+1):nrow(dataOrdered)] = dataOrdered$yaxis[(i+1):nrow(dataOrdered)] + pClustSpacing
-        plY = dataOrdered$yaxis[i]+packSpacing/2
+        plY = dataOrdered$yaxis[i]+famSpacing/2
         plType = "polyCluster"
-        pack = dataOrdered$pack[i+1]
+        fam = dataOrdered$fam[i+1]
         polyCluster = dataOrdered$polyCluster[i+1]
       }
-      packlines = rbind(packlines, data.frame(Y = plY, type = plType, pack, polyCluster))
+      famlines = rbind(famlines, data.frame(Y = plY, type = plType, fam, polyCluster))
     }
   }
 
@@ -163,7 +163,7 @@ PedigreeCMRSatplot = function(date, animal, plottingID, sex, pack, polyCluster, 
       if (dataOrdered$date[i] == minDt) dataOrdered$first_sample[i] = TRUE}
   }
 
-  minDate = min(dataOrdered$date) #minimum date for plotting pack names
+  minDate = min(dataOrdered$date) #minimum date for plotting family names
 
   #plotting
   ##hasehd in the source code
@@ -194,11 +194,11 @@ PedigreeCMRSatplot = function(date, animal, plottingID, sex, pack, polyCluster, 
 
 
 
-  if(!is.null(packlines)){
-    p = p+geom_hline(yintercept=packlines$Y[packlines$type == "polyCluster"], color = "yellow", size = 1)+
-      geom_hline(yintercept=packlines$Y, linetype = "dashed", size = 0.3)+
-      geom_label(data=packlines, aes(x=rep(minDate, nrow(packlines)), y=Y, label = paste("PCL:",polyCluster, " PCK:", pack, sep="")),
-                 size = pack_label_size, color="darkgreen", #label.padding = unit(1, "lines"),
+  if(!is.null(famlines)){
+    p = p+geom_hline(yintercept=famlines$Y[famlines$type == "polyCluster"], color = "yellow", size = 1)+
+      geom_hline(yintercept=famlines$Y, linetype = "dashed", size = 0.3)+
+      geom_label(data=famlines, aes(x=rep(minDate, nrow(famlines)), y=Y, label = paste("PCL:",polyCluster, " PCK:", fam, sep="")),
+                 size = fam_label_size, color="darkgreen", #label.padding = unit(1, "lines"),
                  hjust=0.5, vjust=0.5, fontface="bold")
 
   }
