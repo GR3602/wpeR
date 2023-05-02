@@ -1,5 +1,5 @@
 
-# WildPedigreeExplorer
+# wild pedigree exploreR (wpeR)
 
 ## Introduction
 
@@ -12,8 +12,9 @@ Not possible yet
 
 ## Included Functions
 
-| Function        | Alias                | Source                      |
-|-----------------|----------------------|-----------------------------|
-| *anim_timespan* | make.animal.timespan | PopDynamicsFunctions        |
-| *get_colony*    | GetDigestColony      | PedigreeFunctions           |
-| *org_fams*      | organizePacks        | ParentageWolf2016.Functions |
+| Function        | Alias                | Source                                   |
+|-----------------|----------------------|------------------------------------------|
+| *anim_timespan* | make.animal.timespan | PopDynamicsFunctions                     |
+| *get_colony*    | GetDigestColony      | PedigreeFunctions                        |
+| *org_fams*      | organizePacks        | ParentageWolf2016.Functions              |
+| *fam_table*     | PackTable            | PackPlot -\> ParentageWolf2016.Functions |
