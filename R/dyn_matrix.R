@@ -1,7 +1,7 @@
 #' Get Matrix Of Apparent Survival
 #'
 #' @description
-#' `MakeDynamicsMatrix()` creates a matrix that shows number of captured animals
+#' `dyn_matrix` creates a matrix that shows number of captured animals
 #' between multiple seasons.
 #'
 #' @param animal_id column in the dataframe of all samples that stores individual animal identifier code.
@@ -32,12 +32,12 @@
 #'                              as.Date("2012-12-31"))
 #'                              )
 #'
-#'MakeDynamicsMatrix(pack21_samples$AnimalRef, pack21_samples$Date,
+#'dyn_matrix(pack21_samples$AnimalRef, pack21_samples$Date,
 #'                   seasons$start, seasons$end)
 #'
 #'
 
-MakeDynamicsMatrix = function(animal_id, capture_date, start_dates, end_dates){
+dyn_matrix = function(animal_id, capture_date, start_dates, end_dates){
   # Makes matrics of apparent survival
   # diagonal: number of new captures in each session
   # above diagonal: number of recaptures from season x to season y
@@ -53,7 +53,7 @@ MakeDynamicsMatrix = function(animal_id, capture_date, start_dates, end_dates){
 
   for (i in 1:length(start_dates)){
     #first, the total numbers for season i
-    n_season = nBetweenSeasons(animal_id, capture_date,
+    n_season =nbtw_seasons(animal_id, capture_date,
                                seasons[1,]$start_date, seasons[i,]$start_date - 1,
                                seasons[i,]$start_date, seasons[i,]$end_date)
 
@@ -64,7 +64,7 @@ MakeDynamicsMatrix = function(animal_id, capture_date, start_dates, end_dates){
     if (i == length(start_dates)) break #get out of loop for the last element
 
     for (j in (i+1):length(start_dates)){
-      n_season = nBetweenSeasons(animal_id, capture_date,
+      n_season =nbtw_seasons(animal_id, capture_date,
                                  seasons[i,]$start_date, seasons[i,]$end_date,
                                  seasons[j,]$start_date, seasons[j,]$end_date)
 

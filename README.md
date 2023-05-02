@@ -21,3 +21,4 @@ Not possible yet
 | *ped_satplot*   | PedigreeCMRSatplot     | ParentageWolf2016.Functions              |
 | *ped_spatial*   | PreparePedigreeSpatial | ParantageSpatial                         |
 | *nbtw_seasons*  | nBetweenSeasons        | PopDynamicsFunctions                     |
+| *dyn_matrix*    | MakeDynamicsMatrix     | PopDynamicsFunctions                     |
