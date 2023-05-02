@@ -15,3 +15,4 @@ Not possible yet
 | Function        | Alias                | Source               |
 |-----------------|----------------------|----------------------|
 | *anim_timespan* | make.animal.timespan | PopDynamicsFunctions |
+| *get_colony*    | GetDigestColony      | PedigreeFunctions    |

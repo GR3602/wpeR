@@ -27,6 +27,7 @@
 #'                      pack21_samples$SType,
 #'                      dead = c("Tissue", "Decomposing Tissue", "Blood"))
 #'
+#' @aliases make.animal.timespan
 #'
 
 anim_timespan <- function(individual_id, sample_date, sample_type, dead = "Tissue") {
