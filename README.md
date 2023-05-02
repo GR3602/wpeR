@@ -20,3 +20,4 @@ Not possible yet
 | *fam_table*     | PackTable              | PackPlot -\> ParentageWolf2016.Functions |
 | *ped_satplot*   | PedigreeCMRSatplot     | ParentageWolf2016.Functions              |
 | *ped_spatial*   | PreparePedigreeSpatial | ParantageSpatial                         |
+| *nbtw_seasons*  | nBetweenSeasons        | PopDynamicsFunctions                     |

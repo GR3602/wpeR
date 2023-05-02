@@ -1,6 +1,6 @@
 #' Number Of Detected Animals Between Two Sampling Seasons
 #'
-#' @description `nBetweenSeasons()` gives an numeric overview of individuals captured
+#' @description `nbtw_seasons` gives an numeric overview of individuals captured
 #' within the second sampling season compared tho the first one.
 #'
 #'
@@ -28,13 +28,13 @@
 #'
 #' @examples
 #'
-#' nBetweenSeasons(pack21_samples$AnimalRef, pack21_samples$Date,
+#' nbtw_seasons(pack21_samples$AnimalRef, pack21_samples$Date,
 #'                as.Date("2010-01-01"), as.Date("2010-12-31"),
 #'                as.Date("2011-01-01"), as.Date("2011-12-31"))
 #'
 #'
 
-nBetweenSeasons = function(animal_id, capture_date,
+nbtw_seasons = function(animal_id, capture_date,
                            season1_start, season1_end, season2_start, season2_end) {
 
 

@@ -3,6 +3,7 @@
 export(anim_timespan)
 export(fam_table)
 export(get_colony)
+export(nbtw_seasons)
 export(org_fams)
 export(ped_satplot)
 export(ped_spatial)
