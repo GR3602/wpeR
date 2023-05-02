@@ -38,7 +38,7 @@ parameter and adds information needed for visual and spatial representation of
 pedigree:
 \itemize{
 \item \code{plottingID}: numeric. Identifier number for temporal pedigree plot
-\code{\link{PedigreeCMRSatplot}}. In case of polygamous animals same individual
+\code{\link{ped_satplot}}. In case of polygamous animals same individual
 can be included in more than one family,
 \item \code{FamID}: numeric. Identifier number of family that individual belongs to,
 \item \code{polyCluster}: numeric. Identifier number for the poygami cluster of individual,
@@ -54,7 +54,7 @@ can be included in more than one family,
 }
 \description{
 \code{fam_table} combines pedigree and sample data for visual (\code{\link{ped_satplot}})
-and spatial (\code{\link{PreparePedigreeSpatial}}) representation of the pedigree.
+and spatial (\code{\link{ped_spatial}}) representation of the pedigree.
 }
 \details{
 \itemize{

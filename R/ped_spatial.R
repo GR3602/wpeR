@@ -1,11 +1,11 @@
 #' Get Files For Spatial Representation Of Pedigree
 #'
 #' @description
-#' `PreparePedigreeSpatial` creates georeferenced data for spatial
-#' pedigree representation form the output of [`PackTable`] function.
+#' `ped_spatial` creates georeferenced data for spatial
+#' pedigree representation form the output of [`fam_table`] function.
 #'
 #'
-#' @param packtable data frame. Output of [`PackTable`] function.
+#' @param famtable data frame. Output of [`fam_table`] function.
 #' @param na.rm logical (`TRUE`/`FALSE`). Remove samples with missing coordinates and/or dates.
 #' @param output single value or vector. Type of output of function results.
 #' Available outputs: list: all spatial data returned as list, gis: all spatial data
@@ -44,29 +44,29 @@
 #'
 #'
 #' @examples
-#' animal_ts <- make.animal.timespan(pack21_samples$AnimalRef,
+#' animal_ts <- anim_timespan(pack21_samples$AnimalRef,
 #'                                   pack21_samples$Date,
 #'                                   pack21_samples$SType,
 #'                                   dead = c("Tissue", "Decomposing Tissue", "Blood"))
 #'
 #' sampledata <- merge(pack21_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
 #'
-#' path <- paste0(system.file("extdata", package = "WildPedigreeExplorer"), "/fake_colony")
+#' path <- paste0(system.file("extdata", package = "wpeR"), "/fake_colony")
 #'
-#' ped_colony <- GetDigestColony(path, sampledata, remove_obsolete_parents = TRUE, out = "FamAgg")
+#' ped_colony <- get_colony(path, sampledata, remove_obsolete_parents = TRUE, out = "FamAgg")
 #'
-#' org_tables <- organizePacks(ped_colony, sampledata, output = "both")
+#' org_tables <- org_fams(ped_colony, sampledata, output = "both")
 #'
-#' pt<-PackTable(org_tables$packs[1,],
-#'               org_tables$packs,
+#' pt<-fam_table(org_tables$fams[1,],
+#'               org_tables$fams,
 #'               org_tables$ped,
 #'               sampledata,
 #'               deadSample = c("Tissue", "Decomposing Tissue", "Blood"))
 #'
 #'
-#' PreparePedigreeSpatial(pt)
+#' ped_spatial(pt)
 #'
-PreparePedigreeSpatial <- function (packtable,
+ped_spatial <- function (famtable,
                                     na.rm = TRUE,
                                     output="list",
                                     fullsibdata = NULL,
@@ -80,7 +80,7 @@ PreparePedigreeSpatial <- function (packtable,
 
   #TODO add selection for type of output files gpk or shp
 
-  data = ppsList(pedplot = packtable,
+  data = ppsList(pedplot = famtable,
                  time.limits = time.limits,
                  na.rm = na.rm,
                  time.limit.alpha = time.limit.alpha,
@@ -95,7 +95,7 @@ PreparePedigreeSpatial <- function (packtable,
   RefPoints = ppsRefPoints(ppsData = data)
 
   MvLines = ppsMvLines(ppsData = data,
-                       pedplot = packtable,
+                       pedplot = famtable,
                        time.limits = time.limits,
                        time.limit.moves = time.limit.moves)
 

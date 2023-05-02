@@ -1,7 +1,7 @@
 #' Prepares pedigree data for plotting and spatial representation
 #'
 #' @description `fam_table` combines pedigree and sample data for visual ([`ped_satplot`])
-#'  and spatial ([`PreparePedigreeSpatial`]) representation of the pedigree.
+#'  and spatial ([`ped_spatial`]) representation of the pedigree.
 #'
 #' @details
 #' * `sampledata` has to include columns that contain information on:
@@ -37,7 +37,7 @@
 #' parameter and adds information needed for visual and spatial representation of
 #' pedigree:
 #'   * `plottingID`: numeric. Identifier number for temporal pedigree plot
-#'    [`PedigreeCMRSatplot`]. In case of polygamous animals same individual
+#'    [`ped_satplot`]. In case of polygamous animals same individual
 #'    can be included in more than one family,
 #'   * `FamID`: numeric. Identifier number of family that individual belongs to,
 #'   * `polyCluster`: numeric. Identifier number for the poygami cluster of individual,
