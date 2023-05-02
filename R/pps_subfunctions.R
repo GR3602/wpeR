@@ -27,7 +27,7 @@
 # Takes data from fam_table function and arranges it so that
 # georeferenced data for mothers, fathers and offspring can be created
 #
-# @param pedplot output of PackTable function
+# @param pedplot output of fam_table function
 # @param time.limits time window for movement and offspring reference samples data
 # @param na.rm remove samples with missing coordinates
 # @param time.limit.alpha do time limits apply to reference samples of alphas?
@@ -132,8 +132,8 @@ ppsParLines <- function (ppsData) {
       child = offspringRefs[i,]
     } else { child = NA }
 
-    father =  alphaRefs[alphaRefs$PackID == offspringRefs$PackID[i] & alphaRefs$GeneticSex == "M",]
-    mother =  alphaRefs[alphaRefs$PackID == offspringRefs$PackID[i] & alphaRefs$GeneticSex == "F",]
+    father =  alphaRefs[alphaRefs$FamID == offspringRefs$FamID[i] & alphaRefs$GeneticSex == "M",]
+    mother =  alphaRefs[alphaRefs$FamID == offspringRefs$FamID[i] & alphaRefs$GeneticSex == "F",]
 
     if (nrow(father) > 0 & nrow(child) > 0) {
       paternityLines[[dadcount]] = rbind(father[,c("X", "Y")], child[,c("X", "Y")])
@@ -142,7 +142,7 @@ ppsParLines <- function (ppsData) {
       paternityLines[[dadcount]] = st_cast(paternityLines[[dadcount]], "LINESTRING")
       paternityLines[[dadcount]] = data.frame(ID=dadcount,
                                               pair = i,
-                                              pack = offspringRefs$PackID[i],
+                                              fam = offspringRefs$FamID[i],
                                               plyClust=offspringRefs$polyCluster[i],
                                               relation="paternity",
                                               child = child$AnimalRef,
@@ -159,7 +159,7 @@ ppsParLines <- function (ppsData) {
       maternityLines[[momcount]] = st_cast(maternityLines[[momcount]], "LINESTRING")
       maternityLines[[momcount]] = data.frame(ID=momcount,
                                               pair = i,
-                                              pack = offspringRefs$PackID[i],
+                                              fam = offspringRefs$FamID[i],
                                               plyClust=offspringRefs$polyCluster[i],
                                               relation="maternity",
                                               child = child$AnimalRef,
@@ -201,7 +201,7 @@ ppsMvPoints <- function(ppsData,
 
 
 
-  dupCols = c("plottingID", "PackID", "polyCluster") #columns to be removed for movelines, movepoints and refpoints to remove spatial data duplication
+  dupCols = c("plottingID", "FamID", "polyCluster") #columns to be removed for movelines, movepoints and refpoints to remove spatial data duplication
 
 
   ####Offspring####
@@ -278,7 +278,7 @@ ppsMvPoints <- function(ppsData,
 ppsRefPoints <-function(ppsData) {
 
 
-  dupCols = c("plottingID", "PackID", "polyCluster") #columns to be removed for movelines, movepoints and refpoints to remove spatial data duplication
+  dupCols = c("plottingID", "FamID", "polyCluster") #columns to be removed for movelines, movepoints and refpoints to remove spatial data duplication
 
   ####Offspring####
 
@@ -324,7 +324,7 @@ ppsRefPoints <-function(ppsData) {
 # Prepare Pedigree Spatial - Animal Movement Lines
 #
 # @param ppsData output list of ppsList function
-# @param pedplot output of the PackTable function
+# @param pedplot output of the fam_table function
 # @param time.limits time window for movement and offspring reference samples data
 # @param time.limit.moves time limit also movement data?
 #
@@ -337,7 +337,7 @@ ppsMvLines <- function(ppsData,
                        time.limit.moves = F) {
 
 
-  dupCols = c("plottingID", "PackID", "polyCluster") #columns to be removed for movelines, movepoints and refpoints to remove spatial data duplication
+  dupCols = c("plottingID", "FamID", "polyCluster") #columns to be removed for movelines, movepoints and refpoints to remove spatial data duplication
 
 
   ####Offspring####
@@ -365,7 +365,7 @@ ppsMvLines <- function(ppsData,
       individualLines[[indcount]] = st_cast(st_union(individualLines[[indcount]]), "LINESTRING")
       offspringMoveLines = rbind(offspringMoveLines,data.frame(ID=indcount,
                                                                AnimalID = offspringRefs$AnimalRef[i],
-                                                               pack = offspringRefs$PackID[i],
+                                                               fam = offspringRefs$FamID[i],
                                                                plyClust=offspringRefs$polyCluster[i],
                                                                geometry = st_geometry(individualLines[[indcount]])))
 
@@ -408,7 +408,7 @@ ppsMvLines <- function(ppsData,
       individualLines[[indcount]] = st_cast(st_union(individualLines[[indcount]]), "LINESTRING")
       fatherMoveLines = rbind(fatherMoveLines,data.frame(ID=indcount,
                                                          AnimalID = offspringRefs$AnimalRef[i],
-                                                         pack = offspringRefs$PackID[i],
+                                                         fam = offspringRefs$FamID[i],
                                                          plyClust=offspringRefs$polyCluster[i],
                                                          geometry = st_geometry(individualLines[[indcount]])))
 
@@ -454,7 +454,7 @@ ppsMvLines <- function(ppsData,
       individualLines[[indcount]] = st_cast(st_union(individualLines[[indcount]]), "LINESTRING")
       motherMoveLines  = rbind(motherMoveLines ,data.frame(ID=indcount,
                                                            AnimalID = offspringRefs$AnimalRef[i],
-                                                           pack = offspringRefs$PackID[i],
+                                                           fam = offspringRefs$FamID[i],
                                                            plyClust=offspringRefs$polyCluster[i],
                                                            geometry = st_geometry(individualLines[[indcount]])))
 
