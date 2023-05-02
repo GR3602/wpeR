@@ -12,7 +12,8 @@ Not possible yet
 
 ## Included Functions
 
-| Function        | Alias                | Source               |
-|-----------------|----------------------|----------------------|
-| *anim_timespan* | make.animal.timespan | PopDynamicsFunctions |
-| *get_colony*    | GetDigestColony      | PedigreeFunctions    |
+| Function        | Alias                | Source                      |
+|-----------------|----------------------|-----------------------------|
+| *anim_timespan* | make.animal.timespan | PopDynamicsFunctions        |
+| *get_colony*    | GetDigestColony      | PedigreeFunctions           |
+| *org_fams*      | organizePacks        | ParentageWolf2016.Functions |
