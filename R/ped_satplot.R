@@ -13,9 +13,9 @@
 #' which an individual is reproductive animal
 #' @param isPolygamous logical value (`TRUE`/`FALSE`) that identifies
 #' animal as polygamous (has >1 mates).
-#' @param alpha logical value (`TRUE`/`FALSE`) that determines if individual
+#' @param rep logical value (`TRUE`/`FALSE`) that determines if individual
 #' is reproductive or not in current family.
-#' @param later_alpha logical value (`TRUE`/`FALSE`) that determines if individual
+#' @param later_rep logical value (`TRUE`/`FALSE`) that determines if individual
 #' is reproductive or not in any other (later) family.
 #' @param dead logical value (`TRUE/FALSE`) that identifies if the individual is dead
 #' @param famSpacing Y-axis spacing between families. Shuld be even number!
@@ -63,8 +63,8 @@
 #'                    pt$FamID,
 #'                    pt$polyCluster,
 #'                    pt$isPolygamous,
-#'                    pt$alpha,
-#'                    pt$later_alpha,
+#'                    pt$rep,
+#'                    pt$later_rep,
 #'                    pt$dead)
 #'
 #'
@@ -73,7 +73,7 @@
 #'
 #'
 #'
-ped_satplot = function(date, animal, plottingID, sex, fam, polyCluster, isPolygamous, alpha, later_alpha, dead,
+ped_satplot = function(date, animal, plottingID, sex, fam, polyCluster, isPolygamous, rep, later_rep, dead,
                               famSpacing = 2, pClustSpacing = 2,
                               xWhiteSpace = 100,
                               xlabel="Date", ylabel="Animal",
@@ -98,7 +98,7 @@ ped_satplot = function(date, animal, plottingID, sex, fam, polyCluster, isPolyga
 
   #require(ggplot2, dplyr)
 
-  data=data.frame(date, animal, plottingID, sex, fam, polyCluster, isPolygamous, alpha, later_alpha, dead)
+  data=data.frame(date, animal, plottingID, sex, fam, polyCluster, isPolygamous, rep, later_rep, dead)
 
   #NEED THIS TO DEFINE VARIABLES NOT DEFINED BY FUNCTION
   #ELSE check() RETURNS NOTE no visible binding for global variable
@@ -178,9 +178,9 @@ ped_satplot = function(date, animal, plottingID, sex, fam, polyCluster, isPolyga
   p=ggplot(aes(x=as.Date(date), y=yaxis), data=dataOrdered) +
     geom_line (aes(color=sex, group=plottingID), alpha = 0.5)+
     geom_point(aes(color=sex), size=1)+
-    geom_point(data = dataOrdered[dataOrdered$alpha == TRUE,], aes(y=yaxis, x=as.Date(date)), shape=0, size = 3, color = "red")+
+    geom_point(data = dataOrdered[dataOrdered$rep == TRUE,], aes(y=yaxis, x=as.Date(date)), shape=0, size = 3, color = "red")+
     geom_point(data = dataOrdered[dataOrdered$isPolygamous == TRUE,], aes(y=yaxis, x=as.Date(date)), shape=5, size = 2, color = "purple")+
-    geom_point(data = dataOrdered[dataOrdered$later_alpha == TRUE,], aes(y=yaxis, x=as.Date(date)), shape=1, size = 3, color = "green")+
+    geom_point(data = dataOrdered[dataOrdered$later_rep == TRUE,], aes(y=yaxis, x=as.Date(date)), shape=1, size = 3, color = "green")+
     geom_point(data = dataOrdered[dataOrdered$dead == TRUE,], aes(y=yaxis, x=as.Date(date)), shape=4, size = 3, color = "black")+
     geom_text(data = dataOrdered[dataOrdered$first_sample == TRUE,], aes(y=yaxis, x=as.Date(date), label = animal),
               size = text_size, hjust=1, vjust=0.5, nudge_x = -15)+#, label.padding = unit(0.1, "lines"))+

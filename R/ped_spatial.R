@@ -16,8 +16,8 @@
 #' @param filename string. Common name for all georeferenced files.
 #' @param time.limits vector of two `Date` values. Time window for movement and
 #' offspring reference samples data.
-#' @param time.limit.alpha logical (`TRUE`/`FALSE`). Do time limits apply to
-#' reference samples of alphas?
+#' @param time.limit.rep logical (`TRUE`/`FALSE`). Do time limits apply to
+#' reference samples of reproductive animals?
 #' @param time.limit.offspring logical (`TRUE`/`FALSE`). Do time limits also apply
 #' to reference samples of offspring?
 #' @param time.limit.moves logical (`TRUE`/`FALSE`). Do time limits also apply
@@ -74,7 +74,7 @@ ped_spatial <- function (famtable,
                                     path="",
                                     filename="",
                                     time.limits = c(as.Date("1900-01-01"), as.Date("2100-01-01")),
-                                    time.limit.alpha = FALSE,
+                                    time.limit.rep = FALSE,
                                     time.limit.offspring = FALSE,
                                     time.limit.moves = FALSE) {
 
@@ -83,7 +83,7 @@ ped_spatial <- function (famtable,
   data = ppsList(pedplot = famtable,
                  time.limits = time.limits,
                  na.rm = na.rm,
-                 time.limit.alpha = time.limit.alpha,
+                 time.limit.rep = time.limit.rep,
                  time.limit.offspring = time.limit.offspring)
 
   ParLines = ppsParLines(data)

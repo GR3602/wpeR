@@ -13,7 +13,7 @@ ped_spatial(
   path = "",
   filename = "",
   time.limits = c(as.Date("1900-01-01"), as.Date("2100-01-01")),
-  time.limit.alpha = FALSE,
+  time.limit.rep = FALSE,
   time.limit.offspring = FALSE,
   time.limit.moves = FALSE
 )
@@ -38,8 +38,8 @@ returned as georeferenced files.}
 \item{time.limits}{vector of two \code{Date} values. Time window for movement and
 offspring reference samples data.}
 
-\item{time.limit.alpha}{logical (\code{TRUE}/\code{FALSE}). Do time limits apply to
-reference samples of alphas?}
+\item{time.limit.rep}{logical (\code{TRUE}/\code{FALSE}). Do time limits apply to
+reference samples of reproductive animals?}
 
 \item{time.limit.offspring}{logical (\code{TRUE}/\code{FALSE}). Do time limits also apply
 to reference samples of offspring?}

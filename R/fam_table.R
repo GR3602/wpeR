@@ -41,9 +41,9 @@
 #'    can be included in more than one family,
 #'   * `FamID`: numeric. Identifier number of family that individual belongs to,
 #'   * `polyCluster`: numeric. Identifier number for the poygami cluster of individual,
-#'   * `alpha`: logical. Is individual reproductive in current family,
+#'   * `rep`: logical. Is individual reproductive in current family,
 #'    (current family defined with `FamID` for a particular entry),
-#'   * `later_alpha`: logical. Is individual reproductive in any other (later) families,
+#'   * `later_rep`: logical. Is individual reproductive in any other (later) families,
 #'   * `isPolygamous`: logical. Has individual more than one mate,
 #'   * `dead`: logical. Is individual dead,
 #'   * `first_sample`: logical. Is this particular sample the first sample of individual,
@@ -89,7 +89,7 @@ fam_table<- function(fams, all.fams, ped, sampledata,
   outdata = NULL
   plottingID = 1 #ID for plotting, since the same animal can be drawn in more families in polygamy
 
-  ##loop fills the outdata table with data from sampledata[datacolumn,], adds famID, polycluster and creates plottingID, alpha (if animal is reporductive), later_alpha (if animal repoductive in later season), is Polyamous (if it has offsping with more than one other animal)
+  ##loop fills the outdata table with data from sampledata[datacolumn,], adds famID, polycluster and creates plottingID, rep (if animal is reporductive), later_rep (if animal repoductive in later season), is Polyamous (if it has offsping with more than one other animal)
   ##plottingID marks all the samples of the same animal
   ##loop starts with reproducitve males after that reporducitve females and than other animals. Eventhough the loop is segmeted it does the same things for all animals
   for (i in 1:nrow(fams)) {
@@ -103,8 +103,8 @@ fam_table<- function(fams, all.fams, ped, sampledata,
 
       fatherSamples$FamID = rep(fams$FamID[i], nrow(fatherSamples))
       fatherSamples$polyCluster = rep(fams$polyCluster[i], nrow(fatherSamples))
-      fatherSamples$alpha = rep(TRUE, nrow(fatherSamples))
-      fatherSamples$later_alpha = rep(FALSE, nrow(fatherSamples)) #does the animal become alpha later
+      fatherSamples$rep = rep(TRUE, nrow(fatherSamples))
+      fatherSamples$later_rep = rep(FALSE, nrow(fatherSamples)) #does the animal become reproductive later
 
       if(!is.na(fams$DadPclust[i])) fatherSamples$isPolygamous = rep(TRUE, nrow(fatherSamples))
       else fatherSamples$isPolygamous = rep(FALSE, nrow(fatherSamples))# if Dad polygamous cluster is not NA, then TRUE
@@ -121,8 +121,8 @@ fam_table<- function(fams, all.fams, ped, sampledata,
 
       motherSamples$FamID = rep(fams$FamID[i], nrow(motherSamples))
       motherSamples$polyCluster = rep(fams$polyCluster[i], nrow(motherSamples))
-      motherSamples$alpha = rep(TRUE, nrow(motherSamples))
-      motherSamples$later_alpha = rep(FALSE, nrow(motherSamples)) #does the animal become alpha later
+      motherSamples$rep = rep(TRUE, nrow(motherSamples))
+      motherSamples$later_rep = rep(FALSE, nrow(motherSamples)) #does the animal become reproductive later
 
       if(!is.na(fams$MomPclust[i])) motherSamples$isPolygamous = rep(TRUE, nrow(motherSamples))
       else motherSamples$isPolygamous = rep(FALSE, nrow(motherSamples))# if Mom polygamous cluster is not NA, then TRUE
@@ -142,11 +142,11 @@ fam_table<- function(fams, all.fams, ped, sampledata,
 
       offspringSamples$FamID = rep(fams$FamID[i], nrow(offspringSamples))
       offspringSamples$polyCluster = rep(fams$polyCluster[i], nrow(offspringSamples))
-      offspringSamples$alpha = rep(FALSE, nrow(offspringSamples))
+      offspringSamples$rep = rep(FALSE, nrow(offspringSamples))
 
       if (sum(grepl(sub_ped$id[j], all.fams$father) | grepl(sub_ped$id[j], all.fams$mother)) > 0)
-        offspringSamples$later_alpha = rep(TRUE, nrow(offspringSamples)) #the animal becomes alpha later
-      else offspringSamples$later_alpha = rep(FALSE, nrow(offspringSamples))
+        offspringSamples$later_rep = rep(TRUE, nrow(offspringSamples)) #the animal becomes reproductive later
+      else offspringSamples$later_rep = rep(FALSE, nrow(offspringSamples))
 
       offspringSamples$isPolygamous = rep(FALSE, nrow(offspringSamples))
 

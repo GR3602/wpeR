@@ -12,8 +12,8 @@ ped_satplot(
   fam,
   polyCluster,
   isPolygamous,
-  alpha,
-  later_alpha,
+  rep,
+  later_rep,
   dead,
   famSpacing = 2,
   pClustSpacing = 2,
@@ -46,10 +46,10 @@ which an individual is reproductive animal}
 \item{isPolygamous}{logical value (\code{TRUE}/\code{FALSE}) that identifies
 animal as polygamous (has >1 mates).}
 
-\item{alpha}{logical value (\code{TRUE}/\code{FALSE}) that determines if individual
+\item{rep}{logical value (\code{TRUE}/\code{FALSE}) that determines if individual
 is reproductive or not in current family.}
 
-\item{later_alpha}{logical value (\code{TRUE}/\code{FALSE}) that determines if individual
+\item{later_rep}{logical value (\code{TRUE}/\code{FALSE}) that determines if individual
 is reproductive or not in any other (later) family.}
 
 \item{dead}{logical value (\code{TRUE/FALSE}) that identifies if the individual is dead}
@@ -113,8 +113,8 @@ ped_satplot(pt$Date,
                    pt$FamID,
                    pt$polyCluster,
                    pt$isPolygamous,
-                   pt$alpha,
-                   pt$later_alpha,
+                   pt$rep,
+                   pt$later_rep,
                    pt$dead)
 
 

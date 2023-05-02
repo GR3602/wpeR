@@ -30,14 +30,14 @@
 # @param pedplot output of fam_table function
 # @param time.limits time window for movement and offspring reference samples data
 # @param na.rm remove samples with missing coordinates
-# @param time.limit.alpha do time limits apply to reference samples of alphas?
+# @param time.limit.rep do time limits apply to reference samples of reproductive animals?
 # @param time.limit.offspring do time limits apply to reference samples of offspring?
 #
 
 ppsList <- function (pedplot,
                      time.limits = c(as.Date("1900-01-01"), as.Date("2100-01-01")),
                      na.rm = T,
-                     time.limit.alpha = F,
+                     time.limit.rep = F,
                      time.limit.offspring = F) {
 
 
@@ -73,19 +73,19 @@ ppsList <- function (pedplot,
   #First create pointdata
   #Use time window. Limit entire dataset, or only offspring (later)
 
-  alphas = pedplot[pedplot$alpha == TRUE,]
-  fatherAll = alphas[alphas$GeneticSex == "M",]
-  motherAll = alphas[alphas$GeneticSex == "F",]
+  reps = pedplot[pedplot$rep == TRUE,]
+  fatherAll = reps[reps$GeneticSex == "M",]
+  motherAll = reps[reps$GeneticSex == "F",]
 
-  alphaRefs = alphas[alphas$last_sample == TRUE,] #last sample of reproductive animals as spatial ref
+  repRefs = reps[reps$last_sample == TRUE,] #last sample of reproductive animals as spatial ref
 
-  #use time limit window also for alphas?
-  if (time.limit.alpha == T) {alphaRefs = alphaRefs[alphaRefs$Date <= time.limits[2] & alphaRefs$LastSeen >= time.limits[1], ]}
+  #use time limit window also for reproductive animals?
+  if (time.limit.rep == T) {repRefs = repRefs[repRefs$Date <= time.limits[2] & repRefs$LastSeen >= time.limits[1], ]}
 
-  fatherRefs = alphaRefs[alphaRefs$GeneticSex == "M",]
-  motherRefs = alphaRefs[alphaRefs$GeneticSex == "F",]
+  fatherRefs = repRefs[repRefs$GeneticSex == "M",]
+  motherRefs = repRefs[repRefs$GeneticSex == "F",]
 
-  offspring = pedplot[pedplot$alpha == FALSE,]
+  offspring = pedplot[pedplot$rep == FALSE,]
   if (time.limit.offspring == T){
     offspringRefs = offspring[offspring$first_sample == TRUE & offspring$Date <= time.limits[2] & offspring$LastSeen >= time.limits[1], ]
   }  else { offspringRefs = offspring[offspring$first_sample == TRUE,]}
@@ -96,7 +96,7 @@ ppsList <- function (pedplot,
               fatherRefs = fatherRefs,
               offspring = offspring,
               offspringRefs = offspringRefs,
-              alphaRefs = alphaRefs
+              repRefs = repRefs
   ))
 
 }#end ppsList
@@ -123,7 +123,7 @@ ppsParLines <- function (ppsData) {
   dadcount = 1
   momcount = 1
 
-  alphaRefs = ppsData$alphaRefs
+  repRefs = ppsData$repRefs
   offspringRefs = ppsData$offspringRefs
 
   for (i in 1:nrow(offspringRefs)){
@@ -132,8 +132,8 @@ ppsParLines <- function (ppsData) {
       child = offspringRefs[i,]
     } else { child = NA }
 
-    father =  alphaRefs[alphaRefs$FamID == offspringRefs$FamID[i] & alphaRefs$GeneticSex == "M",]
-    mother =  alphaRefs[alphaRefs$FamID == offspringRefs$FamID[i] & alphaRefs$GeneticSex == "F",]
+    father =  repRefs[repRefs$FamID == offspringRefs$FamID[i] & repRefs$GeneticSex == "M",]
+    mother =  repRefs[repRefs$FamID == offspringRefs$FamID[i] & repRefs$GeneticSex == "F",]
 
     if (nrow(father) > 0 & nrow(child) > 0) {
       paternityLines[[dadcount]] = rbind(father[,c("X", "Y")], child[,c("X", "Y")])
