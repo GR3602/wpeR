@@ -1,0 +1,23 @@
+#'Wolf Pack Genetic Samples Data
+#'
+#'Data on samples of one wolf pack and its ancestor packs,
+#'collected between 2010 and 2021, in the scope of Slovenian National Wolf Monitoring.
+#'
+#'@format ##`pack21_samples`
+#'A data frame with 407 rows and 8 columns:
+#'\describe{
+#'   \item{Sample}{Sample unique identifier code}
+#'   \item{Date}{Date of sample collection (format: `YYYY-MM-DD`)}
+#'   \item{AnimalRef}{Identification string for patricular animal}
+#'   \item{GeneticSex}{Sex of animal to which the sample belong (format: `M` = male, `F` = female)}
+#'   \item{IsAnimalReference}{Is a samle also a reference sample for particular animal (format: `1` = yes, `0` = no)}
+#'   \item{X}{X coordinate (latitude) of the sample (CRS: WGS84; EPSG: 4326)}
+#'   \item{Y}{Y coordinate (longitude) of the sample (CRS: WGS84; EPSG: 4326)}
+#'   \item{SType}{Type of the sample. (`Direct Saliva, Scat, Urine, Saliva, Tissue, Decomposing Tissue, Blood`) }
+#'}
+#'
+#'@source Slovenian National Wolf Monitoring
+"pack21_samples"
+
+
+
