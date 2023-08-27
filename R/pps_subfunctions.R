@@ -42,8 +42,8 @@ ppsList <- function (pedplot,
 
 
   #remove samples with missing coordinates
-  if(sum(is.na(pedplot$X)) > 0 | sum(is.na(pedplot$Y)) > 0 | sum(is.na(pedplot$Date) > 0)){
-    if(na.rm == T) pedplot = pedplot[!(is.na(pedplot$X) | is.na(pedplot$Y) | is.na(pedplot$Date)),]
+  if(sum(is.na(pedplot$lat)) > 0 | sum(is.na(pedplot$lng)) > 0 | sum(is.na(pedplot$Date) > 0)){
+    if(na.rm == T) pedplot = pedplot[!(is.na(pedplot$lat) | is.na(pedplot$lng) | is.na(pedplot$Date)),]
     else stop("Error, NA's in coordinates and/or dates. Use na.rm=TRUE to remove internally.")
   }
   #sort pedplot by individual & date
@@ -136,8 +136,8 @@ ppsParLines <- function (ppsData) {
     mother =  repRefs[repRefs$FamID == offspringRefs$FamID[i] & repRefs$GeneticSex == "F",]
 
     if (nrow(father) > 0 & nrow(child) > 0) {
-      paternityLines[[dadcount]] = rbind(father[,c("X", "Y")], child[,c("X", "Y")])
-      paternityLines[[dadcount]] = st_as_sf(paternityLines[[dadcount]], coords = c("Y", "X"), crs = 4326)
+      paternityLines[[dadcount]] = rbind(father[,c("lat", "lng")], child[,c("lat", "lng")])
+      paternityLines[[dadcount]] = st_as_sf(paternityLines[[dadcount]], coords = c("lng", "lat"), crs = 4326)
       paternityLines[[dadcount]] = st_combine (paternityLines[[dadcount]])
       paternityLines[[dadcount]] = st_cast(paternityLines[[dadcount]], "LINESTRING")
       paternityLines[[dadcount]] = data.frame(ID=dadcount,
@@ -153,8 +153,8 @@ ppsParLines <- function (ppsData) {
     }
 
     if(nrow(mother) > 0 & nrow(child)>0){
-      maternityLines[[momcount]] = rbind(mother[,c("X", "Y")], child[,c("X", "Y")])
-      maternityLines[[momcount]] = st_as_sf(maternityLines[[momcount]], coords = c("Y", "X"), crs = 4326)
+      maternityLines[[momcount]] = rbind(mother[,c("lat", "lng")], child[,c("lat", "lng")])
+      maternityLines[[momcount]] = st_as_sf(maternityLines[[momcount]], coords = c("lng", "lat"), crs = 4326)
       maternityLines[[momcount]] = st_combine (maternityLines[[momcount]])
       maternityLines[[momcount]] = st_cast(maternityLines[[momcount]], "LINESTRING")
       maternityLines[[momcount]] = data.frame(ID=momcount,
@@ -219,7 +219,7 @@ ppsMvPoints <- function(ppsData,
   # offspringMoveData = unique(offspringMoveData)
 
   if(nrow(offspringMoveData) > 0) {
-    offspringMovePoints = st_as_sf (offspringMoveData, coords = c("Y", "X"), crs = 4326)
+    offspringMovePoints = st_as_sf (offspringMoveData, coords = c("lng", "lat"), crs = 4326)
   } else {offspringMovePoints = st_sf(1, st_sfc(st_point()))}
 
   ####Father####
@@ -237,7 +237,7 @@ ppsMvPoints <- function(ppsData,
   fatherMoveData = unique(fatherMoveData)
 
   if(nrow(fatherMoveData) > 0) {
-    fatherMovePoints  = st_as_sf (fatherMoveData, coords = c("Y", "X"), crs = 4326)
+    fatherMovePoints  = st_as_sf (fatherMoveData, coords = c("lng", "lat"), crs = 4326)
   } else {fatherMovePoints  = st_sf(1, st_sfc(st_point()))}
 
   ####Mother####
@@ -255,7 +255,7 @@ ppsMvPoints <- function(ppsData,
   motherMoveData = unique(motherMoveData)
 
   if(nrow(motherMoveData) > 0) {
-    motherMovePoints <-st_as_sf (motherMoveData, coords = c("Y", "X"), crs = 4326)
+    motherMovePoints <-st_as_sf (motherMoveData, coords = c("lng", "lat"), crs = 4326)
   }else{motherMovePoints  = st_sf(1, st_sfc(st_point()))}
 
   return(list(offspringMovePoints = offspringMovePoints,
@@ -288,7 +288,7 @@ ppsRefPoints <-function(ppsData) {
   # offspringRefs = unique(offspringRefs)
 
   if (nrow(offspringRefs) > 0) {
-    offspringRpoints  = st_as_sf(offspringRefs, coords = c("Y", "X"), crs = 4326)
+    offspringRpoints  = st_as_sf(offspringRefs, coords = c("lng", "lat"), crs = 4326)
   } else {offspringRpoints = st_sf(1, st_sfc(st_point()))}
 
   ####Father####
@@ -299,7 +299,7 @@ ppsRefPoints <-function(ppsData) {
   fatherRefs = unique(fatherRefs)
 
   if(nrow(fatherRefs) > 0) {
-    fatherRpoints = st_as_sf(fatherRefs, coords = c("Y", "X"), crs = 4326)
+    fatherRpoints = st_as_sf(fatherRefs, coords = c("lng", "lat"), crs = 4326)
   } else {fatherRpoints = st_sf(1, st_sfc(st_point()))}
 
   ####Mother####
@@ -310,7 +310,7 @@ ppsRefPoints <-function(ppsData) {
   motherRefs = unique(motherRefs)
 
   if(nrow(motherRefs) > 0) {
-    motherRpoints = st_as_sf(motherRefs, coords = c("Y", "X"), crs = 4326)
+    motherRpoints = st_as_sf(motherRefs, coords = c("lng", "lat"), crs = 4326)
   }else{motherRpoints = st_sf(1, st_sfc(st_point()))}
 
   return(list(offspringRpoints = offspringRpoints,
@@ -361,7 +361,7 @@ ppsMvLines <- function(ppsData,
     individual = unique(individual)
 
     if (nrow(individual) >= 2) {
-      individualLines[[indcount]] = st_geometry(st_as_sf(individual, coords = c("Y", "X"), crs = 4326))
+      individualLines[[indcount]] = st_geometry(st_as_sf(individual, coords = c("lng", "lat"), crs = 4326))
       individualLines[[indcount]] = st_cast(st_union(individualLines[[indcount]]), "LINESTRING")
       offspringMoveLines = rbind(offspringMoveLines,data.frame(ID=indcount,
                                                                AnimalID = offspringRefs$AnimalRef[i],
@@ -374,7 +374,21 @@ ppsMvLines <- function(ppsData,
     }
   }
 
-  offspringMoveLines= st_as_sf(offspringMoveLines, sf_column_name = "geometry")
+  # hashed are options to deal with examples where there is just one sample
+  #option1
+  #no df created -> not working properly 2023-05-20
+  #if (nrow(individual) >= 2) {
+  #  offspringMoveLines = st_as_sf(offspringMoveLines, sf_column_name = "geometry")
+  #}
+
+  #option2
+  #empty file created
+  if(length(individualLines)>0){
+    offspringMoveLines = st_as_sf(offspringMoveLines, sf_column_name = "geometry")
+  } else {
+    offspringMoveLines =  st_sf(st_sfc())#dummy... empty object
+  }
+
 
   #if(length(individualLines) > 0) {
   #  offspringMoveLines = SpatialLines(individualLines, CRS("+proj=longlat +datum=WGS84"))
@@ -404,7 +418,7 @@ ppsMvLines <- function(ppsData,
     individual = unique(individual)
 
     if (nrow(individual) >= 2) {
-      individualLines[[indcount]] = st_geometry(st_as_sf(individual, coords = c("Y", "X"), crs = 4326))
+      individualLines[[indcount]] = st_geometry(st_as_sf(individual, coords = c("lng", "lat"), crs = 4326))
       individualLines[[indcount]] = st_cast(st_union(individualLines[[indcount]]), "LINESTRING")
       fatherMoveLines = rbind(fatherMoveLines,data.frame(ID=indcount,
                                                          AnimalID = offspringRefs$AnimalRef[i],
@@ -417,10 +431,17 @@ ppsMvLines <- function(ppsData,
     }
   }
 
-  if (nrow(individual) >= 2) {
-    fatherMoveLines= st_as_sf(fatherMoveLines, sf_column_name = "geometry")
-  }
+  #if (nrow(individual) >= 2) {
+  #  fatherMoveLines= st_as_sf(fatherMoveLines, sf_column_name = "geometry")
+  #}
 
+  #option2
+  #empty file created
+  if(length(individualLines)>0){
+    fatherMoveLines = st_as_sf(fatherMoveLines, sf_column_name = "geometry")
+  } else {
+    fatherMoveLines =  st_sf(st_sfc())#dummy... empty object
+  }
 
   #if(length(individualLines) > 0) {
   # fatherMoveLines = SpatialLines(individualLines, CRS("+proj=longlat +datum=WGS84"))
@@ -450,7 +471,7 @@ ppsMvLines <- function(ppsData,
     individual = unique(individual)
 
     if (nrow(individual) >= 2) {
-      individualLines[[indcount]] = st_geometry(st_as_sf(individual, coords = c("Y", "X"), crs = 4326))
+      individualLines[[indcount]] = st_geometry(st_as_sf(individual, coords = c("lng", "lat"), crs = 4326))
       individualLines[[indcount]] = st_cast(st_union(individualLines[[indcount]]), "LINESTRING")
       motherMoveLines  = rbind(motherMoveLines ,data.frame(ID=indcount,
                                                            AnimalID = offspringRefs$AnimalRef[i],
@@ -463,7 +484,18 @@ ppsMvLines <- function(ppsData,
     }
   }
 
-  motherMoveLines = st_as_sf(motherMoveLines, sf_column_name = "geometry")
+  #if (nrow(individual) >= 2) {
+  #  motherMoveLines= st_as_sf(motherMoveLines, sf_column_name = "geometry")
+  #}
+
+  #option2
+  if(length(individualLines)>0){
+    motherMoveLines = st_as_sf(motherMoveLines, sf_column_name = "geometry")
+  } else {
+    motherMoveLines =  st_sf(st_sfc())#dummy... empty object
+  }
+
+  #motherMoveLines = st_as_sf(motherMoveLines, sf_column_name = "geometry")
 
   return(list(offspringMoveLines = offspringMoveLines,
               fatherMoveLines = fatherMoveLines,
@@ -510,6 +542,9 @@ ppsMvPolygons <- function(ppsData, MvPoints) {
     }
   }
 
+  if(is.null(motherMovePolygons)) {
+    motherMovePolygons = st_sf(st_sfc())
+  }
 
   ####Father####
   #father MovePolygons
@@ -539,7 +574,9 @@ ppsMvPolygons <- function(ppsData, MvPoints) {
     }
   }
 
-
+  if(is.null(fatherMovePolygons)) {
+    fatherMovePolygons = st_sf(st_sfc())
+  }
 
 
 
@@ -569,6 +606,10 @@ ppsMvPolygons <- function(ppsData, MvPoints) {
     } else {
       next
     }
+  }
+
+  if(is.null(offspringMovePolygons)) {
+    offspringMovePolygons = st_sf(st_sfc())
   }
 
 
@@ -617,8 +658,8 @@ ppsFsLines <- function(ppsData, fullsibdata, sibthreshold = 1) {
     if (nrow(sibgroupsamples) >= 2) {
       for(j in 1:(nrow(sibgroupsamples)-1)) {
         for(k in (j+1):nrow(sibgroupsamples)) {
-          individualLines[[indcount]] = sibgroupsamples[c(j,k), c("Y", "X")]
-          individualLines[[indcount]] = st_as_sf(individualLines[[indcount]], coords = c("Y", "X"), crs = 4326)
+          individualLines[[indcount]] = sibgroupsamples[c(j,k), c("lng", "lat")]
+          individualLines[[indcount]] = st_as_sf(individualLines[[indcount]], coords = c("lng", "lat"), crs = 4326)
           individualLines[[indcount]] = st_combine(individualLines[[indcount]])
           individualLines[[indcount]] = st_cast(individualLines[[indcount]], "LINESTRING")
           individualLines[[indcount]] = data.frame(ID = indcount,

@@ -1,6 +1,6 @@
 #' Prepares pedigree data for plotting and spatial representation
 #'
-#' @description `fam_table` combines pedigree and sample data for visual ([`ped_satplot`])
+#' @description `plot_table` combines pedigree and sample data for visual ([`ped_satplot`])
 #'  and spatial ([`ped_spatial`]) representation of the pedigree.
 #'
 #' @details
@@ -53,28 +53,30 @@
 #' @export
 #'
 #' @examples
-#' animal_ts <- anim_timespan(pack21_samples$AnimalRef,
-#'                                   pack21_samples$Date,
-#'                                   pack21_samples$SType,
+#' animal_ts <- anim_timespan(wolf_samples$AnimalRef,
+#'                                   wolf_samples$Date,
+#'                                   wolf_samples$SType,
 #'                                   dead = c("Tissue", "Decomposing Tissue", "Blood"))
 #'
-#' sampledata <- merge(pack21_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
+#' sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
 #'
-#' path <- paste0(system.file("extdata", package = "wpeR"), "/fake_colony")
+#' path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
 #'
 #' ped_colony <- get_colony(path, sampledata, remove_obsolete_parents = TRUE, out = "FamAgg")
 #'
 #' org_tables <- org_fams(ped_colony, sampledata, output = "both")
 #'
 #'
-#' fam_table(org_tables$fams,
+#' plot_table(org_tables$fams,
 #'           org_tables$fams,
 #'           org_tables$ped,
 #'           sampledata,
 #'           deadSample = c("Tissue", "Decomposing Tissue", "Blood"))
 #'
-fam_table<- function(fams, all.fams, ped, sampledata,
-                     datacolumns = c("Sample", "AnimalRef", "GeneticSex", "Date", "SType", "X", "Y", "FirstSeen", "LastSeen", "IsDead"),
+#' @aliases plot_table PackTable
+#'
+plot_table<- function(fams, all.fams, ped, sampledata,
+                     datacolumns = c("Sample", "AnimalRef", "GeneticSex", "Date", "SType", "lat", "lng", "FirstSeen", "LastSeen", "IsDead"),
                      deadSample = c("Tissue", "Decomposing Tissue", "Bone")) {
 
   #simplified PackPlot function, output just table

@@ -36,6 +36,9 @@
 #'                   seasons$start, seasons$end)
 #'
 #'
+#'
+#' @aliases dyn_matrix MakeDynamicsMatrix
+#'
 
 dyn_matrix = function(animal_id, capture_date, start_dates, end_dates){
   # Makes matrics of apparent survival

@@ -2,6 +2,7 @@
 % Please edit documentation in R/ped_satplot.R
 \name{ped_satplot}
 \alias{ped_satplot}
+\alias{PedigreeCMRSatplot}
 \title{Mark-Recapture Plot For Pedigree - Saturating}
 \usage{
 ped_satplot(
@@ -83,23 +84,23 @@ a graphical representation of detected family members trough time.
 }
 \description{
 \code{ped_satplot} creates "capture" history plot of individuals
-arranged by families included in data frame created by \code{\link{fam_table}} function.
+arranged by families included in data frame created by \code{\link{plot_table}} function.
 }
 \examples{
-animal_ts <- anim_timespan(pack21_samples$AnimalRef,
-                                  pack21_samples$Date,
-                                  pack21_samples$SType,
+animal_ts <- anim_timespan(wolf_samples$AnimalRef,
+                                  wolf_samples$Date,
+                                  wolf_samples$SType,
                                   dead = c("Tissue", "Decomposing Tissue", "Blood"))
 
-sampledata <- merge(pack21_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
+sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
 
-path <- paste0(system.file("extdata", package = "wpeR"), "/fake_colony")
+path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
 
 ped_colony <- get_colony(path, sampledata, remove_obsolete_parents = TRUE, out = "FamAgg")
 
 org_tables <- org_fams(ped_colony, sampledata, output = "both")
 
-pt<-fam_table(org_tables$fams[1,],
+pt<-plot_table(org_tables$fams[1,],
               org_tables$fams,
               org_tables$ped,
               sampledata,
@@ -116,10 +117,6 @@ ped_satplot(pt$Date,
                    pt$rep,
                    pt$later_rep,
                    pt$dead)
-
-
-
-
 
 
 

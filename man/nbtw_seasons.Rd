@@ -2,6 +2,7 @@
 % Please edit documentation in R/nbtw_seasons.R
 \name{nbtw_seasons}
 \alias{nbtw_seasons}
+\alias{nBetweenSeasons}
 \title{Number Of Detected Animals Between Two Sampling Seasons}
 \usage{
 nbtw_seasons(
@@ -47,6 +48,7 @@ within the second sampling season compared tho the first one.
 nbtw_seasons(pack21_samples$AnimalRef, pack21_samples$Date,
                as.Date("2010-01-01"), as.Date("2010-12-31"),
                as.Date("2011-01-01"), as.Date("2011-12-31"))
+
 
 
 }

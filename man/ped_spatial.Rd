@@ -2,6 +2,7 @@
 % Please edit documentation in R/ped_spatial.R
 \name{ped_spatial}
 \alias{ped_spatial}
+\alias{PreparePedigreeSpatial}
 \title{Get Files For Spatial Representation Of Pedigree}
 \usage{
 ped_spatial(
@@ -12,6 +13,7 @@ ped_spatial(
   sibthreshold = 0,
   path = "",
   filename = "",
+  out.format = "geopackage",
   time.limits = c(as.Date("1900-01-01"), as.Date("2100-01-01")),
   time.limit.rep = FALSE,
   time.limit.offspring = FALSE,
@@ -19,7 +21,7 @@ ped_spatial(
 )
 }
 \arguments{
-\item{famtable}{data frame. Output of \code{\link{fam_table}} function.}
+\item{famtable}{data frame. Output of \code{\link{plot_table}} function.}
 
 \item{na.rm}{logical (\code{TRUE}/\code{FALSE}). Remove samples with missing coordinates and/or dates.}
 
@@ -34,6 +36,9 @@ returned as georeferenced files.}
 \item{path}{string. System path where georeferenced files should be stored.}
 
 \item{filename}{string. Common name for all georeferenced files.}
+
+\item{out.format}{string. Type of georeferenced files to be generated. Can be eather
+\code{"geopackage"} or \code{"shapefile"}. Default is \code{"geopackage"}}
 
 \item{time.limits}{vector of two \code{Date} values. Time window for movement and
 offspring reference samples data.}
@@ -64,23 +69,23 @@ their offspring (\code{maternityLines}), fathers and their offspring
 }
 \description{
 \code{ped_spatial} creates georeferenced data for spatial
-pedigree representation form the output of \code{\link{fam_table}} function.
+pedigree representation form the output of \code{\link{plot_table}} function.
 }
 \examples{
-animal_ts <- anim_timespan(pack21_samples$AnimalRef,
-                                  pack21_samples$Date,
-                                  pack21_samples$SType,
+animal_ts <- anim_timespan(wolf_samples$AnimalRef,
+                                  wolf_samples$Date,
+                                  wolf_samples$SType,
                                   dead = c("Tissue", "Decomposing Tissue", "Blood"))
 
-sampledata <- merge(pack21_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
+sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
 
-path <- paste0(system.file("extdata", package = "wpeR"), "/fake_colony")
+path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
 
 ped_colony <- get_colony(path, sampledata, remove_obsolete_parents = TRUE, out = "FamAgg")
 
 org_tables <- org_fams(ped_colony, sampledata, output = "both")
 
-pt<-fam_table(org_tables$fams[1,],
+pt<-plot_table(org_tables$fams[1,],
               org_tables$fams,
               org_tables$ped,
               sampledata,
@@ -88,5 +93,6 @@ pt<-fam_table(org_tables$fams[1,],
 
 
 ped_spatial(pt)
+
 
 }

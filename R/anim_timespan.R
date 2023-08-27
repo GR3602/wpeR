@@ -22,12 +22,12 @@
 #' @export
 #'
 #' @examples
-#' anim_timespan(pack21_samples$AnimalRef,
-#'                      pack21_samples$Date,
-#'                      pack21_samples$SType,
+#' anim_timespan(wolf_samples$AnimalRef,
+#'                      wolf_samples$Date,
+#'                      wolf_samples$SType,
 #'                      dead = c("Tissue", "Decomposing Tissue", "Blood"))
 #'
-#' @aliases make.animal.timespan
+#' @aliases anim_timespan make.animal.timespan
 #'
 
 anim_timespan <- function(individual_id, sample_date, sample_type, dead = "Tissue") {

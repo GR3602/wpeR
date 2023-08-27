@@ -2,7 +2,7 @@
 #' Mark-Recapture Plot For Pedigree - Saturating
 #'
 #' @description `ped_satplot` creates "capture" history plot of individuals
-#' arranged by families included in data frame created by [`fam_table`] function.
+#' arranged by families included in data frame created by [`plot_table`] function.
 #'
 #' @param date sample collection date. Must be in `Date` format.
 #' @param animal individual animal identifier code.
@@ -36,20 +36,20 @@
 #' @export
 #'
 #' @examples
-#' animal_ts <- anim_timespan(pack21_samples$AnimalRef,
-#'                                   pack21_samples$Date,
-#'                                   pack21_samples$SType,
+#' animal_ts <- anim_timespan(wolf_samples$AnimalRef,
+#'                                   wolf_samples$Date,
+#'                                   wolf_samples$SType,
 #'                                   dead = c("Tissue", "Decomposing Tissue", "Blood"))
 #'
-#' sampledata <- merge(pack21_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
+#' sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
 #'
-#' path <- paste0(system.file("extdata", package = "wpeR"), "/fake_colony")
+#' path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
 #'
 #' ped_colony <- get_colony(path, sampledata, remove_obsolete_parents = TRUE, out = "FamAgg")
 #'
 #' org_tables <- org_fams(ped_colony, sampledata, output = "both")
 #'
-#' pt<-fam_table(org_tables$fams[1,],
+#' pt<-plot_table(org_tables$fams[1,],
 #'               org_tables$fams,
 #'               org_tables$ped,
 #'               sampledata,
@@ -69,6 +69,7 @@
 #'
 #'
 #'
+#' @aliases ped_satplot PedigreeCMRSatplot
 #'
 #'
 #'
@@ -197,14 +198,14 @@ ped_satplot = function(date, animal, plottingID, sex, fam, polyCluster, isPolyga
   if(!is.null(famlines)){
     p = p+geom_hline(yintercept=famlines$Y[famlines$type == "polyCluster"], color = "yellow", size = 1)+
       geom_hline(yintercept=famlines$Y, linetype = "dashed", size = 0.3)+
-      geom_label(data=famlines, aes(x=rep(minDate, nrow(famlines)), y=Y, label = paste("PCL:",polyCluster, " PCK:", fam, sep="")),
+      geom_label(data=famlines, aes(x=rep(minDate, nrow(famlines)), y=Y, label = paste("PCL:",polyCluster, "FAM:", fam, sep="")),
                  size = fam_label_size, color="darkgreen", #label.padding = unit(1, "lines"),
                  hjust=0.5, vjust=0.5, fontface="bold")
 
   }
 
 
-  print(p)
+  #print(p)
   return(p)
 
 }

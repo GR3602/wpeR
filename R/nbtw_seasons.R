@@ -33,6 +33,9 @@
 #'                as.Date("2011-01-01"), as.Date("2011-12-31"))
 #'
 #'
+#'
+#' @aliases nbtw_seasons nBetweenSeasons
+#'
 
 nbtw_seasons = function(animal_id, capture_date,
                            season1_start, season1_end, season2_start, season2_end) {

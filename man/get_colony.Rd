@@ -54,7 +54,7 @@ define a complete path to the directory where colony outputs are stored and also
 eg. /path/to/the/COLONY2/output/folder/COLONY2_project_name).
 }
 \examples{
-path <- paste0(system.file("extdata", package = "wpeR"), "/fake_colony")
-get_colony(path, pack21_samples)
+path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
+get_colony(path, wolf_samples)
 
 }

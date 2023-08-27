@@ -2,10 +2,10 @@
 #'
 #' @description
 #' `ped_spatial` creates georeferenced data for spatial
-#' pedigree representation form the output of [`fam_table`] function.
+#' pedigree representation form the output of [`plot_table`] function.
 #'
 #'
-#' @param famtable data frame. Output of [`fam_table`] function.
+#' @param famtable data frame. Output of [`plot_table`] function.
 #' @param na.rm logical (`TRUE`/`FALSE`). Remove samples with missing coordinates and/or dates.
 #' @param output single value or vector. Type of output of function results.
 #' Available outputs: list: all spatial data returned as list, gis: all spatial data
@@ -14,6 +14,8 @@
 #' @param sibthreshold numeric. p value threshold for sibsihp assignment.
 #' @param path string. System path where georeferenced files should be stored.
 #' @param filename string. Common name for all georeferenced files.
+#' @param out.format string. Type of georeferenced files to be generated. Can be eather
+#' `"geopackage"` or `"shapefile"`. Default is `"geopackage"`
 #' @param time.limits vector of two `Date` values. Time window for movement and
 #' offspring reference samples data.
 #' @param time.limit.rep logical (`TRUE`/`FALSE`). Do time limits apply to
@@ -44,20 +46,20 @@
 #'
 #'
 #' @examples
-#' animal_ts <- anim_timespan(pack21_samples$AnimalRef,
-#'                                   pack21_samples$Date,
-#'                                   pack21_samples$SType,
+#' animal_ts <- anim_timespan(wolf_samples$AnimalRef,
+#'                                   wolf_samples$Date,
+#'                                   wolf_samples$SType,
 #'                                   dead = c("Tissue", "Decomposing Tissue", "Blood"))
 #'
-#' sampledata <- merge(pack21_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
+#' sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
 #'
-#' path <- paste0(system.file("extdata", package = "wpeR"), "/fake_colony")
+#' path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
 #'
 #' ped_colony <- get_colony(path, sampledata, remove_obsolete_parents = TRUE, out = "FamAgg")
 #'
 #' org_tables <- org_fams(ped_colony, sampledata, output = "both")
 #'
-#' pt<-fam_table(org_tables$fams[1,],
+#' pt<-plot_table(org_tables$fams[1,],
 #'               org_tables$fams,
 #'               org_tables$ped,
 #'               sampledata,
@@ -66,19 +68,23 @@
 #'
 #' ped_spatial(pt)
 #'
+#'
+#' @aliases ped_spatial PreparePedigreeSpatial
+#'
 ped_spatial <- function (famtable,
-                                    na.rm = TRUE,
-                                    output="list",
-                                    fullsibdata = NULL,
-                                    sibthreshold = 0,
-                                    path="",
-                                    filename="",
-                                    time.limits = c(as.Date("1900-01-01"), as.Date("2100-01-01")),
-                                    time.limit.rep = FALSE,
-                                    time.limit.offspring = FALSE,
-                                    time.limit.moves = FALSE) {
+                         na.rm = TRUE,
+                         output="list",
+                         fullsibdata = NULL,
+                         sibthreshold = 0,
+                         path="",
+                         filename="",
+                         out.format = "geopackage",
+                         time.limits = c(as.Date("1900-01-01"), as.Date("2100-01-01")),
+                         time.limit.rep = FALSE,
+                         time.limit.offspring = FALSE,
+                         time.limit.moves = FALSE) {
 
-  #TODO add selection for type of output files gpk or shp
+
 
   data = ppsList(pedplot = famtable,
                  time.limits = time.limits,
@@ -110,27 +116,35 @@ ped_spatial <- function (famtable,
 
 
   if("gis" %in% output){
-    write_sf(ParLines$maternityLines, paste0(path,filename,"matLn.gpkg"))
-    write_sf(ParLines$paternityLines, paste0(path,filename,"patLn.gpkg"))
+    if("geopackage" %in% out.format) {
+      ext = ".gpkg"
+    } else if ("shapefile" %in% out.format) {
+      ext = ".shp"
+    } else {
+    stop("Wrong out.format parameter. The out.format can eather be 'geopackage' or 'shapefile'")
+    }
 
-    write_sf(RefPoints$motherRpoints, paste0(path, filename, "momRef.gpkg"))
-    write_sf(RefPoints$fatherRpoints, paste0(path, filename, "dadRef.gpkg"))
-    write_sf(RefPoints$offspringRpoints, paste0(path, filename, "offsprRef.gpkg"))
+    write_sf(ParLines$maternityLines, paste0(path,filename,"matLn", ext))
+    write_sf(ParLines$paternityLines, paste0(path,filename,"patLn", ext))
 
-    write_sf(MvPoints$motherMovePoints, paste0(path, filename, "momMovPt.gpkg"))
-    write_sf(MvPoints$fatherMovePoints, paste0(path, filename, "dadMovPt.gpkg"))
-    write_sf(MvPoints$offspringMovePoints, paste0(path, filename, "offsprMovPt.gpkg"))
+    write_sf(RefPoints$motherRpoints, paste0(path, filename, "momRef", ext))
+    write_sf(RefPoints$fatherRpoints, paste0(path, filename, "dadRef", ext))
+    write_sf(RefPoints$offspringRpoints, paste0(path, filename, "offsprRef", ext))
 
-    write_sf(MvLines$motherMoveLines, paste0(path, filename, "momMovLn.gpkg"))
-    write_sf(MvLines$fatherMoveLines, paste0(path, filename, "dadMovLn.gpkg"))
-    write_sf(MvLines$offspringMoveLines, paste0(path, filename, "offsprMovLn.gpkg"))
+    write_sf(MvPoints$motherMovePoints, paste0(path, filename, "momMovPt", ext))
+    write_sf(MvPoints$fatherMovePoints, paste0(path, filename, "dadMovPt", ext))
+    write_sf(MvPoints$offspringMovePoints, paste0(path, filename, "offsprMovPt", ext))
 
-    write_sf(MvPolygons$motherMovePolygons, paste0(path, filename, "momMovPoly.gpkg"))
-    write_sf(MvPolygons$fatherMovePolygons, paste0(path, filename, "dadMovPoly.gpkg"))
-    write_sf(MvPolygons$offspringMovePolygons, paste0(path, filename, "offsprMovPoly.gpkg"))
+    write_sf(MvLines$motherMoveLines, paste0(path, filename, "momMovLn", ext))
+    write_sf(MvLines$fatherMoveLines, paste0(path, filename, "dadMovLn", ext))
+    write_sf(MvLines$offspringMoveLines, paste0(path, filename, "offsprMovLn", ext))
+
+    write_sf(MvPolygons$motherMovePolygons, paste0(path, filename, "momMovPoly", ext))
+    write_sf(MvPolygons$fatherMovePolygons, paste0(path, filename, "dadMovPoly", ext))
+    write_sf(MvPolygons$offspringMovePolygons, paste0(path, filename, "offsprMovPoly", ext))
 
     if(!is.null(fullsibdata)) {
-      write_sf(FsLines, paste0(path, filename, "FsibLn.gpkg"))
+      write_sf(FsLines, paste0(path, filename, "FsibLn", ext))
     }
   }
 

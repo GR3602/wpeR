@@ -2,6 +2,7 @@
 % Please edit documentation in R/dyn_matrix.R
 \name{dyn_matrix}
 \alias{dyn_matrix}
+\alias{MakeDynamicsMatrix}
 \title{Get Matrix Of Apparent Survival}
 \usage{
 dyn_matrix(animal_id, capture_date, start_dates, end_dates)
@@ -44,6 +45,7 @@ seasons <- data.frame(start = c(as.Date("2010-01-01"),
 
 dyn_matrix(pack21_samples$AnimalRef, pack21_samples$Date,
                   seasons$start, seasons$end)
+
 
 
 }

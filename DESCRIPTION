@@ -1,19 +1,29 @@
 Package: wpeR
 Type: Package
-Title: WildPedigreeExploreR Streamlined Analysis Of Wild Pedigree Data Created By COLONY2
+Title: Streamlined Analysis Of Wild Pedigree Data Created By COLONY2
 Version: 0.1.0
 Author: Tomaz Skrbinsek, Gregor Simcic
 Maintainer: Gregor Simcic <grega0simcic@gmail.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: wpeR is an R package designed to simplify the analysis of wild pedigree
+    data created by COLONY2 pedigree reconstruction software. By combining COLONY2 
+    output with sample metadata, wpeR creates visual and tabular representations of the
+    pedigree, allowing the user to interpret the pedigree in spatial and temporal terms. The
+    main goal of the package is to provide an efficient solution for the analysis of complex wild 
+    pedigree data and to help the user to gain valuable insights into genetic relationships within
+    wild animal populations.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Imports: 
     dplyr,
     ggplot2,
     sf
 Depends: 
     R (>= 2.10)
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: 
+    knitr

@@ -43,10 +43,10 @@
 #' @export
 #'
 #' @examples
-#' path <- paste0(system.file("extdata", package = "wpeR"), "/fake_colony")
-#' get_colony(path, pack21_samples)
+#' path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
+#' get_colony(path, wolf_samples)
 #'
-#' @aliases GetDigestColony
+#' @aliases get_colony GetDigestColony
 #'
 
 get_colony = function(bestconf_path, sampledata, remove_obsolete_parents = T, out = "FamAgg") {

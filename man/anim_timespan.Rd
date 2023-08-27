@@ -30,9 +30,9 @@ Takes data frame of all samples and returns the dates of individuals first and l
 Besides that the functions determines if animal is dead based on predefined sample type eg. tissue.
 }
 \examples{
-anim_timespan(pack21_samples$AnimalRef,
-                     pack21_samples$Date,
-                     pack21_samples$SType,
+anim_timespan(wolf_samples$AnimalRef,
+                     wolf_samples$Date,
+                     wolf_samples$SType,
                      dead = c("Tissue", "Decomposing Tissue", "Blood"))
 
 }

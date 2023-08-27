@@ -20,7 +20,7 @@
 #' @return
 #' Based on the ´output´ parameter the function can return a data frame (`ped` or `fams`)
 #' or a list with two objects (`ped` and `fams`).
-#'   * `ped` data frame. Extended output of [`org_fams`] function.
+#'   * `ped` data frame. Extended output of [`get_colony`] function.
 #'   Apart from common pedigree information (individual, mother, father, sex, family), `ped`
 #'   also includes columns:
 #'     - `parents`: identifier codes of both parents separated with `_`,
@@ -49,20 +49,20 @@
 #' @export
 #'
 #' @examples
-#' animal_ts <- anim_timespan(pack21_samples$AnimalRef,
-#'                                   pack21_samples$Date,
-#'                                   pack21_samples$SType,
+#' animal_ts <- anim_timespan(wolf_samples$AnimalRef,
+#'                                   wolf_samples$Date,
+#'                                   wolf_samples$SType,
 #'                                   dead = c("Tissue", "Decomposing Tissue", "Blood"))
 #'
-#' sampledata <- merge(pack21_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
+#' sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
 #'
-#' path <- paste0(system.file("extdata", package = "wpeR"), "/fake_colony")
+#' path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
 #'
 #' ped_colony <- get_colony(path, sampledata, remove_obsolete_parents = TRUE, out = "FamAgg")
 #'
 #' org_fams(ped_colony, sampledata)
 #'
-#' @aliases  organizePacks
+#' @aliases org_fams organizePacks
 #'
 org_fams = function(ped, sampledata, output = "both") {
 
