@@ -5,7 +5,8 @@
 #'  pedigree reconstruction software with additional data about individuals included
 #'  in pedigree. The function adds missing parents to `OffspringID`, assigns
 #'  sex to each individual included in `OffspringID` and adds the computed
-#'  probabilities of paternity and maternity assignments.
+#'  probabilities of paternity and maternity assignments (probability of assignments is visible
+#'  only if the `out` parameter is set to `"table"`).
 #'  The function also prepares data so that the output of the function can be directly analysed with
 #'  [`kinship2`](https://cran.r-project.org/web/packages/kinship2/index.html),
 #'  [`pedtools`](https://cran.r-project.org/web/packages/pedtools/index.html) or
@@ -30,8 +31,9 @@
 #' @param remove_obsolete_parents logical. Should unknown parents be removed from output.
 #'   Applies just to offspring for which both parents are unknown. Defaults to `TRUE`.
 #' @param out string. For use with which package should the output be formatted?
-#'   `kinship2` (out = "kinship2"), `pedtools` (out = "pedtools") or
-#'   `FamAgg` (out = "FamAgg"). Defaults to "FamAgg"
+#'   `kinship2` (out = "kinship2"), `pedtools` (out = "pedtools"),
+#'   `FamAgg` (out = "FamAgg") or the created data.frame can be ourputted as is
+#'   (out = "table"). Defaults to "FamAgg"
 #'
 #' @return
 #'  A data frame describing a common pedigree structure. Each individual included in
@@ -49,10 +51,8 @@
 #' @aliases get_colony GetDigestColony
 #'
 
-get_colony = function(bestconf_path, sampledata, remove_obsolete_parents = T, out = "FamAgg") {
 
-  #TODO add table output option that includes probabilities of paternity and maternity
-  #TODO output for ped tools package
+get_colony = function(bestconf_path, sampledata, remove_obsolete_parents = T, out = "FamAgg") {
 
   ##reads COLONY outputs needed for the function
   ##BestConfig_Ordered
@@ -186,11 +186,19 @@ get_colony = function(bestconf_path, sampledata, remove_obsolete_parents = T, ou
     output$mid[is.na(output$mid)] = 0
     return(output)
 
+  }
+
+  if (out == "table") {
+    bestconfig1$sex[bestconfig1$sex == 1] <- "M"
+    bestconfig1$sex[bestconfig1$sex == 2] <- "F"
+    output = bestconfig1
+    return(output)
 
   }
 
   #should jump out with return statements... if not...
-  print("Unknow output selected... aborting")
+  stop("Unknow output selected. The function excepts
+    'kinship2', 'pedtools', 'FamAgg' and 'table' as out parameter strings")
 
 
 }

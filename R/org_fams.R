@@ -249,6 +249,6 @@ org_fams = function(ped, sampledata, output = "both") {
     return(list(ped=ped, fams=fams))
   }
 
-  print('Unknown output seleced. Output shuld be defined as "fams", "ped" or "both"')
+  stop('Unknown output seleced. Output shuld be defined as "fams", "ped" or "both"')
 
 }

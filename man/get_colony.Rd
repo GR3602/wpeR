@@ -24,8 +24,9 @@ Must have $Sample with sample names and $GeneticSex coded as M/F/NA}
 Applies just to offspring for which both parents are unknown. Defaults to \code{TRUE}.}
 
 \item{out}{string. For use with which package should the output be formatted?
-\code{kinship2} (out = "kinship2"), \code{pedtools} (out = "pedtools") or
-\code{FamAgg} (out = "FamAgg"). Defaults to "FamAgg"}
+\code{kinship2} (out = "kinship2"), \code{pedtools} (out = "pedtools"),
+\code{FamAgg} (out = "FamAgg") or the created data.frame can be ourputted as is
+(out = "table"). Defaults to "FamAgg"}
 }
 \value{
 A data frame describing a common pedigree structure. Each individual included in
@@ -38,7 +39,8 @@ output (\code{out} parameter).
 pedigree reconstruction software with additional data about individuals included
 in pedigree. The function adds missing parents to \code{OffspringID}, assigns
 sex to each individual included in \code{OffspringID} and adds the computed
-probabilities of paternity and maternity assignments.
+probabilities of paternity and maternity assignments (probability of assignments is visible
+only if the \code{out} parameter is set to \code{"table"}).
 The function also prepares data so that the output of the function can be directly analysed with
 \href{https://cran.r-project.org/web/packages/kinship2/index.html}{\code{kinship2}},
 \href{https://cran.r-project.org/web/packages/pedtools/index.html}{\code{pedtools}} or

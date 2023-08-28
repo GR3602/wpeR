@@ -108,7 +108,8 @@ get_ped <- function (ped, sampledata, out = "FamAgg") {
   }
 
   #should jump out with return statements... if not...
-  print("Unknow output selected... aborting")
+  stop("Unknow output selected. The function excepts
+    'kinship2', 'pedtools', 'FamAgg' and 'table' as out parameter strings")
 }
 
 
