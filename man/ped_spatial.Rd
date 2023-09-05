@@ -6,7 +6,7 @@
 \title{Get Files For Spatial Representation Of Pedigree}
 \usage{
 ped_spatial(
-  famtable,
+  plottable,
   na.rm = TRUE,
   output = "list",
   fullsibdata = NULL,
@@ -21,7 +21,7 @@ ped_spatial(
 )
 }
 \arguments{
-\item{famtable}{data frame. Output of \code{\link{plot_table}} function.}
+\item{plottable}{data frame. Output of \code{\link{plot_table}} function.}
 
 \item{na.rm}{logical (\code{TRUE}/\code{FALSE}). Remove samples with missing coordinates and/or dates.}
 

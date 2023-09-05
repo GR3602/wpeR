@@ -53,6 +53,16 @@ nbtw_seasons = function(animal_id, capture_date,
   #season start and end day is INCLUSIVE IN THE SEASON!
   #require(dplyr)
 
+  dates = c(season1_start, season1_end, season2_start, season2_end)
+
+
+  if(!inherits(dates, "Date")) {
+    stop("Season starts and ends must be in Date format.")
+  }
+
+  if(!all(order(dates) == c(1:4))){
+    warning("Season dates are not defined in correct order.")
+  }
 
   #not captured in the first season
   new_captures = 0

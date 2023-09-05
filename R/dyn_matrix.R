@@ -46,6 +46,7 @@ dyn_matrix = function(animal_id, capture_date, start_dates, end_dates){
   # above diagonal: number of recaptures from season x to season y
   # below diagonal: number of animals from season y that skipped season x
 
+
   seasons = data.frame (start_date = start_dates, end_date = end_dates)
   mtx_dim = nrow(seasons)+1
 
@@ -56,9 +57,11 @@ dyn_matrix = function(animal_id, capture_date, start_dates, end_dates){
 
   for (i in 1:length(start_dates)){
     #first, the total numbers for season i
-    n_season =nbtw_seasons(animal_id, capture_date,
-                               seasons[1,]$start_date, seasons[i,]$start_date - 1,
-                               seasons[i,]$start_date, seasons[i,]$end_date)
+    n_season = suppressWarnings(
+      nbtw_seasons(animal_id, capture_date,
+                   seasons[1,]$start_date, seasons[i,]$start_date - 1,
+                    seasons[i,]$start_date, seasons[i,]$end_date)
+    )
 
     outmatrix[i,i] = n_season$new_captures
     outmatrix[i,mtx_dim] = n_season$total_cap
