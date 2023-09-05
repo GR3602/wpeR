@@ -5,7 +5,7 @@
 #' pedigree representation form the output of [`plot_table`] function.
 #'
 #'
-#' @param famtable data frame. Output of [`plot_table`] function.
+#' @param plottable data frame. Output of [`plot_table`] function.
 #' @param na.rm logical (`TRUE`/`FALSE`). Remove samples with missing coordinates and/or dates.
 #' @param output single value or vector. Type of output of function results.
 #' Available outputs: list: all spatial data returned as list, gis: all spatial data
@@ -71,7 +71,7 @@
 #'
 #' @aliases ped_spatial PreparePedigreeSpatial
 #'
-ped_spatial <- function (famtable,
+ped_spatial <- function (plottable,
                          na.rm = TRUE,
                          output="list",
                          fullsibdata = NULL,
@@ -86,24 +86,20 @@ ped_spatial <- function (famtable,
 
 
 
-  data = ppsList(pedplot = famtable,
+  data = ppsList(plottable = plottable,
                  time.limits = time.limits,
                  na.rm = na.rm,
                  time.limit.rep = time.limit.rep,
-                 time.limit.offspring = time.limit.offspring)
+                 time.limit.offspring = time.limit.offspring,
+                 time.limit.moves = time.limit.moves)
 
   ParLines = ppsParLines(data)
 
-  MvPoints = ppsMvPoints(ppsData = data,
-                         time.limits = time.limits,
-                         time.limit.moves = time.limit.moves)
+  MvPoints = ppsMvPoints(ppsData = data)
 
   RefPoints = ppsRefPoints(ppsData = data)
 
-  MvLines = ppsMvLines(ppsData = data,
-                       pedplot = famtable,
-                       time.limits = time.limits,
-                       time.limit.moves = time.limit.moves)
+  MvLines = ppsMvLines(ppsData = data)
 
   MvPolygons = ppsMvPolygons(ppsData = data,
                              MvPoints = MvPoints)
@@ -121,7 +117,7 @@ ped_spatial <- function (famtable,
     } else if ("shapefile" %in% out.format) {
       ext = ".shp"
     } else {
-    stop("Wrong out.format parameter. The out.format can eather be 'geopackage' or 'shapefile'")
+      stop("Wrong out.format parameter. The out.format can eather be 'geopackage' or 'shapefile'")
     }
 
     write_sf(ParLines$maternityLines, paste0(path,filename,"matLn", ext))

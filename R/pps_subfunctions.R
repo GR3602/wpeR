@@ -1,83 +1,63 @@
-####INTRO####
-#PREPARE PEDIGREE SPATIAL FUNCTION DISSECTION
-#Function PreparePedigreeSpatial dissected into segments:
-#
-###ppsList - creates list of dataframes where sample data is separated into mother/father/offspring sample/reference sample
-###ppsParLines - creates lines that connect mother/father and offspring reference samples
-#
-###ppsMvPoints - creates sf point df with mother/father/offspring move points
-#
-###ppsRefPoints - creates sf point df with mother/father/offspring reference sample points
-#
-###ppsMvLines - creates sf lines df that connects move points of single animal
-####NEED TO CHECK AGAIN AND FIX SOMETHING!!!!
-#
-###ppsMvPolygons - creates sf polygon df that represents mcp polygon for all points of single animal
-####STILL USES SP PACKAGE NEED TO CHANGE TO sf_convex_hull function of sf package!!!! -> CHANGED TO SF 20230227
-#
-###ppsFsLines - creates sf line df that connects samples of full siblings
-#
-###WRITE DESCRIPTION OF ALL FUNCTIONS!!!!!!
-
-####FUNCTIONS:####
-
 ####ppsList####
 # Prepare Pedigree Spatial data preparation
 #
 # Takes data from fam_table function and arranges it so that
 # georeferenced data for mothers, fathers and offspring can be created
 #
-# @param pedplot output of fam_table function
+# @param plottable output of fam_table function
 # @param time.limits time window for movement and offspring reference samples data
 # @param na.rm remove samples with missing coordinates
 # @param time.limit.rep do time limits apply to reference samples of reproductive animals?
 # @param time.limit.offspring do time limits apply to reference samples of offspring?
 #
 
-ppsList <- function (pedplot,
+ppsList <- function (plottable,
                      time.limits = c(as.Date("1900-01-01"), as.Date("2100-01-01")),
-                     na.rm = T,
-                     time.limit.rep = F,
-                     time.limit.offspring = F) {
+                     na.rm = TRUE,
+                     time.limit.rep = FALSE,
+                     time.limit.offspring = FALSE,
+                     time.limit.moves = FALSE) {
 
 
   #remove samples with missing coordinates
-  if(sum(is.na(pedplot$lat)) > 0 | sum(is.na(pedplot$lng)) > 0 | sum(is.na(pedplot$Date) > 0)){
-    if(na.rm == T) pedplot = pedplot[!(is.na(pedplot$lat) | is.na(pedplot$lng) | is.na(pedplot$Date)),]
+  if(sum(is.na(plottable$lat)) > 0 | sum(is.na(plottable$lng)) > 0 | sum(is.na(plottable$Date) > 0)){
+    if(na.rm == T) plottable = plottable[!(is.na(plottable$lat) | is.na(plottable$lng) | is.na(plottable$Date)),]
     else stop("Error, NA's in coordinates and/or dates. Use na.rm=TRUE to remove internally.")
   }
-  #sort pedplot by individual & date
-  pedplot = pedplot[order(pedplot$AnimalRef, pedplot$Date),]
+  #sort plottable by individual & date
+  plottable = plottable[order(plottable$AnimalRef, plottable$Date),]
 
 
   #find first&last sample within time.limits
-  pedplot$first_sample = rep(FALSE, nrow(pedplot))
-  pedplot$last_sample = rep(FALSE, nrow(pedplot))
+  plottable$first_sample = rep(FALSE, nrow(plottable))
+  plottable$last_sample = rep(FALSE, nrow(plottable))
 
-  for(i in 1:nrow(pedplot)){
-    curAnimal = pedplot[pedplot$AnimalRef == pedplot$AnimalRef[i] &
-                          pedplot$Date <= time.limits[2] &
-                          pedplot$Date >= time.limits[1],]
+  for(i in 1:nrow(plottable)){
+    curAnimal = plottable[plottable$AnimalRef == plottable$AnimalRef[i] &
+                            plottable$Date <= time.limits[2] &
+                            plottable$Date >= time.limits[1],]
     curAnimal = curAnimal[order(curAnimal$Date),]
 
     #of no samples are within the time window, use actual first and last sample
     if (nrow(curAnimal) == 0) {
-      curAnimal = pedplot[pedplot$AnimalRef == pedplot$AnimalRef[i],]
+      curAnimal = plottable[plottable$AnimalRef == plottable$AnimalRef[i],]
       curAnimal = curAnimal[order(curAnimal$Date),]
     }
 
-    if (pedplot$Sample[i] == curAnimal$Sample[1]) pedplot$first_sample[i] = TRUE
-    if (pedplot$Sample[i] == curAnimal$Sample[nrow(curAnimal)]) pedplot$last_sample[i] = TRUE
+    if (plottable$Sample[i] == curAnimal$Sample[1]) plottable$first_sample[i] = TRUE
+    if (plottable$Sample[i] == curAnimal$Sample[nrow(curAnimal)]) plottable$last_sample[i] = TRUE
   }#for
 
   #First create pointdata
   #Use time window. Limit entire dataset, or only offspring (later)
 
-  reps = pedplot[pedplot$rep == TRUE,]
-  fatherAll = reps[reps$GeneticSex == "M",]
-  motherAll = reps[reps$GeneticSex == "F",]
+  #all samples reproudcitev animal
+  reps = plottable[plottable$rep == TRUE,]
 
+  #reference samples reproductive animals = last sample
   repRefs = reps[reps$last_sample == TRUE,] #last sample of reproductive animals as spatial ref
+
+
 
   #use time limit window also for reproductive animals?
   if (time.limit.rep == T) {repRefs = repRefs[repRefs$Date <= time.limits[2] & repRefs$LastSeen >= time.limits[1], ]}
@@ -85,10 +65,25 @@ ppsList <- function (pedplot,
   fatherRefs = repRefs[repRefs$GeneticSex == "M",]
   motherRefs = repRefs[repRefs$GeneticSex == "F",]
 
-  offspring = pedplot[pedplot$rep == FALSE,]
+
+
+  offspring = plottable[plottable$rep == FALSE,]
   if (time.limit.offspring == T){
     offspringRefs = offspring[offspring$first_sample == TRUE & offspring$Date <= time.limits[2] & offspring$LastSeen >= time.limits[1], ]
   }  else { offspringRefs = offspring[offspring$first_sample == TRUE,]}
+
+  #limit
+
+  #movement limit, limits all data
+
+  if (time.limit.moves == TRUE) {
+    reps = reps[reps$Date >= time.limits[1] & reps$Date <= time.limits[2],]
+    offspring = offspring[offspring$Date >= time.limits[1] & offspring$Date <= time.limits[2],]
+  }
+
+
+  fatherAll = reps[reps$GeneticSex == "M",]
+  motherAll = reps[reps$GeneticSex == "F",]
 
   return(list(motherAll = motherAll,
               motherRefs = motherRefs,
@@ -100,6 +95,7 @@ ppsList <- function (pedplot,
   ))
 
 }#end ppsList
+
 
 
 ####ppsParLines####
@@ -130,7 +126,9 @@ ppsParLines <- function (ppsData) {
     #offspring record
     if (nrow(offspringRefs) > 0) {
       child = offspringRefs[i,]
-    } else { child = NA }
+    } else { child = NA
+             stop("No offspring included, check data and/or time.limits parameter.")
+    }
 
     father =  repRefs[repRefs$FamID == offspringRefs$FamID[i] & repRefs$GeneticSex == "M",]
     mother =  repRefs[repRefs$FamID == offspringRefs$FamID[i] & repRefs$GeneticSex == "F",]
@@ -173,6 +171,7 @@ ppsParLines <- function (ppsData) {
   if (nrow(father) > 0 & nrow(child) > 0) {
     paternityLines = dplyr::bind_rows(paternityLines)
   }
+
   if (nrow(father) > 0 & nrow(child) > 0) {
     maternityLines = dplyr::bind_rows(maternityLines)
   }
@@ -180,7 +179,6 @@ ppsParLines <- function (ppsData) {
   return(list(maternityLines = maternityLines,
               paternityLines = paternityLines))
 }#end ppsParLines
-
 
 ####ppsMvPoints####
 # Prepare Pedigree Spatial - Animal Movement Points
@@ -193,11 +191,7 @@ ppsParLines <- function (ppsData) {
 #
 
 
-
-
-ppsMvPoints <- function(ppsData,
-                        time.limits = c(as.Date("1900-01-01"), as.Date("2100-01-01")),
-                        time.limit.moves = F) {
+ppsMvPoints <- function(ppsData) {
 
 
 
@@ -209,54 +203,51 @@ ppsMvPoints <- function(ppsData,
   offspringRefs = ppsData$offspringRefs
   offspring = ppsData$offspring
 
-  if (time.limit.moves == T) {
-    offspringMoveData = offspring[offspring$Date <= time.limits[2] &
-                                    offspring$Date >= time.limits[1] &
-                                    offspring$AnimalRef %in% offspringRefs$AnimalRef,]
-  } else { offspringMoveData = offspring[offspring$AnimalRef %in% offspringRefs$AnimalRef,]}
+  offspringMoveData = offspring[offspring$AnimalRef %in% offspringRefs$AnimalRef,]
 
   # offspringMoveData = offspringMoveData[,!names(offspringMoveData) %in% dupCols] #drop duplication columns
   # offspringMoveData = unique(offspringMoveData)
 
   if(nrow(offspringMoveData) > 0) {
     offspringMovePoints = st_as_sf (offspringMoveData, coords = c("lng", "lat"), crs = 4326)
-  } else {offspringMovePoints = st_sf(1, st_sfc(st_point()))}
+  } else {offspringMovePoints = st_sf(1, st_sfc(st_point()))
+         warning("No offspring samples within selected time period.
+                  Creating empty sf data frame -> offspringMovePoints!")
+  }
 
   ####Father####
 
   fatherRefs = ppsData$fatherRefs
   fatherAll = ppsData$fatherAll
 
-  if (time.limit.moves == T) {
-    fatherMoveData = fatherAll[fatherAll$Date <= time.limits[2] &
-                                 fatherAll$Date >= time.limits[1] &
-                                 fatherAll$AnimalRef %in% fatherRefs$AnimalRef,]}
-  else fatherMoveData = fatherAll[fatherAll$AnimalRef %in% fatherRefs$AnimalRef,]
+  fatherMoveData = fatherAll[fatherAll$AnimalRef %in% fatherRefs$AnimalRef,]
 
   fatherMoveData = fatherMoveData[,!names(fatherMoveData) %in% dupCols] #drop duplication columns
   fatherMoveData = unique(fatherMoveData)
 
   if(nrow(fatherMoveData) > 0) {
     fatherMovePoints  = st_as_sf (fatherMoveData, coords = c("lng", "lat"), crs = 4326)
-  } else {fatherMovePoints  = st_sf(1, st_sfc(st_point()))}
+  } else {fatherMovePoints  = st_sf(1, st_sfc(st_point()))
+          warning("No father samples within selected time period.
+                  Creating empty sf data frame -> fatherMovePoints!")
+  }
 
   ####Mother####
 
   motherRefs = ppsData$motherRefs
   motherAll = ppsData$motherAll
 
-  if (time.limit.moves == T) {
-    motherMoveData = motherAll[motherAll$Date <= time.limits[2] &
-                                 motherAll$Date >= time.limits[1] &
-                                 motherAll$AnimalRef %in% motherRefs$AnimalRef,]
-  } else { motherMoveData = motherAll[motherAll$AnimalRef %in% motherRefs$AnimalRef,]}
+  motherMoveData = motherAll[motherAll$AnimalRef %in% motherRefs$AnimalRef,]
 
   motherMoveData = motherMoveData[,!names(motherMoveData) %in% dupCols] #drop duplication columns
   motherMoveData = unique(motherMoveData)
 
   if(nrow(motherMoveData) > 0) {
     motherMovePoints <-st_as_sf (motherMoveData, coords = c("lng", "lat"), crs = 4326)
-  }else{motherMovePoints  = st_sf(1, st_sfc(st_point()))}
+  }else{motherMovePoints  = st_sf(1, st_sfc(st_point()))
+        warning("No mother samples within selected time period.
+                  Creating empty sf data frame -> motherMovePoints!")
+  }
 
   return(list(offspringMovePoints = offspringMovePoints,
               fatherMovePoints = fatherMovePoints,
@@ -264,8 +255,6 @@ ppsMvPoints <- function(ppsData,
 
 
 }#end ppsMvPoints
-
-
 
 ####ppsRefPoints####
 # Prepare Pedigree Spatial - Animal Reference Points
@@ -289,7 +278,10 @@ ppsRefPoints <-function(ppsData) {
 
   if (nrow(offspringRefs) > 0) {
     offspringRpoints  = st_as_sf(offspringRefs, coords = c("lng", "lat"), crs = 4326)
-  } else {offspringRpoints = st_sf(1, st_sfc(st_point()))}
+  } else {offspringRpoints = st_sf(1, st_sfc(st_point()))
+          warning("No offspring samples within selected time period.
+                  Creating empty sf data frame -> offspringRpoints!")
+  }
 
   ####Father####
 
@@ -300,7 +292,10 @@ ppsRefPoints <-function(ppsData) {
 
   if(nrow(fatherRefs) > 0) {
     fatherRpoints = st_as_sf(fatherRefs, coords = c("lng", "lat"), crs = 4326)
-  } else {fatherRpoints = st_sf(1, st_sfc(st_point()))}
+  } else {fatherRpoints = st_sf(1, st_sfc(st_point()))
+          warning("No father samples within selected time period.
+                  Creating empty sf data frame -> fatherRpoints!")
+  }
 
   ####Mother####
 
@@ -311,7 +306,10 @@ ppsRefPoints <-function(ppsData) {
 
   if(nrow(motherRefs) > 0) {
     motherRpoints = st_as_sf(motherRefs, coords = c("lng", "lat"), crs = 4326)
-  }else{motherRpoints = st_sf(1, st_sfc(st_point()))}
+  }else{motherRpoints = st_sf(1, st_sfc(st_point()))
+       warning("No father samples within selected time period.
+                  Creating empty sf data frame -> motherRpoints!")
+  }
 
   return(list(offspringRpoints = offspringRpoints,
               fatherRpoints = fatherRpoints,
@@ -319,22 +317,18 @@ ppsRefPoints <-function(ppsData) {
 
 }#end ppsRefPoints
 
-
 ####ppsMvLines####
 # Prepare Pedigree Spatial - Animal Movement Lines
 #
 # @param ppsData output list of ppsList function
-# @param pedplot output of the fam_table function
+# @param plottable output of the fam_table function
 # @param time.limits time window for movement and offspring reference samples data
 # @param time.limit.moves time limit also movement data?
 #
 # @import sf
 #
 
-ppsMvLines <- function(ppsData,
-                       pedplot,
-                       time.limits = c(as.Date("1900-01-01"), as.Date("2100-01-01")),
-                       time.limit.moves = F) {
+ppsMvLines <- function(ppsData) {
 
 
   dupCols = c("plottingID", "FamID", "polyCluster") #columns to be removed for movelines, movepoints and refpoints to remove spatial data duplication
@@ -342,21 +336,22 @@ ppsMvLines <- function(ppsData,
 
   ####Offspring####
 
+
+
   indcount=1
   individualLines = NULL
   offspringMoveLines = NULL
 
   offspringRefs = ppsData$offspringRefs
+  offspring = ppsData$offspring
 
   for (i in 1:nrow(offspringRefs)){
 
     if(nrow(offspringRefs) == 0) break
 
-    if(time.limit.moves == T){
-      individual = pedplot[pedplot$AnimalRef == offspringRefs$AnimalRef[i] &
-                             pedplot$Date >= time.limits[1] &
-                             pedplot$Date <= time.limits[2],!names(pedplot) %in% dupCols]
-    } else { individual = pedplot[pedplot$AnimalRef == offspringRefs$AnimalRef[i],!names(pedplot) %in% dupCols]}
+    individual = offspring[offspring$AnimalRef == offspringRefs$AnimalRef[i], !names(offspring) %in% dupCols]
+
+    if(nrow(individual) == 0) next
 
     individual = unique(individual)
 
@@ -386,7 +381,9 @@ ppsMvLines <- function(ppsData,
   if(length(individualLines)>0){
     offspringMoveLines = st_as_sf(offspringMoveLines, sf_column_name = "geometry")
   } else {
-    offspringMoveLines =  st_sf(st_sfc())#dummy... empty object
+    offspringMoveLines =  st_sf(1, st_sfc(st_linestring()))#dummy... empty object
+    warning("None of the offspring has two samples needed to create a linestring.
+            Creating empty sf data frame -> offspringMoveLines!")
   }
 
 
@@ -403,17 +400,16 @@ ppsMvLines <- function(ppsData,
   individualLines = NULL
   fatherMoveLines = NULL
 
-  fatherRefs = ppsData$fatherRefs
+  fatherRefs = ppsData$fatherRef
+  fatherAll = ppsData$fatherAll
 
   for (i in 1:nrow(fatherRefs)){
-    #offspring record
+
     if(nrow(fatherRefs) == 0) break
 
-    if(time.limit.moves == T){
-      individual = pedplot[pedplot$AnimalRef == fatherRefs$AnimalRef[i] &
-                             pedplot$Date >= time.limits[1] &
-                             pedplot$Date <= time.limits[2],!names(pedplot) %in% dupCols]
-    } else { individual = pedplot[pedplot$AnimalRef == fatherRefs$AnimalRef[i],!names(pedplot) %in% dupCols]}
+    individual = fatherAll[fatherAll$AnimalRef == fatherRefs$AnimalRef[i], !names(fatherAll) %in% dupCols]
+
+    if(nrow(individual) == 0) next
 
     individual = unique(individual)
 
@@ -421,9 +417,9 @@ ppsMvLines <- function(ppsData,
       individualLines[[indcount]] = st_geometry(st_as_sf(individual, coords = c("lng", "lat"), crs = 4326))
       individualLines[[indcount]] = st_cast(st_union(individualLines[[indcount]]), "LINESTRING")
       fatherMoveLines = rbind(fatherMoveLines,data.frame(ID=indcount,
-                                                         AnimalID = offspringRefs$AnimalRef[i],
-                                                         fam = offspringRefs$FamID[i],
-                                                         plyClust=offspringRefs$polyCluster[i],
+                                                         AnimalID = fatherRefs$AnimalRef[i],
+                                                         fam = fatherRefs$FamID[i],
+                                                         plyClust=fatherRefs$polyCluster[i],
                                                          geometry = st_geometry(individualLines[[indcount]])))
 
 
@@ -440,7 +436,9 @@ ppsMvLines <- function(ppsData,
   if(length(individualLines)>0){
     fatherMoveLines = st_as_sf(fatherMoveLines, sf_column_name = "geometry")
   } else {
-    fatherMoveLines =  st_sf(st_sfc())#dummy... empty object
+    fatherMoveLines =  st_sf(1, st_sfc(st_linestring()))#dummy... empty object
+    warning("None of the fathers has two samples needed to create a linestring.
+            Creating empty sf data frame -> fatherMoveLines!")
   }
 
   #if(length(individualLines) > 0) {
@@ -457,16 +455,15 @@ ppsMvLines <- function(ppsData,
   motherMoveLines = NULL
 
   motherRefs = ppsData$motherRefs
+  motherAll = ppsData$motherAll
 
-  for (i in 1:nrow(motherRefs)){
-    #offspring record
+  for (i in 1: nrow(motherRefs)){
+
     if(nrow(motherRefs) == 0) break
 
-    if(time.limit.moves == T){
-      individual = pedplot[pedplot$AnimalRef == motherRefs$AnimalRef[i] &
-                             pedplot$Date >= time.limits[1] &
-                             pedplot$Date <= time.limits[2],!names(pedplot) %in% dupCols]
-    } else {individual = pedplot[pedplot$AnimalRef == motherRefs$AnimalRef[i],!names(pedplot) %in% dupCols]}
+    individual = motherAll[motherAll$AnimalRef == motherRefs$AnimalRef[i],!names(motherAll) %in% dupCols]
+
+    if(nrow(individual) == 0) next
 
     individual = unique(individual)
 
@@ -474,9 +471,9 @@ ppsMvLines <- function(ppsData,
       individualLines[[indcount]] = st_geometry(st_as_sf(individual, coords = c("lng", "lat"), crs = 4326))
       individualLines[[indcount]] = st_cast(st_union(individualLines[[indcount]]), "LINESTRING")
       motherMoveLines  = rbind(motherMoveLines ,data.frame(ID=indcount,
-                                                           AnimalID = offspringRefs$AnimalRef[i],
-                                                           fam = offspringRefs$FamID[i],
-                                                           plyClust=offspringRefs$polyCluster[i],
+                                                           AnimalID = motherRefs$AnimalRef[i],
+                                                           fam = motherRefs$FamID[i],
+                                                           plyClust=motherRefs$polyCluster[i],
                                                            geometry = st_geometry(individualLines[[indcount]])))
 
 
@@ -492,7 +489,10 @@ ppsMvLines <- function(ppsData,
   if(length(individualLines)>0){
     motherMoveLines = st_as_sf(motherMoveLines, sf_column_name = "geometry")
   } else {
-    motherMoveLines =  st_sf(st_sfc())#dummy... empty object
+    motherMoveLines =  st_sf(1, st_sfc(st_linestring()))#dummy... empty object
+    warning("None of the mothers has two samples needed to create a linestring.
+            Creating empty sf data frame -> motherMoveLines!")
+
   }
 
   #motherMoveLines = st_as_sf(motherMoveLines, sf_column_name = "geometry")
@@ -502,7 +502,6 @@ ppsMvLines <- function(ppsData,
               motherMoveLines = motherMoveLines))
 
 }#end ppsMvLines
-
 
 ####ppsMvPolygons####
 # Prepare Pedigree Spatial - Convex Hull For Animal Points
@@ -543,7 +542,9 @@ ppsMvPolygons <- function(ppsData, MvPoints) {
   }
 
   if(is.null(motherMovePolygons)) {
-    motherMovePolygons = st_sf(st_sfc())
+    motherMovePolygons = st_sf(1, st_sfc(st_polygon()))
+    warning("Not enough mother samples to create at least one polygon.
+            Creating empty sf data frame -> motherMovePolygons!")
   }
 
   ####Father####
@@ -575,7 +576,9 @@ ppsMvPolygons <- function(ppsData, MvPoints) {
   }
 
   if(is.null(fatherMovePolygons)) {
-    fatherMovePolygons = st_sf(st_sfc())
+    fatherMovePolygons = st_sf(1, st_sfc(st_polygon()))
+    warning("Not enough father samples to create at least one polygon.
+            Creating empty sf data frame -> fatherMovePolygons!")
   }
 
 
@@ -609,7 +612,10 @@ ppsMvPolygons <- function(ppsData, MvPoints) {
   }
 
   if(is.null(offspringMovePolygons)) {
-    offspringMovePolygons = st_sf(st_sfc())
+    offspringMovePolygons = st_sf(1, st_sfc(st_polygon()))
+    warning("Not enough offspring samples to create at least one polygon.
+            Creating empty sf data frame -> offspringMovePolygons!")
+
   }
 
 
