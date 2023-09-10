@@ -3,75 +3,80 @@
 \name{org_fams}
 \alias{org_fams}
 \alias{organizePacks}
-\title{Organizes animals into families and expands pedigree data}
+\title{Organize animals into families and expand pedigree data}
 \usage{
 org_fams(ped, sampledata, output = "both")
 }
 \arguments{
-\item{ped}{data frame. \code{FamAgg} output of \code{\link{get_colony}} function.
-With \code{RemoveObsoleteParents} parameter set to \code{TRUE}.}
+\item{ped}{Data frame. \code{FamAgg} output of \code{\link[=get_colony]{get_colony()}} or \code{\link[=get_ped]{get_ped()}} function.
+With \code{rm_obsolete_parents} parameter set to \code{TRUE}.}
 
-\item{sampledata}{data frame. Metadata for all genetic samples that belong
+\item{sampledata}{Data frame. Metadata for all genetic samples that belong
 to the individuals included in pedigree reconstruction analysis.
-Must have $Sample with sample names and $GeneticSex coded as M/F/NA}
+Must have \verb{$Sample} with sample names and \verb{$GeneticSex} coded as \code{M/F/NA}}
 
-\item{output}{string. How the output data frame should be formatted.
-output = "ped" returns pedigree data (similar to \code{\link{org_fams}} output)
-with additional information on individuals. output = "fams" returns a table of all
-families present in the pedigree. output = "both" returns a list with two
-data frames: fams and ped. Defaults to "both"}
+\item{output}{Character string. Determines the format of the output. Options are:
+"ped": Returns an extended pedigree data frame.
+"fams": Returns a table of all families present in the pedigree.
+"both": Returns a list with two data frames: "ped" and "fams". (Default)}
 }
 \value{
-Based on the ´output´ parameter the function can return a data frame (\code{ped} or \code{fams})
-or a list with two objects (\code{ped} and \code{fams}).
+Depending on the \code{output} parameter, the function returns either a data frame
+(\code{ped} or \code{fams}) or a list containing both data frames (\code{ped} and \code{fams}).
 \itemize{
-\item \code{ped} data frame. Extended output of \code{\link{get_colony}} function.
-Apart from common pedigree information (individual, mother, father, sex, family), \code{ped}
-also includes columns:
+\item \code{ped} data frame. An extended version of the pedigree data from \code{get_colony()}.
+In addition to common pedigree information (individual, mother, father, sex,
+family), \code{ped} includes columns for:
 \itemize{
-\item \code{parents}: identifier codes of both parents separated with \verb{_},
-\item \code{FamID}: number of family that the individual belongs to (see \code{fams} below),
-\item \code{FirstSeen}: date of first sample of individual,
-\item \code{LastSeen}: date of last sample of individual,
-\item \code{IsDead}: logical value (\code{TRUE/FALSE}) that identifies if the individual is dead,
-\item \code{DadPclust}: identifier of fathers polygamy cluster,
-\item \code{MomPclust}: identifier of mothers polygamy cuter,
-\item \code{polyCluster}: polygamy cluster of the individual.
+\item \code{parents}: Identifier codes of both parents separated with \verb{_}.
+\item \code{FamID}: Numeric identifier for the family to which the individual belongs (see \code{fams} below).
+\item \code{FirstSeen}: Date of first sample of individual.
+\item \code{LastSeen}: Date of last sample of individual.
+\item \code{IsDead}: Logical value (\code{TRUE/FALSE}) that identifies if the individual is dead.
+\item \code{DadPclust}: Identifier of father's polygamy cluster.
+\item \code{MomPclust}: Identifier of mother's polygamy cuter.
+\item \code{polyCluster}: Numeric value indicating the polygamy cluster of the individual.
 }
 \item \code{fams} data frame includes information on families that individuals in the pedigree
 belong to. The families are described by:
 \itemize{
-\item \code{parents}: identifier codes of both parents separated with \verb{_},
-\item \code{father}: identifier code of the father,
-\item \code{mother}: identifier code of the mother,
-\item \code{FamID}: numeric value that identifies a particular family,
-\item \code{famStart}: date when the first sample of any of the family members was collected,
-\item \code{famEnd}: date when the last sample of any of the family members was collected,
-\item \code{FamDead}: logical value (\code{TRUE/FALSE}) that identifies if the family does not exist any more,
-\item \code{DadPclust}: identifier that connects families that share the same father,
-\item \code{MomPclust}: identifier that connects families that share the same mother,
-\item \code{polyCluster}: numeric value that connects families that share one of the parents.
+\item \code{parents}: Identifier codes of both parents separated with \verb{_}.
+\item \code{father}: Identifier code of the father.
+\item \code{mother}: Identifier code of the mother.
+\item \code{FamID}: Numeric identifier for the family.
+\item \code{famStart}: Date when the first sample of any family member was collected.
+\item \code{famEnd}: Date when the last sample of any family member was collected.
+\item \code{FamDead}: Logical value (\code{TRUE/FALSE}) indicating if the family no longer exists.
+\item \code{DadPclust}: Identifier connecting families that share the same father.
+\item \code{MomPclust}: Identifier connecting families that share the same mother.
+\item \code{polyCluster}: Numeric value connecting families that share one of the parents.
 }
 }
 }
 \description{
-\code{org_fams} takes pedigree data from \code{\link{get_colony}} function and groups animals into families.
+\code{org_fams()} takes pedigree data from \code{\link[=get_colony]{get_colony()}} or \code{\link[=get_ped]{get_ped()}} function and groups animals into families.
 It also expands the pedigree data by adding information about the family that each individual was born in and the
-in which the individual is the reproductive animal. A family in this function is defined as a group of animals
+family in which the individual is the reproductive animal. A family in this function is defined as a group of animals
 where at least one parent and at least one offspring is known.
 }
 \examples{
+
+# Prepare the data for usage with org_fams() function.
+# Get animal timespan data using the anim_timespan() function.
 animal_ts <- anim_timespan(wolf_samples$AnimalRef,
-                                  wolf_samples$Date,
-                                  wolf_samples$SType,
-                                  dead = c("Tissue", "Decomposing Tissue", "Blood"))
-
-sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
-
+  wolf_samples$Date,
+  wolf_samples$SType,
+  dead = c("Tissue")
+)
+# Add animal timespan to the sampledata
+sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE)
+# Define the path to the pedigree data file.
 path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
+# Retrieve the pedigree data from the get_colony function.
+ped_colony <- get_colony(path, sampledata, rm_obsolete_parents = TRUE, out = "FamAgg")
 
-ped_colony <- get_colony(path, sampledata, remove_obsolete_parents = TRUE, out = "FamAgg")
-
+# Run the function
+# Organize families and expand pedigree data using the org_fams function.
 org_fams(ped_colony, sampledata)
 
 }

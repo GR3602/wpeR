@@ -3,19 +3,22 @@
 \name{dyn_matrix}
 \alias{dyn_matrix}
 \alias{MakeDynamicsMatrix}
-\title{Get Matrix Of Apparent Survival}
+\title{Get matrix ff apparent survival}
 \usage{
 dyn_matrix(animal_id, capture_date, start_dates, end_dates)
 }
 \arguments{
-\item{animal_id}{column in the dataframe of all samples that stores individual animal identifier code.}
+\item{animal_id}{A column in the dataframe of all samples that stores
+individual animal identifier code.}
 
-\item{capture_date}{column in the dataframe of all samples that stores the date of sample collection.
-Must be in \code{Date} format.}
+\item{capture_date}{A column in the dataframe of all samples that stores
+the date of sample collection. Must be in \code{Date} format.}
 
-\item{start_dates}{vector of dates in \code{Date} format that define the start of each season.}
+\item{start_dates}{vector of dates in \code{Date} format that define the
+start of each season.}
 
-\item{end_dates}{vector of dates in \code{Date} format that define the end of each season.}
+\item{end_dates}{Vector of dates in \code{Date} format that define the
+end of each season.}
 }
 \value{
 A matrix with 1 + no. seasons rows and columns.
@@ -25,27 +28,34 @@ A matrix with 1 + no. seasons rows and columns.
 \item below diagonal: number of animals from season y that skipped season x.
 }
 
-Season x is defined in first row, season y in first column. Column \verb{Tot. Capts}
-gives all detected individuals in season y. Row \verb{Tot. Skipped} gives all
-individuals skipped in season x but detected later.
+Season x is defined in first row, season y in first column.
+Column \verb{Tot. Capts} gives all detected individuals in season y.
+Row \verb{Tot. Skipped} gives all individuals skipped in season x but detected
+later.
 }
 \description{
-\code{dyn_matrix} creates a matrix that shows number of captured animals
+\code{dyn_matrix()} creates a matrix that shows number of captured animals
 between multiple seasons.
 }
 \examples{
+# Define start and end dates for sampling seasons.
+seasons <- data.frame(
+  start = c(
+    as.Date("2017-01-01"),
+    as.Date("2018-01-01"),
+    as.Date("2019-01-01")
+  ),
+  end = c(
+    as.Date("2017-12-31"),
+    as.Date("2018-12-31"),
+    as.Date("2019-12-31")
+  )
+)
 
-seasons <- data.frame(start = c(as.Date("2010-01-01"),
-                                as.Date("2011-01-01"),
-                                as.Date("2012-01-01")),
-                     end = c(as.Date("2010-12-31"),
-                             as.Date("2011-12-31"),
-                             as.Date("2012-12-31"))
-                             )
-
-dyn_matrix(pack21_samples$AnimalRef, pack21_samples$Date,
-                  seasons$start, seasons$end)
-
-
+# Create a dynamics matrix for animal captures.
+dyn_matrix(
+  wolf_samples$AnimalRef, wolf_samples$Date,
+  seasons$start, seasons$end
+)
 
 }

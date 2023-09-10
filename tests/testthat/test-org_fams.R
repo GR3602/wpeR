@@ -1,10 +1,10 @@
 animal_ts <- anim_timespan(wolf_samples$AnimalRef,
                            wolf_samples$Date,
                            wolf_samples$SType,
-                           dead = c("Tissue", "Decomposing Tissue", "Blood"))
+                           dead = c("Tissue"))
 sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
 path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
-ped_colony <- get_colony(path, sampledata, remove_obsolete_parents = TRUE, out = "FamAgg")
+ped_colony <- get_colony(path, sampledata, rm_obsolete_parents = TRUE, out = "FamAgg")
 
 test_that("Expect error when output parameter uncorrectly specified", {
   expect_error(org_fams(ped_colony, sampledata, out = "something"))

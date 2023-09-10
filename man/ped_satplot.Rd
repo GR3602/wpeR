@@ -31,93 +31,99 @@ ped_satplot(
 )
 }
 \arguments{
-\item{date}{sample collection date. Must be in \code{Date} format.}
+\item{date}{Sample collection date. Must be in \code{Date} format.}
 
-\item{animal}{individual animal identifier code.}
+\item{animal}{Individual animal identifier code.}
 
-\item{plottingID}{ID for plotting, because of polygamy same animal can be in more families.}
+\item{plottingID}{ID for plotting, because of polygamy same animal can be in
+more families.}
 
-\item{sex}{sex, but can be other parameters - you can set up LegendLabel}
+\item{sex}{Sex, but can be other parameters - you can set up LegendLabel.}
 
-\item{fam}{family identifier number.}
+\item{fam}{Family identifier number.}
 
-\item{polyCluster}{cluster for polygamous animals, includes all families in
-which an individual is reproductive animal}
+\item{polyCluster}{Cluster for polygamous animals, includes all families in
+which an individual is reproductive animal.}
 
-\item{isPolygamous}{logical value (\code{TRUE}/\code{FALSE}) that identifies
+\item{isPolygamous}{Logical value (\code{TRUE}/\code{FALSE}) that identifies
 animal as polygamous (has >1 mates).}
 
-\item{rep}{logical value (\code{TRUE}/\code{FALSE}) that determines if individual
+\item{rep}{Logical value (\code{TRUE}/\code{FALSE}) that determines if individual
 is reproductive or not in current family.}
 
-\item{later_rep}{logical value (\code{TRUE}/\code{FALSE}) that determines if individual
+\item{later_rep}{Logical value (\code{TRUE}/\code{FALSE}) that determines if individual
 is reproductive or not in any other (later) family.}
 
-\item{dead}{logical value (\code{TRUE/FALSE}) that identifies if the individual is dead}
+\item{dead}{Logical value (\code{TRUE/FALSE}) that identifies if the individual is dead.}
 
-\item{famSpacing}{Y-axis spacing between families. Shuld be even number!}
+\item{famSpacing}{Y-axis spacing between families. Should be even number!}
 
-\item{pClustSpacing}{Y-axis spacing between families. Shuld be even number!}
+\item{pClustSpacing}{Y-axis spacing between families. Should be even number!}
 
 \item{xWhiteSpace}{fill in}
 
-\item{xlabel}{x axis label.}
+\item{xlabel}{X-axis label.}
 
-\item{ylabel}{y axis label.}
+\item{ylabel}{Y-axis label.}
 
-\item{title}{plot title.}
+\item{title}{Plot title.}
 
-\item{subtitle}{plot subtitle.}
+\item{subtitle}{Plot subtitle.}
 
-\item{LegendLabel}{title of the legend.}
+\item{LegendLabel}{Title of the legend.}
 
-\item{xlegend}{horizontal position of the legend.}
+\item{xlegend}{Horizontal position of the legend.}
 
-\item{ylegend}{vertical position of the legend.}
+\item{ylegend}{Vertical position of the legend.}
 
-\item{text_size}{plot text size.}
+\item{text_size}{Plot text size.}
 
-\item{fam_label_size}{family label text size.}
+\item{fam_label_size}{Family label text size.}
 }
 \value{
 a graphical representation of detected family members trough time.
 }
 \description{
-\code{ped_satplot} creates "capture" history plot of individuals
-arranged by families included in data frame created by \code{\link{plot_table}} function.
+\code{ped_satplot()} creates "capture" history plot of individuals
+arranged by families included in data frame created by \code{\link[=plot_table]{plot_table()}} function.
 }
 \examples{
+# Prepare the data for usage with plot_table() function.
+# Get animal timespan data using the anim_timespan() function.
 animal_ts <- anim_timespan(wolf_samples$AnimalRef,
-                                  wolf_samples$Date,
-                                  wolf_samples$SType,
-                                  dead = c("Tissue", "Decomposing Tissue", "Blood"))
-
-sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
-
+  wolf_samples$Date,
+  wolf_samples$SType,
+  dead = c("Tissue")
+)
+# Add animal timespan to the sampledata
+sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE)
+# Define the path to the pedigree data file.
 path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
-
-ped_colony <- get_colony(path, sampledata, remove_obsolete_parents = TRUE, out = "FamAgg")
-
+# Retrieve the pedigree data from the get_colony function.
+ped_colony <- get_colony(path, sampledata, rm_obsolete_parents = TRUE, out = "FamAgg")
+# Organize families and expand pedigree data using the org_fams function.
 org_tables <- org_fams(ped_colony, sampledata, output = "both")
+# Prepare data for plotting.
+pt <- plot_table(org_tables$fams[1, ],
+  org_tables$fams,
+  org_tables$ped,
+  sampledata,
+  deadSample = c("Tissue", "Decomposing Tissue", "Blood")
+)
 
-pt<-plot_table(org_tables$fams[1,],
-              org_tables$fams,
-              org_tables$ped,
-              sampledata,
-              deadSample = c("Tissue", "Decomposing Tissue", "Blood"))
-
-
-ped_satplot(pt$Date,
-                   pt$AnimalRef,
-                   pt$plottingID,
-                   pt$GeneticSex,
-                   pt$FamID,
-                   pt$polyCluster,
-                   pt$isPolygamous,
-                   pt$rep,
-                   pt$later_rep,
-                   pt$dead)
-
-
+# Run the function.
+# Get a temporal pedigree plot.
+ped_satplot(
+  pt$Date,
+  pt$AnimalRef,
+  pt$plottingID,
+  pt$GeneticSex,
+  pt$FamID,
+  pt$polyCluster,
+  pt$isPolygamous,
+  pt$rep,
+  pt$later_rep,
+  pt$dead
+)
 
 }

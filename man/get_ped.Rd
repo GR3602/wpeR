@@ -7,16 +7,16 @@
 get_ped(ped, sampledata, out = "FamAgg")
 }
 \arguments{
-\item{ped}{data.frame. Pedigree data frame with the most basic structure.
-Three columns corresponding to offspirng (has to be named \code{OffspringID}), father
+\item{ped}{Data frame. Pedigree data frame with the most basic structure.
+Three columns corresponding to offspring (has to be named \code{OffspringID}), father
 (has to be named \code{FatherID}), mother (has to be named \code{MotherID}) and family
-(has to be named \code{ClusterIndex}). Unknow parents shuld be repesented by \code{NA} values.}
+(has to be named \code{ClusterIndex}). Unknown parents should be represented by \code{NA} values.}
 
-\item{sampledata}{Metadata for all genetic samples that belong
+\item{sampledata}{Data frame. Metadata for all genetic samples that belong
 to the individuals included in pedigree reconstruction analysis.
-Must have $Sample with sample names and $GeneticSex coded as M/F/NA}
+Must have \verb{$Sample} with sample names and \verb{$GeneticSex} coded as \code{M/F/NA}}
 
-\item{out}{tring. For use with which package should the output be formatted?
+\item{out}{Character string. For use with which package should the output be formatted?
 \code{kinship2} (out = "kinship2"), \code{pedtools} (out = "pedtools") or
 \code{FamAgg} (out = "FamAgg"). Defaults to "FamAgg"}
 }
@@ -27,29 +27,32 @@ mother and father and sex of individual. Column names and arrangement depends on
 output (\code{out} parameter).
 }
 \description{
-\code{get_ped()} offers an altretnative to \code{get_colony()} function in cases where the pedigree
-was not reconstruced with \href{https://www.zsl.org/about-zsl/resources/software/colony}{COLONY 2}
+\code{get_ped()} offers an alternative to \code{\link[=get_colony]{get_colony()}} function in cases where the pedigree
+was not reconstructed with \href{https://www.zsl.org/about-zsl/resources/software/colony}{COLONY 2}
 software. It takes a pedigree dataframe and assigns sex to each individual.
 The function also prepares data so that the output of the function can be directly analysed with
 \href{https://cran.r-project.org/web/packages/kinship2/index.html}{\code{kinship2}},
 \href{https://cran.r-project.org/web/packages/pedtools/index.html}{\code{pedtools}} or
-\href{http://bioconductor.org/packages/release/bioc/html/FamAgg.html}{\code{FamAgg}} packages.
+\href{https://bioconductor.org/packages/release/bioc/html/FamAgg.html}{\code{FamAgg}} packages.
 }
 \examples{
-
+#example pedigree dataframe
 ped <- data.frame(
-       OffspringID = c("M273P", "M20AM", "M2757", "M2ALK", "M2ETE", "M2EUJ", "MSV00E",
-               "MSV018", "MSV05L", "MSV0M6", "MSV0T4", "MSV0T7", "MSV0TJ", "MSV0UL"),
-       FatherID = c(NA, NA, "M20AM", "M20AM", "M20AM", "M20AM", "M20AM",
-            "M20AM", "M20AM", "M20AM", "M20AM", "M20AM", "M20AM", "M20AM"),
-        MotherID = c(NA, NA, "M273P", "M273P", "M273P", "M273P", "M273P",
-            "M273P", "M273P", "M273P", "M273P", "M273P", "M273P", "M273P"),
-       ClusterIndex = c(rep(1,14))
-            )
-
+  OffspringID = c(
+    "M273P", "M20AM", "M2757", "M2ALK", "M2ETE", "M2EUJ", "MSV00E",
+    "MSV018", "MSV05L", "MSV0M6", "MSV0T4", "MSV0T7", "MSV0TJ", "MSV0UL"
+  ),
+  FatherID = c(
+    NA, NA, "M20AM", "M20AM", "M20AM", "M20AM", "M20AM",
+    "M20AM", "M20AM", "M20AM", "M20AM", "M20AM", "M20AM", "M20AM"
+  ),
+  MotherID = c(
+    NA, NA, "M273P", "M273P", "M273P", "M273P", "M273P",
+    "M273P", "M273P", "M273P", "M273P", "M273P", "M273P", "M273P"
+  ),
+  ClusterIndex = c(rep(1, 14))
+)
+#Get pedigree data in FamAgg format
 get_ped(ped, wolf_samples)
-
-
-
 
 }

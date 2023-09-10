@@ -8,24 +8,24 @@
 get_colony(
   bestconf_path,
   sampledata,
-  remove_obsolete_parents = T,
+  rm_obsolete_parents = TRUE,
   out = "FamAgg"
 )
 }
 \arguments{
-\item{bestconf_path}{string. Path to the folder where COLONY2 output files are saved.
+\item{bestconf_path}{Character string. Path to the folder where COLONY2 output files are saved.
 Has to include file path and project name (see Details).}
 
-\item{sampledata}{data frame. Metadata for all genetic samples that belong
+\item{sampledata}{Data frame. Metadata for all genetic samples that belong
 to the individuals included in pedigree reconstruction analysis.
-Must have $Sample with sample names and $GeneticSex coded as M/F/NA}
+Must have \verb{$Sample} with sample names and \verb{$GeneticSex} coded as \code{M/F/NA}}
 
-\item{remove_obsolete_parents}{logical. Should unknown parents be removed from output.
+\item{rm_obsolete_parents}{Logical. Should unknown parents be removed from output.
 Applies just to offspring for which both parents are unknown. Defaults to \code{TRUE}.}
 
-\item{out}{string. For use with which package should the output be formatted?
+\item{out}{Character string. For use with which package should the output be formatted?
 \code{kinship2} (out = "kinship2"), \code{pedtools} (out = "pedtools"),
-\code{FamAgg} (out = "FamAgg") or the created data.frame can be ourputted as is
+\code{FamAgg} (out = "FamAgg") or the created data.frame can be outputted as is
 (out = "table"). Defaults to "FamAgg"}
 }
 \value{
@@ -35,7 +35,7 @@ mother and father, sex and family of individual. Column names and arrangement de
 output (\code{out} parameter).
 }
 \description{
-\code{get_colony} extends \code{BestConfig_Ordered} output from \href{https://www.zsl.org/about-zsl/resources/software/colony}{COLONY2}
+\code{get_colony()} extends \code{BestConfig_Ordered} output from \href{https://www.zsl.org/about-zsl/resources/software/colony}{COLONY2}
 pedigree reconstruction software with additional data about individuals included
 in pedigree. The function adds missing parents to \code{OffspringID}, assigns
 sex to each individual included in \code{OffspringID} and adds the computed
@@ -56,7 +56,10 @@ define a complete path to the directory where colony outputs are stored and also
 eg. /path/to/the/COLONY2/output/folder/COLONY2_project_name).
 }
 \examples{
+# Define the path to COLONY2 output
 path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
+
+# Get pedigree data in FamAgg format
 get_colony(path, wolf_samples)
 
 }

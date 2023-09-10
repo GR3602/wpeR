@@ -3,7 +3,7 @@
 \name{ped_spatial}
 \alias{ped_spatial}
 \alias{PreparePedigreeSpatial}
-\title{Get Files For Spatial Representation Of Pedigree}
+\title{Get files for spatial representation of pedigree}
 \usage{
 ped_spatial(
   plottable,
@@ -21,40 +21,39 @@ ped_spatial(
 )
 }
 \arguments{
-\item{plottable}{data frame. Output of \code{\link{plot_table}} function.}
+\item{plottable}{Data frame. Output of \code{\link{plot_table}} function.}
 
-\item{na.rm}{logical (\code{TRUE}/\code{FALSE}). Remove samples with missing coordinates and/or dates.}
+\item{na.rm}{Logical (\code{TRUE}/\code{FALSE}). Remove samples with missing coordinates and/or dates.}
 
-\item{output}{single value or vector. Type of output of function results.
+\item{output}{Character vector specifying the desired output type ('list' - default or 'gis').
 Available outputs: list: all spatial data returned as list, gis: all spatial data
 returned as georeferenced files.}
 
-\item{fullsibdata}{data frame. COLONY2 fullsib data.}
+\item{fullsibdata}{Data frame with COLONY2 full-sibling data.}
 
-\item{sibthreshold}{numeric. p value threshold for sibsihp assignment.}
+\item{sibthreshold}{Numeric. P-value threshold for sibship assignment.}
 
-\item{path}{string. System path where georeferenced files should be stored.}
+\item{path}{System path for storing georeferenced files.}
 
-\item{filename}{string. Common name for all georeferenced files.}
+\item{filename}{Common name for all georeferenced files.}
 
-\item{out.format}{string. Type of georeferenced files to be generated. Can be eather
-\code{"geopackage"} or \code{"shapefile"}. Default is \code{"geopackage"}}
+\item{out.format}{Character string. Type of georeferenced files to be generated.
+Can be ether \code{"geopackage"} or \code{"shapefile"}. Default is \code{"geopackage"}}
 
-\item{time.limits}{vector of two \code{Date} values. Time window for movement and
-offspring reference samples data.}
+\item{time.limits}{Vector of two \code{Date} values as the time window.}
 
-\item{time.limit.rep}{logical (\code{TRUE}/\code{FALSE}). Do time limits apply to
-reference samples of reproductive animals?}
+\item{time.limit.rep}{Logical (\code{TRUE}/\code{FALSE}). Apply time limits to
+reference samples of reproductive animals.}
 
-\item{time.limit.offspring}{logical (\code{TRUE}/\code{FALSE}). Do time limits also apply
-to reference samples of offspring?}
+\item{time.limit.offspring}{Logical (\code{TRUE}/\code{FALSE}). Apply time limits to
+reference samples of offspring.}
 
-\item{time.limit.moves}{logical (\code{TRUE}/\code{FALSE}). Do time limits also apply
-to movement data?}
+\item{time.limit.moves}{Logical (\code{TRUE}/\code{FALSE}). Apply time limits to
+movement data.}
 }
 \value{
 Based on the \code{output} parameter the function can return a list of \code{\link{sf}} objects,
-a geospatial vector data files or both.
+a georeferenced vector data files or both.
 
 Most of the objects are created separately for mothers, fathers and offspring,
 this include: reference points (\code{motherRpoints}, \code{fatherRpoints} and
@@ -68,31 +67,35 @@ their offspring (\code{maternityLines}), fathers and their offspring
 (\code{paternityLines}) and full siblings (\code{FullsibLines}).
 }
 \description{
-\code{ped_spatial} creates georeferenced data for spatial
-pedigree representation form the output of \code{\link{plot_table}} function.
+\code{ped_spatial()} creates georeferenced data for spatial
+pedigree representation form the output of \code{\link[=plot_table]{plot_table()}} function.
 }
 \examples{
+# Prepare the data for usage with ped_spatial() function.
+# Get animal timespan data using the anim_timespan() function.
 animal_ts <- anim_timespan(wolf_samples$AnimalRef,
-                                  wolf_samples$Date,
-                                  wolf_samples$SType,
-                                  dead = c("Tissue", "Decomposing Tissue", "Blood"))
-
-sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
-
+  wolf_samples$Date,
+  wolf_samples$SType,
+  dead = c("Tissue")
+)
+# Add animal timespan to the sampledata
+sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE)
+# Define the path to the pedigree data file.
 path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
-
-ped_colony <- get_colony(path, sampledata, remove_obsolete_parents = TRUE, out = "FamAgg")
-
+# Retrieve the pedigree data from the get_colony function.
+ped_colony <- get_colony(path, sampledata, rm_obsolete_parents = TRUE, out = "FamAgg")
+# Organize families and expand pedigree data using the org_fams function.
 org_tables <- org_fams(ped_colony, sampledata, output = "both")
+# Prepare data for plotting.#'
+pt <- plot_table(org_tables$fams[1, ],
+  org_tables$fams,
+  org_tables$ped,
+  sampledata,
+  deadSample = c("Tissue", "Decomposing Tissue", "Blood")
+)
 
-pt<-plot_table(org_tables$fams[1,],
-              org_tables$fams,
-              org_tables$ped,
-              sampledata,
-              deadSample = c("Tissue", "Decomposing Tissue", "Blood"))
-
-
+# Run the function
+# Get files for spatial pedigree representation in list format.
 ped_spatial(pt)
-
 
 }

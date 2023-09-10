@@ -1,17 +1,23 @@
 #' Get dates of individuals first and last sample
 #'
 #' @description
-#' Takes data frame of all samples and returns the dates of individuals first and last sample.
-#' Besides that the functions determines if animal is dead based on predefined sample type eg. tissue.
+#' Takes data frame of all samples and returns the dates of individuals first
+#' and last sample.
+#' Besides that the functions determines if animal is dead based on predefined
+#' sample type eg. tissue.
 #'
 #'
-#' @param individual_id column in the dataframe of all samples that stores individual animal identifier code.
+#' @param individual_id Column in the dataframe of all samples containing
+#'  individual animal identifier code.
 #'   Defined as `dataframe$column`.
-#' @param sample_date column in the dataframe of all samples that stores the date of sample collection.
+#' @param sample_date Column in the dataframe of all samples containing
+#'   the date of sample collection.
 #'   Must be in `Date` format. Defined as `dataframe$column`.
-#' @param sample_type column in the dataframe of all samples that stores the data on the type (eg. scat, tissue, saliva) of particular sample.
+#' @param sample_type Column in the dataframe of all samples containing the data
+#'   on the type (eg. scat, tissue, saliva) of particular sample.
 #'   Defined as `dataframe$column`.
-#' @param dead single value or vector of different lethal sample types. Defaults to "Tissue".
+#' @param dead Single value or vector of different lethal sample types.
+#'   Defaults to "Tissue".
 #'
 #' @return
 #' A data frame with four columns and one row for each `individual_id`.
@@ -23,14 +29,19 @@
 #'
 #' @examples
 #' anim_timespan(wolf_samples$AnimalRef,
-#'                      wolf_samples$Date,
-#'                      wolf_samples$SType,
-#'                      dead = c("Tissue", "Decomposing Tissue", "Blood"))
+#'   wolf_samples$Date,
+#'   wolf_samples$SType,
+#'   dead = c("Tissue")
+#' )
 #'
 #' @aliases anim_timespan make.animal.timespan
 #'
 
 anim_timespan <- function(individual_id, sample_date, sample_type, dead = "Tissue") {
+  if (!all(dead %in% unique(sample_type), na.rm = TRUE)) {
+    warning("one or more lethal sample type, defined with dead parameter,
+    are not present in the sample_type vector")
+  }
 
   unique_ind <- unique(individual_id)
   out_individual <- NULL
@@ -44,10 +55,10 @@ anim_timespan <- function(individual_id, sample_date, sample_type, dead = "Tissu
 
     out_individual <- c(out_individual, individual)
 
-    first <- min(ind_dates, na.rm = T) # to sort out NA-only individuals
+    first <- min(ind_dates, na.rm = TRUE) # to sort out NA-only individuals
     if (first == Inf | first == -Inf) first <- NA
 
-    last <- max(ind_dates, na.rm = T)
+    last <- max(ind_dates, na.rm = TRUE)
     if (last == Inf | last == -Inf) last <- NA
 
     out_firstseen <- c(out_firstseen, first)
@@ -59,5 +70,10 @@ anim_timespan <- function(individual_id, sample_date, sample_type, dead = "Tissu
   out_firstseen <- as.Date(out_firstseen, origin = "1970-01-01")
   out_lastseen <- as.Date(out_lastseen, origin = "1970-01-01")
 
-  return(data.frame(ID = out_individual, FirstSeen = out_firstseen, LastSeen = out_lastseen, IsDead = out_isdead))
+  return(data.frame(
+    ID = out_individual,
+    FirstSeen = out_firstseen,
+    LastSeen = out_lastseen,
+    IsDead = out_isdead
+  ))
 }

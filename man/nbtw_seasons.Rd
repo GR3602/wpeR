@@ -3,7 +3,7 @@
 \name{nbtw_seasons}
 \alias{nbtw_seasons}
 \alias{nBetweenSeasons}
-\title{Number Of Detected Animals Between Two Sampling Seasons}
+\title{Number of detected animals between two sampling seasons}
 \usage{
 nbtw_seasons(
   animal_id,
@@ -15,26 +15,27 @@ nbtw_seasons(
 )
 }
 \arguments{
-\item{animal_id}{column in the dataframe of all samples that stores individual animal identifier code.}
+\item{animal_id}{A column in the dataframe of all samples that stores
+individual animal identifier code.}
 
-\item{capture_date}{column in the dataframe of all samples that stores the date of sample collection.
-Must be in \code{Date} format.}
+\item{capture_date}{A column in the dataframe of all samples that stores
+the date of sample collection. Must be in \code{Date} format.}
 
-\item{season1_start}{string in \code{Date} format. Start of fist capture season.
+\item{season1_start}{String in \code{Date} format. Start of fist capture season.
 Start and end date are included in the capture season.}
 
-\item{season1_end}{string in \code{Date} format. End of fist capture season.
+\item{season1_end}{String in \code{Date} format. End of fist capture season.
 Start and end date are included in the capture season.}
 
-\item{season2_start}{string in \code{Date} format. Start of second capture season.
+\item{season2_start}{String in \code{Date} format. Start of second capture season.
 Start and end date are included in the capture season.}
 
-\item{season2_end}{string in \code{Date} format. End of second capture season.
+\item{season2_end}{String in \code{Date} format. End of second capture season.
 Start and end date are included in the capture season.}
 }
 \value{
-A data frame with one row and six columns corresponding to season 1 and 2 start
-and end dates, number of detected animals in season 2 (\code{total_cap}),
+A data frame with one row and six columns corresponding to season 1 and 2
+start and end dates, number of detected animals in season 2 (\code{total_cap}),
 number of new detentions in season 2 (\code{new_captures}), umber of animals from
 season 1 detected within season 2 (\code{recaptured}) and number of individuals
 skipped in season 2 but detected after the end of that season (\code{skipped}).
@@ -44,11 +45,12 @@ skipped in season 2 but detected after the end of that season (\code{skipped}).
 within the second sampling season compared tho the first one.
 }
 \examples{
-
-nbtw_seasons(pack21_samples$AnimalRef, pack21_samples$Date,
-               as.Date("2010-01-01"), as.Date("2010-12-31"),
-               as.Date("2011-01-01"), as.Date("2011-12-31"))
-
+# Calculate the number of animals detected between two sampling seasons.
+nbtw_seasons(
+ wolf_samples$AnimalRef, wolf_samples$Date,
+  as.Date("2017-01-01"), as.Date("2017-12-31"),
+  as.Date("2018-01-01"), as.Date("2018-12-31")
+)
 
 
 }

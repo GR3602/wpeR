@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_sampledata.R
 \name{check_sampledata}
 \alias{check_sampledata}
-\title{Check and Prepare Sample Data}
+\title{Check and prepare sample data}
 \usage{
 check_sampledata(
   Sample,
@@ -16,11 +16,11 @@ check_sampledata(
 )
 }
 \arguments{
-\item{Sample}{A vector of sample identifiers.}
+\item{Sample}{A vector of sample unique identifier codes.}
 
-\item{Date}{A vector of sample dates in 'YYYY-MM-DD' format.}
+\item{Date}{A vector of sample collection dates in 'YYYY-MM-DD' format.}
 
-\item{AnimalRef}{A vector of animal reference identifiers.}
+\item{AnimalRef}{A vector identifier codes of the particular individual that the sample belongs to.}
 
 \item{GeneticSex}{A vector of genetic sex information ('F' for female, 'M' for male, NA for unknown).}
 
@@ -39,16 +39,19 @@ A well-structured sample data frame with validated and formatted columns.
 This function checks the integrity and compatibility of various columns in the sample data
 and prepares a well-structured sample data frame. It verifies the consistency of columns
 such as Sample, Date, AnimalRef, GeneticSex, IsAnimalReference, lat, lng, and SType.
-The function ensures that the provided data is properly formatted and conforms to the required standards.
+The function ensures that the provided data is properly formatted and conforms to the standards
+of functions that make up the \code{wpeR} package.
 }
 \examples{
-sampledata <- check_sampledata(Sample = c("S1", "S2"),
-                               Date = c("2023-01-15", "2023-02-20"),
-                               AnimalRef = c("A1", "A2"),
-                               GeneticSex = c("F", "M"),
-                               IsAnimalReference = c(1, 0),
-                               lat = c(34.0522, 40.7128),
-                               lng = c(-118.2437, -74.0060),
-                               SType = c("Type1", "Type2"))
+sampledata <- check_sampledata(
+  Sample = wolf_samples$Sample,
+  Date = wolf_samples$Date,
+  AnimalRef = wolf_samples$AnimalRef,
+  GeneticSex = wolf_samples$GeneticSex,
+  IsAnimalReference = wolf_samples$IsAnimalReference,
+  lat = wolf_samples$lat,
+  lng = wolf_samples$lng,
+  SType = wolf_samples$SType
+)
 
 }

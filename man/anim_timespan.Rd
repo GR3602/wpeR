@@ -8,16 +8,20 @@
 anim_timespan(individual_id, sample_date, sample_type, dead = "Tissue")
 }
 \arguments{
-\item{individual_id}{column in the dataframe of all samples that stores individual animal identifier code.
+\item{individual_id}{Column in the dataframe of all samples containing
+individual animal identifier code.
 Defined as \code{dataframe$column}.}
 
-\item{sample_date}{column in the dataframe of all samples that stores the date of sample collection.
+\item{sample_date}{Column in the dataframe of all samples containing
+the date of sample collection.
 Must be in \code{Date} format. Defined as \code{dataframe$column}.}
 
-\item{sample_type}{column in the dataframe of all samples that stores the data on the type (eg. scat, tissue, saliva) of particular sample.
+\item{sample_type}{Column in the dataframe of all samples containing the data
+on the type (eg. scat, tissue, saliva) of particular sample.
 Defined as \code{dataframe$column}.}
 
-\item{dead}{single value or vector of different lethal sample types. Defaults to "Tissue".}
+\item{dead}{Single value or vector of different lethal sample types.
+Defaults to "Tissue".}
 }
 \value{
 A data frame with four columns and one row for each \code{individual_id}.
@@ -26,13 +30,16 @@ date of first (\code{FirstSeen}) and last (\code{LastSeen}) sample of individual
 logical (\code{TRUE/FALSE}) value that identifies if the individual is dead (\code{IsDead}).
 }
 \description{
-Takes data frame of all samples and returns the dates of individuals first and last sample.
-Besides that the functions determines if animal is dead based on predefined sample type eg. tissue.
+Takes data frame of all samples and returns the dates of individuals first
+and last sample.
+Besides that the functions determines if animal is dead based on predefined
+sample type eg. tissue.
 }
 \examples{
 anim_timespan(wolf_samples$AnimalRef,
-                     wolf_samples$Date,
-                     wolf_samples$SType,
-                     dead = c("Tissue", "Decomposing Tissue", "Blood"))
+  wolf_samples$Date,
+  wolf_samples$SType,
+  dead = c("Tissue")
+)
 
 }
