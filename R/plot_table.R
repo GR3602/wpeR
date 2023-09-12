@@ -1,6 +1,6 @@
 #' Prepares pedigree data for plotting and spatial representation
 #'
-#' @description `plot_table()` combines pedigree and sample data for visual ([`ped_satplot()`])
+#' @description Combines pedigree and sample data for visual ([`ped_satplot()`])
 #'  and spatial ([`ped_spatial()`]) representation of the pedigree.
 #'
 #' @details

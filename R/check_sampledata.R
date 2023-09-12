@@ -1,6 +1,6 @@
 #' Check and prepare sample data
 #'
-#' This function checks the integrity and compatibility of various columns in the sample data
+#' Checks the integrity and compatibility of various columns in the sample data
 #' and prepares a well-structured sample data frame. It verifies the consistency of columns
 #' such as Sample, Date, AnimalRef, GeneticSex, IsAnimalReference, lat, lng, and SType.
 #' The function ensures that the provided data is properly formatted and conforms to the standards
@@ -8,14 +8,19 @@
 #'
 #' @param Sample A vector of sample unique identifier codes.
 #' @param Date A vector of sample collection dates in 'YYYY-MM-DD' format.
-#' @param AnimalRef A vector identifier codes of the particular individual that the sample belongs to.
+#' @param AnimalRef A vector of identifier codes of the particular individual that the sample belongs to.
 #' @param GeneticSex A vector of genetic sex information ('F' for female, 'M' for male, NA for unknown).
 #' @param IsAnimalReference A vector indicating whether the sample is an animal reference (0 or 1).
 #' @param lat A vector of latitude coordinates in the WGS84 coordinate system.
 #' @param lng A vector of longitude coordinates in the WGS84 coordinate system.
 #' @param SType A vector of sample types.
 #'
-#' @return A well-structured sample data frame with validated and formatted columns.
+#' @return A data frame with 8 columns and a number of rows equal to the length
+#' of the input vector. Each column corresponds to one of the input parameters.
+#' If the function executes without warnings or errors, the result from
+#' `check_sampledata()` can be used as an input parameter for other functions
+#' within this package: [`get_colony()`], [`get_ped()`], [org_fams()]
+#' and [`plot_table()`].
 #'
 #' @examples
 #' sampledata <- check_sampledata(

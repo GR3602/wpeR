@@ -1,6 +1,6 @@
 #' Number of detected animals between two sampling seasons
 #'
-#' @description `nbtw_seasons` gives an numeric overview of individuals captured
+#' @description Gives an numeric overview of individuals captured
 #' within the second sampling season compared tho the first one.
 #'
 #'

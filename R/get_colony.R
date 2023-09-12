@@ -1,7 +1,7 @@
 #' Organizes COLONY2 output
 #'
 #' @description
-#' `get_colony()` extends `BestConfig_Ordered` output from [COLONY2](https://www.zsl.org/about-zsl/resources/software/colony)
+#'  Extends `BestConfig_Ordered` output from [COLONY2](https://www.zsl.org/about-zsl/resources/software/colony)
 #'  pedigree reconstruction software with additional data about individuals included
 #'  in pedigree. The function adds missing parents to `OffspringID`, assigns
 #'  sex to each individual included in `OffspringID` and adds the computed
@@ -13,11 +13,12 @@
 #'  [`FamAgg`](http://bioconductor.org/packages/release/bioc/html/FamAgg.html) packages.
 #'
 #' @details
-#'  COLONY2 output tables needed for this function (`.BestConfig_Ordered`, `.Maternity`
-#'  and `.Paternity`)
-#'  are read directly from the colony output folder and do not need to be imported into R session. The path
-#'  to the outputs is defined with `bestconf_path` parameter. When defining `bestconf_path` the user needs to
-#'  define a complete path to the directory where colony outputs are stored and also the file name
+#'  COLONY2 output tables needed for this function \cr
+#'  (`.BestConfig_Ordered`, `.Maternity` and `.Paternity`) are read directly
+#'  from the colony output folder and do not need to be imported into R session.
+#'  The path to the outputs is defined with `bestconf_path` parameter.
+#'  When defining `bestconf_path` the user needs to define a complete path to
+#'  the directory where colony outputs are stored and also the file name
 #'  (file name of COLONY2 outputs equals the project name \cr
 #'  eg. /path/to/the/COLONY2/output/folder/COLONY2_project_name).
 #'
@@ -27,7 +28,8 @@
 #'   Has to include file path and project name (see Details).
 #' @param sampledata Data frame. Metadata for all genetic samples that belong
 #'   to the individuals included in pedigree reconstruction analysis.
-#'   Must have `$Sample` with sample names and `$GeneticSex` coded as `M/F/NA`
+#'   This data frame should adhere to the formatting and naming conventions
+#'   outlined in the [`check_sampledata()`] documentation.
 #' @param rm_obsolete_parents Logical. Should unknown parents be removed from output.
 #'   Applies just to offspring for which both parents are unknown. Defaults to `TRUE`.
 #' @param out Character string. For use with which package should the output be formatted?
@@ -165,7 +167,7 @@ get_colony <- function(bestconf_path,
 
   ##### IF for OUTPUTS####
   # if you want to remove unknown parents form output of the function
-  if (rm_obsolete_parents == T) {
+  if (rm_obsolete_parents == TRUE) {
     # removes #XX and *XX values from FatherID and MotherID column,
     # just for offspring where both parents are unknown
     bestconfig1[

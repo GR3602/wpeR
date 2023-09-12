@@ -1,6 +1,6 @@
 #' Mark-Recapture Plot For Pedigree - Saturating
 #'
-#' @description `ped_satplot()` creates "capture" history plot of individuals
+#' @description Creates "capture" history plot of individuals
 #' arranged by families included in data frame created by [`plot_table()`] function.
 #'
 #' @param date Sample collection date. Must be in `Date` format.

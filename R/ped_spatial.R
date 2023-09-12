@@ -1,7 +1,7 @@
 #' Get files for spatial representation of pedigree
 #'
 #' @description
-#' `ped_spatial()` creates georeferenced data for spatial
+#' Creates georeferenced data for spatial
 #' pedigree representation form the output of [`plot_table()`] function.
 #'
 #'

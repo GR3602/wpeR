@@ -84,7 +84,7 @@ is reproductive or not in any other (later) family.}
 a graphical representation of detected family members trough time.
 }
 \description{
-\code{ped_satplot()} creates "capture" history plot of individuals
+Creates "capture" history plot of individuals
 arranged by families included in data frame created by \code{\link[=plot_table]{plot_table()}} function.
 }
 \examples{

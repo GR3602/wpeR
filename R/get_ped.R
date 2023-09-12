@@ -1,21 +1,34 @@
 #' Organizes Pedigree Data
 #'
 #' @description
-#' `get_ped()` offers an alternative to [`get_colony()`] function in cases where the pedigree
-#' was not reconstructed with [COLONY 2](https://www.zsl.org/about-zsl/resources/software/colony)
+#'  Offers an alternative to [`get_colony()`] function in cases where the pedigree
+#'  was not reconstructed with [COLONY 2](https://www.zsl.org/about-zsl/resources/software/colony)
 #'  software. It takes a pedigree dataframe and assigns sex to each individual.
 #'  The function also prepares data so that the output of the function can be directly analysed with
 #'  [`kinship2`](https://cran.r-project.org/web/packages/kinship2/index.html),
 #'  [`pedtools`](https://cran.r-project.org/web/packages/pedtools/index.html) or
 #'  [`FamAgg`](https://bioconductor.org/packages/release/bioc/html/FamAgg.html) packages.
 #'
+#' @details
+#'  The custom pedigree specified through the `ped` parameter should mirror the
+#'  structure of a COLONY2 pedigree and share the same column names.
+#'  It should consist of four columns for each offspring:
+#'  `OffspringID`, `FatherID`, `MotherID` and `ClusterIndex`. In the context of
+#'  COLONY2 result, the `ClusterIndex` refers to a group of offspring that may
+#'  share common parents or ancestors and are analyzed together. If your
+#'  your pedigree does not include such information you can fill this columns with
+#'  the same numeric value (eg. 1) or any (numeric) information about other
+#'  family structure present in your pedigree. When considering unknown parents
+#'  they should be represented by `NA` values.
+#'
+#'
 #' @param ped Data frame. Pedigree data frame with the most basic structure.
-#'   Three columns corresponding to offspring (has to be named `OffspringID`), father
-#'   (has to be named `FatherID`), mother (has to be named `MotherID`) and family
-#'   (has to be named `ClusterIndex`). Unknown parents should be represented by `NA` values.
+#'   Four columns corresponding to offspring, father, mother and cluster (see
+#'   Details). Unknown parents should be represented by `NA` values.
 #' @param sampledata Data frame. Metadata for all genetic samples that belong
 #'   to the individuals included in pedigree reconstruction analysis.
-#'   Must have `$Sample` with sample names and `$GeneticSex` coded as `M/F/NA`
+#'   This data frame should adhere to the formatting and naming conventions
+#'   outlined in the [`check_sampledata()`] documentation.
 #' @param out Character string. For use with which package should the output be formatted?
 #'   `kinship2` (out = "kinship2"), `pedtools` (out = "pedtools") or
 #'   `FamAgg` (out = "FamAgg"). Defaults to "FamAgg"

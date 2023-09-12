@@ -1,6 +1,6 @@
 Package: wpeR
 Type: Package
-Title: Streamlined Analysis Of Wild Pedigree Data Created By COLONY2
+Title: Streamlined Analysis Of Wild Pedigree Data 
 Version: 0.1.0
 Author: Tomaz Skrbinsek, Gregor Simcic
 Maintainer: Gregor Simcic <grega0simcic@gmail.com>

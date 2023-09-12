@@ -14,7 +14,7 @@ individual animal identifier code.}
 \item{capture_date}{A column in the dataframe of all samples that stores
 the date of sample collection. Must be in \code{Date} format.}
 
-\item{start_dates}{vector of dates in \code{Date} format that define the
+\item{start_dates}{Vector of dates in \code{Date} format that define the
 start of each season.}
 
 \item{end_dates}{Vector of dates in \code{Date} format that define the
@@ -34,7 +34,7 @@ Row \verb{Tot. Skipped} gives all individuals skipped in season x but detected
 later.
 }
 \description{
-\code{dyn_matrix()} creates a matrix that shows number of captured animals
+Creates a matrix that shows number of captured animals
 between multiple seasons.
 }
 \examples{

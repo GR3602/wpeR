@@ -18,7 +18,8 @@ Has to include file path and project name (see Details).}
 
 \item{sampledata}{Data frame. Metadata for all genetic samples that belong
 to the individuals included in pedigree reconstruction analysis.
-Must have \verb{$Sample} with sample names and \verb{$GeneticSex} coded as \code{M/F/NA}}
+This data frame should adhere to the formatting and naming conventions
+outlined in the \code{\link[=check_sampledata]{check_sampledata()}} documentation.}
 
 \item{rm_obsolete_parents}{Logical. Should unknown parents be removed from output.
 Applies just to offspring for which both parents are unknown. Defaults to \code{TRUE}.}
@@ -35,7 +36,7 @@ mother and father, sex and family of individual. Column names and arrangement de
 output (\code{out} parameter).
 }
 \description{
-\code{get_colony()} extends \code{BestConfig_Ordered} output from \href{https://www.zsl.org/about-zsl/resources/software/colony}{COLONY2}
+Extends \code{BestConfig_Ordered} output from \href{https://www.zsl.org/about-zsl/resources/software/colony}{COLONY2}
 pedigree reconstruction software with additional data about individuals included
 in pedigree. The function adds missing parents to \code{OffspringID}, assigns
 sex to each individual included in \code{OffspringID} and adds the computed
@@ -47,11 +48,12 @@ The function also prepares data so that the output of the function can be direct
 \href{http://bioconductor.org/packages/release/bioc/html/FamAgg.html}{\code{FamAgg}} packages.
 }
 \details{
-COLONY2 output tables needed for this function (\code{.BestConfig_Ordered}, \code{.Maternity}
-and \code{.Paternity})
-are read directly from the colony output folder and do not need to be imported into R session. The path
-to the outputs is defined with \code{bestconf_path} parameter. When defining \code{bestconf_path} the user needs to
-define a complete path to the directory where colony outputs are stored and also the file name
+COLONY2 output tables needed for this function \cr
+(\code{.BestConfig_Ordered}, \code{.Maternity} and \code{.Paternity}) are read directly
+from the colony output folder and do not need to be imported into R session.
+The path to the outputs is defined with \code{bestconf_path} parameter.
+When defining \code{bestconf_path} the user needs to define a complete path to
+the directory where colony outputs are stored and also the file name
 (file name of COLONY2 outputs equals the project name \cr
 eg. /path/to/the/COLONY2/output/folder/COLONY2_project_name).
 }

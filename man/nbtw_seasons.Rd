@@ -41,7 +41,7 @@ season 1 detected within season 2 (\code{recaptured}) and number of individuals
 skipped in season 2 but detected after the end of that season (\code{skipped}).
 }
 \description{
-\code{nbtw_seasons} gives an numeric overview of individuals captured
+Gives an numeric overview of individuals captured
 within the second sampling season compared tho the first one.
 }
 \examples{

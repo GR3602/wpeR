@@ -67,7 +67,7 @@ their offspring (\code{maternityLines}), fathers and their offspring
 (\code{paternityLines}) and full siblings (\code{FullsibLines}).
 }
 \description{
-\code{ped_spatial()} creates georeferenced data for spatial
+Creates georeferenced data for spatial
 pedigree representation form the output of \code{\link[=plot_table]{plot_table()}} function.
 }
 \examples{

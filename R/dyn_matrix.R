@@ -1,14 +1,14 @@
 #' Get matrix ff apparent survival
 #'
 #' @description
-#' `dyn_matrix()` creates a matrix that shows number of captured animals
+#' Creates a matrix that shows number of captured animals
 #' between multiple seasons.
 #'
 #' @param animal_id A column in the dataframe of all samples that stores
 #' individual animal identifier code.
 #' @param capture_date A column in the dataframe of all samples that stores
 #' the date of sample collection. Must be in `Date` format.
-#' @param start_dates vector of dates in `Date` format that define the
+#' @param start_dates Vector of dates in `Date` format that define the
 #' start of each season.
 #' @param end_dates Vector of dates in `Date` format that define the
 #' end of each season.

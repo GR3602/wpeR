@@ -54,7 +54,7 @@ can be included in more than one family.
 }
 }
 \description{
-\code{plot_table()} combines pedigree and sample data for visual (\code{\link[=ped_satplot]{ped_satplot()}})
+Combines pedigree and sample data for visual (\code{\link[=ped_satplot]{ped_satplot()}})
 and spatial (\code{\link[=ped_spatial]{ped_spatial()}}) representation of the pedigree.
 }
 \details{

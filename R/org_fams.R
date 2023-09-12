@@ -1,16 +1,23 @@
 #' Organize animals into families and expand pedigree data
 #'
 #' @description
-#' `org_fams()` takes pedigree data from [`get_colony()`] or [`get_ped()`] function and groups animals into families.
+#'  Takes pedigree data from [`get_colony()`] or [`get_ped()`] function and groups animals into families.
 #'  It also expands the pedigree data by adding information about the family that each individual was born in and the
 #'  family in which the individual is the reproductive animal. A family in this function is defined as a group of animals
 #'  where at least one parent and at least one offspring is known.
+#' @details
+#'  The result of `org_fams()` function introduces us to two important concepts
+#'  within the context of this package: family and poly cluster. A family in the
+#'  output of this function is defined as a group of animals where at least one
+#'  parent and at least one offspring is known. A polygamy cluster refers to a
+#'  group of half-siblings, either maternally or paternally related.
 #'
 #' @param ped Data frame. `FamAgg` output of [`get_colony()`] or [`get_ped()`] function.
 #'   With `rm_obsolete_parents` parameter set to `TRUE`.
 #' @param sampledata Data frame. Metadata for all genetic samples that belong
 #'   to the individuals included in pedigree reconstruction analysis.
-#'   Must have `$Sample` with sample names and `$GeneticSex` coded as `M/F/NA`
+#'   This data frame should adhere to the formatting and naming conventions
+#'   outlined in the [`check_sampledata()`] documentation.
 #' @param output Character string. Determines the format of the output. Options are:
 #'   "ped": Returns an extended pedigree data frame.
 #'   "fams": Returns a table of all families present in the pedigree.
@@ -28,8 +35,8 @@
 #'     - `FirstSeen`: Date of first sample of individual.
 #'     - `LastSeen`: Date of last sample of individual.
 #'     - `IsDead`: Logical value (`TRUE/FALSE`) that identifies if the individual is dead.
-#'     - `DadPclust`: Identifier of father's polygamy cluster.
-#'     - `MomPclust`: Identifier of mother's polygamy cuter.
+#'     - `DadPclust`: Identifier of father's polygamy cluster (see Details).
+#'     - `MomPclust`: Identifier of mother's polygamy cuter (see Details).
 #'     - `polyCluster`: Numeric value indicating the polygamy cluster of the individual.
 #'
 #'  * `fams` data frame includes information on families that individuals in the pedigree
