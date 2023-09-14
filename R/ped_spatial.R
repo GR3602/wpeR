@@ -4,8 +4,14 @@
 #' Creates georeferenced data for spatial
 #' pedigree representation form the output of [`plot_table()`] function.
 #'
+#' @details
+#' The parameters `path`, `filename` and `out.format`, are used only when `output`
+#' parameter is set to "gis", since they control which georeferenced files should
+#' be created, where they will be saved and which common file name will they have.
 #'
-#' @param plottable Data frame. Output of [`plot_table`] function.
+#'
+#'
+#' @param plottable Data frame. Output of [`plot_table()`] function.
 #' @param na.rm Logical (`TRUE`/`FALSE`). Remove samples with missing coordinates and/or dates.
 #' @param output Character vector specifying the desired output type ('list' - default or 'gis').
 #' Available outputs: list: all spatial data returned as list, gis: all spatial data
@@ -25,19 +31,35 @@
 #' movement data.
 #'
 #' @return
-#' Based on the `output` parameter the function can return a list of [`sf`] objects,
+#' Depending on the `output` parameter the function can return a list of [`sf`] objects,
 #' a georeferenced vector data files or both.
 #'
 #' Most of the objects are created separately for mothers, fathers and offspring,
-#' this include: reference points (`motherRpoints`, `fatherRpoints` and
-#' `offspringRpoints`), movement points (`motherMovePoints`, `fatherMovePoints`
-#' and `offspringMovePoints`), movement lines (`motherMoveLines`, `fatherMoveLines`
-#' and `offspringMoveLines`) and movement polygons (`motherMovePoygons`,
-#' `fatherMovePolygons` and `offspringMovePolygons`).
+#' this include:
+#'
+#' - Reference Points (`motherRpoints`, `fatherRpoints`, and `offspringRpoints`).
+#'    - Each point corresponds to an animal included in the 'plot_table()'
+#'    function output.
+#'    - For reproductive animals (mothers and fathers), a reference point is the
+#'    location of their last sample within the specified time window.
+#'    - For offspring, the reference point is the location of their first sample
+#'    within the time window.
+#'
+#' - Movement Points (`motherMovePoints`, `fatherMovePoints`, and `offspringMovePoints`).
+#'    - These points represent all the samples of the respective animals.
+#'
+#' - Movement Lines (`motherMoveLines`, `fatherMoveLines` and `offspringMoveLines`).
+#'    - Movement lines connect all '...MovePoints' of a specific animal in
+#'    chronological order.
+#'
+#' - Movement Polygons (`motherMovePolygons`, `fatherMovePolygons` and `offspringMovePolygons`):
+#'    - Movement polygons represent a convex hull that encloses all the samples of an individual.
+#'    -  An individual must have more than two samples for this representation.
 #'
 #' Besides that the function also produces lines that connect mothers and
 #' their offspring (`maternityLines`), fathers and their offspring
-#' (`paternityLines`) and full siblings (`FullsibLines`).
+#' (`paternityLines`), and if `fullsibdata` parameter is specified,
+#'  full siblings (`FullsibLines`).
 #'
 #'
 #' @export
@@ -70,7 +92,7 @@
 #'
 #' # Run the function
 #' # Get files for spatial pedigree representation in list format.
-#' ped_spatial(pt)
+#' ped_spatial(plottable = pt)
 #'
 #' @aliases ped_spatial PreparePedigreeSpatial
 #'

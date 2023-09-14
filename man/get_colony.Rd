@@ -48,8 +48,8 @@ The function also prepares data so that the output of the function can be direct
 \href{http://bioconductor.org/packages/release/bioc/html/FamAgg.html}{\code{FamAgg}} packages.
 }
 \details{
-COLONY2 output tables needed for this function \cr
-(\code{.BestConfig_Ordered}, \code{.Maternity} and \code{.Paternity}) are read directly
+COLONY2 output tables needed for this function (\code{.BestConfig_Ordered},
+\code{.Maternity} and \code{.Paternity}) are read directly
 from the colony output folder and do not need to be imported into R session.
 The path to the outputs is defined with \code{bestconf_path} parameter.
 When defining \code{bestconf_path} the user needs to define a complete path to
@@ -62,6 +62,9 @@ eg. /path/to/the/COLONY2/output/folder/COLONY2_project_name).
 path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
 
 # Get pedigree data in FamAgg format
-get_colony(path, wolf_samples)
+get_colony(
+    bestconf_path = path,
+    sampledata = wolf_samples
+    )
 
 }

@@ -16,10 +16,10 @@
 #'  `OffspringID`, `FatherID`, `MotherID` and `ClusterIndex`. In the context of
 #'  COLONY2 result, the `ClusterIndex` refers to a group of offspring that may
 #'  share common parents or ancestors and are analyzed together. If your
-#'  your pedigree does not include such information you can fill this columns with
-#'  the same numeric value (eg. 1) or any (numeric) information about other
-#'  family structure present in your pedigree. When considering unknown parents
-#'  they should be represented by `NA` values.
+#'  your pedigree does not include such information you can fill this column with
+#'  the same numeric value (eg. 1, see examples) or any (numeric) information
+#'  about other family structure present in your pedigree. When considering
+#'  unknown parents they should be represented by `NA` values.
 #'
 #'
 #' @param ped Data frame. Pedigree data frame with the most basic structure.
@@ -58,7 +58,10 @@
 #'   ClusterIndex = c(rep(1, 14))
 #' )
 #' #Get pedigree data in FamAgg format
-#' get_ped(ped, wolf_samples)
+#' get_ped(
+#'     ped = ped,
+#'     sampledata = wolf_samples
+#'     )
 #'
 get_ped <- function(ped, sampledata, out = "FamAgg") {
   ##### SEX####

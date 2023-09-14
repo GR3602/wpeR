@@ -13,8 +13,8 @@
 #'  [`FamAgg`](http://bioconductor.org/packages/release/bioc/html/FamAgg.html) packages.
 #'
 #' @details
-#'  COLONY2 output tables needed for this function \cr
-#'  (`.BestConfig_Ordered`, `.Maternity` and `.Paternity`) are read directly
+#'  COLONY2 output tables needed for this function (`.BestConfig_Ordered`,
+#'  `.Maternity` and `.Paternity`) are read directly
 #'  from the colony output folder and do not need to be imported into R session.
 #'  The path to the outputs is defined with `bestconf_path` parameter.
 #'  When defining `bestconf_path` the user needs to define a complete path to
@@ -51,7 +51,10 @@
 #' path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
 #'
 #' # Get pedigree data in FamAgg format
-#' get_colony(path, wolf_samples)
+#' get_colony(
+#'     bestconf_path = path,
+#'     sampledata = wolf_samples
+#'     )
 #'
 #' @aliases get_colony GetDigestColony
 #'

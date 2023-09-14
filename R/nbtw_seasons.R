@@ -30,9 +30,12 @@
 #' @examples
 #' # Calculate the number of animals detected between two sampling seasons.
 #' nbtw_seasons(
-#'  wolf_samples$AnimalRef, wolf_samples$Date,
-#'   as.Date("2017-01-01"), as.Date("2017-12-31"),
-#'   as.Date("2018-01-01"), as.Date("2018-12-31")
+#'  animal_id = wolf_samples$AnimalRef,
+#'  capture_date = wolf_samples$Date,
+#'  season1_start = as.Date("2017-01-01"),
+#'  season1_end = as.Date("2017-12-31"),
+#'  season2_start = as.Date("2018-01-01"),
+#'  season2_end = as.Date("2018-12-31")
 #' )
 #'
 #'

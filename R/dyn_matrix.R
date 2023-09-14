@@ -43,8 +43,10 @@
 #'
 #' # Create a dynamics matrix for animal captures.
 #' dyn_matrix(
-#'   wolf_samples$AnimalRef, wolf_samples$Date,
-#'   seasons$start, seasons$end
+#'   animal_id = wolf_samples$AnimalRef,
+#'   capture_date = wolf_samples$Date,
+#'   start_dates = seasons$start,
+#'   end_dates = seasons$end
 #' )
 #'
 #' @aliases dyn_matrix MakeDynamicsMatrix

@@ -28,9 +28,10 @@
 #' @export
 #'
 #' @examples
-#' anim_timespan(wolf_samples$AnimalRef,
-#'   wolf_samples$Date,
-#'   wolf_samples$SType,
+#' anim_timespan(
+#'   individual_id = wolf_samples$AnimalRef,
+#'   sample_date = wolf_samples$Date,
+#'   sample_type = wolf_samples$SType,
 #'   dead = c("Tissue")
 #' )
 #'

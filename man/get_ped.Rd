@@ -42,10 +42,10 @@ It should consist of four columns for each offspring:
 \code{OffspringID}, \code{FatherID}, \code{MotherID} and \code{ClusterIndex}. In the context of
 COLONY2 result, the \code{ClusterIndex} refers to a group of offspring that may
 share common parents or ancestors and are analyzed together. If your
-your pedigree does not include such information you can fill this columns with
-the same numeric value (eg. 1) or any (numeric) information about other
-family structure present in your pedigree. When considering unknown parents
-they should be represented by \code{NA} values.
+your pedigree does not include such information you can fill this column with
+the same numeric value (eg. 1, see examples) or any (numeric) information
+about other family structure present in your pedigree. When considering
+unknown parents they should be represented by \code{NA} values.
 }
 \examples{
 #example pedigree dataframe
@@ -65,6 +65,9 @@ ped <- data.frame(
   ClusterIndex = c(rep(1, 14))
 )
 #Get pedigree data in FamAgg format
-get_ped(ped, wolf_samples)
+get_ped(
+    ped = ped,
+    sampledata = wolf_samples
+    )
 
 }

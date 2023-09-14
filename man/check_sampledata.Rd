@@ -4,16 +4,7 @@
 \alias{check_sampledata}
 \title{Check and prepare sample data}
 \usage{
-check_sampledata(
-  Sample,
-  Date,
-  AnimalRef,
-  GeneticSex,
-  IsAnimalReference,
-  lat,
-  lng,
-  SType
-)
+check_sampledata(Sample, Date, AnimalRef, GeneticSex, lat, lng, SType)
 }
 \arguments{
 \item{Sample}{A vector of sample unique identifier codes.}
@@ -23,8 +14,6 @@ check_sampledata(
 \item{AnimalRef}{A vector of identifier codes of the particular individual that the sample belongs to.}
 
 \item{GeneticSex}{A vector of genetic sex information ('F' for female, 'M' for male, NA for unknown).}
-
-\item{IsAnimalReference}{A vector indicating whether the sample is an animal reference (0 or 1).}
 
 \item{lat}{A vector of latitude coordinates in the WGS84 coordinate system.}
 
@@ -53,7 +42,6 @@ sampledata <- check_sampledata(
   Date = wolf_samples$Date,
   AnimalRef = wolf_samples$AnimalRef,
   GeneticSex = wolf_samples$GeneticSex,
-  IsAnimalReference = wolf_samples$IsAnimalReference,
   lat = wolf_samples$lat,
   lng = wolf_samples$lng,
   SType = wolf_samples$SType

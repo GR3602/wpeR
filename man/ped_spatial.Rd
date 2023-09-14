@@ -21,7 +21,7 @@ ped_spatial(
 )
 }
 \arguments{
-\item{plottable}{Data frame. Output of \code{\link{plot_table}} function.}
+\item{plottable}{Data frame. Output of \code{\link[=plot_table]{plot_table()}} function.}
 
 \item{na.rm}{Logical (\code{TRUE}/\code{FALSE}). Remove samples with missing coordinates and/or dates.}
 
@@ -52,23 +52,50 @@ reference samples of offspring.}
 movement data.}
 }
 \value{
-Based on the \code{output} parameter the function can return a list of \code{\link{sf}} objects,
+Depending on the \code{output} parameter the function can return a list of \code{\link{sf}} objects,
 a georeferenced vector data files or both.
 
 Most of the objects are created separately for mothers, fathers and offspring,
-this include: reference points (\code{motherRpoints}, \code{fatherRpoints} and
-\code{offspringRpoints}), movement points (\code{motherMovePoints}, \code{fatherMovePoints}
-and \code{offspringMovePoints}), movement lines (\code{motherMoveLines}, \code{fatherMoveLines}
-and \code{offspringMoveLines}) and movement polygons (\code{motherMovePoygons},
-\code{fatherMovePolygons} and \code{offspringMovePolygons}).
+this include:
+\itemize{
+\item Reference Points (\code{motherRpoints}, \code{fatherRpoints}, and \code{offspringRpoints}).
+\itemize{
+\item Each point corresponds to an animal included in the 'plot_table()'
+function output.
+\item For reproductive animals (mothers and fathers), a reference point is the
+location of their last sample within the specified time window.
+\item For offspring, the reference point is the location of their first sample
+within the time window.
+}
+\item Movement Points (\code{motherMovePoints}, \code{fatherMovePoints}, and \code{offspringMovePoints}).
+\itemize{
+\item These points represent all the samples of the respective animals.
+}
+\item Movement Lines (\code{motherMoveLines}, \code{fatherMoveLines} and \code{offspringMoveLines}).
+\itemize{
+\item Movement lines connect all '...MovePoints' of a specific animal in
+chronological order.
+}
+\item Movement Polygons (\code{motherMovePolygons}, \code{fatherMovePolygons} and \code{offspringMovePolygons}):
+\itemize{
+\item Movement polygons represent a convex hull that encloses all the samples of an individual.
+\item An individual must have more than two samples for this representation.
+}
+}
 
 Besides that the function also produces lines that connect mothers and
 their offspring (\code{maternityLines}), fathers and their offspring
-(\code{paternityLines}) and full siblings (\code{FullsibLines}).
+(\code{paternityLines}), and if \code{fullsibdata} parameter is specified,
+full siblings (\code{FullsibLines}).
 }
 \description{
 Creates georeferenced data for spatial
 pedigree representation form the output of \code{\link[=plot_table]{plot_table()}} function.
+}
+\details{
+The parameters \code{path}, \code{filename} and \code{out.format}, are used only when \code{output}
+parameter is set to "gis", since they control which georeferenced files should
+be created, where they will be saved and which common file name will they have.
 }
 \examples{
 # Prepare the data for usage with ped_spatial() function.
@@ -96,6 +123,6 @@ pt <- plot_table(org_tables$fams[1, ],
 
 # Run the function
 # Get files for spatial pedigree representation in list format.
-ped_spatial(pt)
+ped_spatial(plottable = pt)
 
 }

@@ -17,9 +17,9 @@ This data frame should adhere to the formatting and naming conventions
 outlined in the \code{\link[=check_sampledata]{check_sampledata()}} documentation.}
 
 \item{output}{Character string. Determines the format of the output. Options are:
-"ped": Returns an extended pedigree data frame.
-"fams": Returns a table of all families present in the pedigree.
-"both": Returns a list with two data frames: "ped" and "fams". (Default)}
+"ped": returns an extended pedigree data frame.
+"fams": returns a table of all families present in the pedigree.
+"both": returns a list with two data frames: "ped" and "fams". (Default)}
 }
 \value{
 Depending on the \code{output} parameter, the function returns either a data frame
@@ -36,7 +36,8 @@ family), \code{ped} includes columns for:
 \item \code{IsDead}: Logical value (\code{TRUE/FALSE}) that identifies if the individual is dead.
 \item \code{DadPclust}: Identifier of father's polygamy cluster (see Details).
 \item \code{MomPclust}: Identifier of mother's polygamy cuter (see Details).
-\item \code{polyCluster}: Numeric value indicating the polygamy cluster of the individual.
+\item \code{polyCluster}: Numeric value indicating if the individual is part of
+a polygamy cluster (see Details).
 }
 \item \code{fams} data frame includes information on families that individuals in the pedigree
 belong to. The families are described by:
@@ -57,21 +58,23 @@ belong to. The families are described by:
 \description{
 Takes pedigree data from \code{\link[=get_colony]{get_colony()}} or \code{\link[=get_ped]{get_ped()}} function and groups animals into families.
 It also expands the pedigree data by adding information about the family that each individual was born in and the
-family in which the individual is the reproductive animal. A family in this function is defined as a group of animals
-where at least one parent and at least one offspring is known.
+family in which the individual is the reproductive animal.
 }
 \details{
 The result of \code{org_fams()} function introduces us to two important concepts
-within the context of this package: family and poly cluster. A family in the
+within the context of this package: family and polygamy cluster. A family in the
 output of this function is defined as a group of animals where at least one
 parent and at least one offspring is known. A polygamy cluster refers to a
-group of half-siblings, either maternally or paternally related.
+group of half-siblings, either maternally or paternally related. In the
+function output the \code{DadPclust} groups paternal half-siblings and \code{MomPclust}
+maternal half-siblings.
 }
 \examples{
 
 # Prepare the data for usage with org_fams() function.
 # Get animal timespan data using the anim_timespan() function.
-animal_ts <- anim_timespan(wolf_samples$AnimalRef,
+animal_ts <- anim_timespan(
+  wolf_samples$AnimalRef,
   wolf_samples$Date,
   wolf_samples$SType,
   dead = c("Tissue")
@@ -85,6 +88,9 @@ ped_colony <- get_colony(path, sampledata, rm_obsolete_parents = TRUE, out = "Fa
 
 # Run the function
 # Organize families and expand pedigree data using the org_fams function.
-org_fams(ped_colony, sampledata)
+org_fams(
+    ped = ped_colony,
+    sampledata = sampledata
+    )
 
 }
