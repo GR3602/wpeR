@@ -10,7 +10,6 @@
 #' @param Date A vector of sample collection dates in 'YYYY-MM-DD' format.
 #' @param AnimalRef A vector of identifier codes of the particular individual that the sample belongs to.
 #' @param GeneticSex A vector of genetic sex information ('F' for female, 'M' for male, NA for unknown).
-#' @param IsAnimalReference A vector indicating whether the sample is an animal reference (0 or 1).
 #' @param lat A vector of latitude coordinates in the WGS84 coordinate system.
 #' @param lng A vector of longitude coordinates in the WGS84 coordinate system.
 #' @param SType A vector of sample types.
@@ -28,7 +27,6 @@
 #'   Date = wolf_samples$Date,
 #'   AnimalRef = wolf_samples$AnimalRef,
 #'   GeneticSex = wolf_samples$GeneticSex,
-#'   IsAnimalReference = wolf_samples$IsAnimalReference,
 #'   lat = wolf_samples$lat,
 #'   lng = wolf_samples$lng,
 #'   SType = wolf_samples$SType
@@ -40,7 +38,6 @@ check_sampledata <- function(Sample,
                              Date,
                              AnimalRef,
                              GeneticSex,
-                             IsAnimalReference,
                              lat,
                              lng,
                              SType) {
@@ -64,12 +61,8 @@ check_sampledata <- function(Sample,
                  n, length(GeneticSex)))
   }
 
-  if (length(IsAnimalReference) != n) {
-    stop(sprintf("Incompatible input: length(Sample) = %d, but length(IsAnimalReference) = %d",
-                 n, length(IsAnimalReference)))
-  }
 
-  if (length(lat) != n) {
+    if (length(lat) != n) {
     stop(sprintf("Incompatible input: length(Sample) = %d, but length(lat) = %d",
                  n, length(lat)))
   }
@@ -89,10 +82,6 @@ check_sampledata <- function(Sample,
   Date <- try(as.Date(Date, tryFormats = "%Y-%m-%d"), silent = TRUE)
   AnimalRef <- as.character(AnimalRef)
   GeneticSex <- as.character(GeneticSex)
-  IsAnimalReference <- tryCatch(as.numeric(IsAnimalReference),
-                                warning = function(cond) {
-                                  return(NULL)
-                                })
 
   lat <- tryCatch(as.numeric(lat), warning = function(cond) {
     return(NULL)
@@ -104,10 +93,6 @@ check_sampledata <- function(Sample,
 
   if (inherits(Date, "try-error")) {
     stop("Wrong date format, date shuld be formatted as 'YYYY-MM-DD'")
-  }
-
-  if (is.null(IsAnimalReference)) {
-    stop("IsAnimalReference has to store numerical values, either 0 or 1")
   }
 
   if (is.null(lat)) {
@@ -132,11 +117,6 @@ check_sampledata <- function(Sample,
     You must use 'M' for males, 'F' for females and NA for unknown sex.")
   }
 
-  animrefopt <- c(0, 1)
-  if (!all(IsAnimalReference %in% animrefopt)) {
-    stop("It seems that the IsAnimRef column is not coded properly.
-    You must use '0' for samples that are not reference and '1' for reference samples.")
-  }
 
   if (!all(-90 <= lat & 90 >= lat)) {
     stop("It seems that the latitude column stores coordinates that are not in WGS84 coordinate system.")
@@ -151,7 +131,6 @@ check_sampledata <- function(Sample,
     Date = Date,
     AnimalRef = AnimalRef,
     GeneticSex = GeneticSex,
-    IsAnimalReference = IsAnimalReference,
     lat = lat,
     lng = lng,
     SType = SType

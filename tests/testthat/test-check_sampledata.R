@@ -4,7 +4,6 @@ test_that("check_sampledata returns a well-structured data frame", {
     Date = wolf_samples$Date,
     AnimalRef = wolf_samples$AnimalRef,
     GeneticSex = wolf_samples$GeneticSex,
-    IsAnimalReference = wolf_samples$IsAnimalReference,
     lat = wolf_samples$lat,
     lng = wolf_samples$lng,
     SType = wolf_samples$SType
@@ -12,7 +11,7 @@ test_that("check_sampledata returns a well-structured data frame", {
 
   expect_true(inherits(result, "data.frame"))
 
-  expected_columns <- c("Sample", "Date", "AnimalRef", "GeneticSex", "IsAnimalReference", "lat", "lng", "SType")
+  expected_columns <- c("Sample", "Date", "AnimalRef", "GeneticSex", "lat", "lng", "SType")
   expect_equal(colnames(result), expected_columns)
 })
 
@@ -23,7 +22,6 @@ test_that("duplicated sample", {
       Date = c("2017-10-13","2017-11-22","2019-08-20"),
       AnimalRef = c("M10XC","M10XC","M1J47"),
       GeneticSex = c("M","M","F"),
-      IsAnimalReference = c("1","0","1"),
       lat = c("45.707663","45.713559","45.698983"),
       lng = c("14.129219","14.104967","14.079067"),
       SType = c("Scat","Scat","Saliva")
@@ -40,7 +38,6 @@ expect_error(
     Date = c("16.3.2023","2017-11-22","2019-08-20"),
     AnimalRef = c("M10XC","M10XC","M1J47"),
     GeneticSex = c("M","M","F"),
-    IsAnimalReference = c("1","0","1"),
     lat = c("45.707663","45.713559","45.698983"),
     lng = c("14.129219","14.104967","14.079067"),
     SType = c("Scat","Scat","Saliva")
@@ -56,7 +53,6 @@ test_that("sex error", {
       Date = c("2017-10-13","2017-11-22","2019-08-20"),
       AnimalRef = c("M10XC","M10XC","M1J47"),
       GeneticSex = c("M","UNKNOWN","F"),
-      IsAnimalReference = c("1","0","1"),
       lat = c("45.707663","45.713559","45.698983"),
       lng = c("14.129219","14.104967","14.079067"),
       SType = c("Scat","Scat","Saliva")
@@ -64,20 +60,7 @@ test_that("sex error", {
   )
 })
 
-test_that("is animal ref error", {
-  expect_error(
-    check_sampledata(
-      Sample = c("M10XC","M0PXH","M1J47"),
-      Date = c("2017-10-13","2017-11-22","2019-08-20"),
-      AnimalRef = c("M10XC","M10XC","M1J47"),
-      GeneticSex = c("M","M","F"),
-      IsAnimalReference = c(NA,"0","1"),
-      lat = c("45.707663","45.713559","45.698983"),
-      lng = c("14.129219","14.104967","14.079067"),
-      SType = c("Scat","Scat","Saliva")
-    )
-  )
-})
+
 
 
 test_that("lat error", {

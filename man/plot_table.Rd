@@ -65,8 +65,6 @@ and spatial (\code{\link[=ped_spatial]{ped_spatial()}}) representation of the pe
 \item date of sample collection in \code{Date} format (default = \code{Date}),
 \item assignment of sample to particular individual; character or numeric (default = \code{AnimalRef}),
 \item sex of the animal coded as \code{F}, \code{M} or \code{NA}; character (default = \code{GeneticSex}),
-\item value that shows which sample is reference sample for each individual; boolean
-coded as \code{1} or \code{0} (default = \code{IsAnimalReference}),
 \item longitude and latitude coordinates of sample collection location; numeric (default = \code{lng} and \code{lat}),
 \item type of particular sample eg. scat, tissue, saliva; character (default = \code{SType}),
 \item date of first and last sample of individual in \code{Date} format

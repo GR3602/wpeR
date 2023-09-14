@@ -9,8 +9,6 @@
 #'   - date of sample collection in `Date` format (default = `Date`),
 #'   - assignment of sample to particular individual; character or numeric (default = `AnimalRef`),
 #'   - sex of the animal coded as `F`, `M` or `NA`; character (default = `GeneticSex`),
-#'   - value that shows which sample is reference sample for each individual; boolean
-#'       coded as `1` or `0` (default = `IsAnimalReference`),
 #'   - longitude and latitude coordinates of sample collection location; numeric (default = `lng` and `lat`),
 #'   - type of particular sample eg. scat, tissue, saliva; character (default = `SType`),
 #'   - date of first and last sample of individual in `Date` format
