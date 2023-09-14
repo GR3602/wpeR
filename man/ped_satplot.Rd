@@ -3,25 +3,16 @@
 \name{ped_satplot}
 \alias{ped_satplot}
 \alias{PedigreeCMRSatplot}
-\title{Mark-Recapture Plot For Pedigree - Saturating}
+\title{Temporal plot of pedigree}
 \usage{
 ped_satplot(
-  date,
-  animal,
-  plottingID,
-  sex,
-  fam,
-  polyCluster,
-  isPolygamous,
-  rep,
-  later_rep,
-  dead,
+  plottable,
   famSpacing = 2,
   pClustSpacing = 2,
   xWhiteSpace = 100,
   xlabel = "Date",
   ylabel = "Animal",
-  title = "Pedigree CMR Graph",
+  title = "",
   subtitle = "",
   LegendLabel = "Sex",
   xlegend = 0.2,
@@ -31,36 +22,13 @@ ped_satplot(
 )
 }
 \arguments{
-\item{date}{Sample collection date. Must be in \code{Date} format.}
-
-\item{animal}{Individual animal identifier code.}
-
-\item{plottingID}{ID for plotting, because of polygamy same animal can be in
-more families.}
-
-\item{sex}{Sex, but can be other parameters - you can set up LegendLabel.}
-
-\item{fam}{Family identifier number.}
-
-\item{polyCluster}{Cluster for polygamous animals, includes all families in
-which an individual is reproductive animal.}
-
-\item{isPolygamous}{Logical value (\code{TRUE}/\code{FALSE}) that identifies
-animal as polygamous (has >1 mates).}
-
-\item{rep}{Logical value (\code{TRUE}/\code{FALSE}) that determines if individual
-is reproductive or not in current family.}
-
-\item{later_rep}{Logical value (\code{TRUE}/\code{FALSE}) that determines if individual
-is reproductive or not in any other (later) family.}
-
-\item{dead}{Logical value (\code{TRUE/FALSE}) that identifies if the individual is dead.}
+\item{plottable}{Data frame. Output of \code{\link[=plot_table]{plot_table()}} function.}
 
 \item{famSpacing}{Y-axis spacing between families. Should be even number!}
 
 \item{pClustSpacing}{Y-axis spacing between families. Should be even number!}
 
-\item{xWhiteSpace}{fill in}
+\item{xWhiteSpace}{Spacing on the X-axis at the beginning and end of the plot.}
 
 \item{xlabel}{X-axis label.}
 
@@ -81,7 +49,7 @@ is reproductive or not in any other (later) family.}
 \item{fam_label_size}{Family label text size.}
 }
 \value{
-a graphical representation of detected family members trough time.
+A graphical representation of detected family members trough time.
 }
 \description{
 Creates "capture" history plot of individuals
@@ -113,17 +81,6 @@ pt <- plot_table(org_tables$fams[1, ],
 
 # Run the function.
 # Get a temporal pedigree plot.
-ped_satplot(
-  pt$Date,
-  pt$AnimalRef,
-  pt$plottingID,
-  pt$GeneticSex,
-  pt$FamID,
-  pt$polyCluster,
-  pt$isPolygamous,
-  pt$rep,
-  pt$later_rep,
-  pt$dead
-)
+ped_satplot(plottable = pt)
 
 }

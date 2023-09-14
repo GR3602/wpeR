@@ -13,8 +13,8 @@ pt <- plot_table(org_tables$fams,
                  deadSample = c("Tissue", "Decomposing Tissue", "Blood"))
 
 test_that("Is plot produced", {
-  test.plot <- ped_satplot(pt$Date, pt$AnimalRef, pt$plottingID, pt$GeneticSex, pt$FamID,
-              pt$polyCluster, pt$isPolygamous, pt$rep, pt$later_rep, pt$dead)
-
+ # test.plot <- ped_satplot(pt$Date, pt$AnimalRef, pt$plottingID, pt$GeneticSex, pt$FamID,
+  #            pt$polyCluster, pt$isPolygamous, pt$rep, pt$later_rep, pt$dead)
+test.plot <- ped_satplot(pt)
   expect_true(!is.null(test.plot))
 })

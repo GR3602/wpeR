@@ -1,26 +1,12 @@
-#' Mark-Recapture Plot For Pedigree - Saturating
+#' Temporal plot of pedigree
 #'
 #' @description Creates "capture" history plot of individuals
 #' arranged by families included in data frame created by [`plot_table()`] function.
 #'
-#' @param date Sample collection date. Must be in `Date` format.
-#' @param animal Individual animal identifier code.
-#' @param plottingID ID for plotting, because of polygamy same animal can be in
-#'  more families.
-#' @param sex Sex, but can be other parameters - you can set up LegendLabel.
-#' @param fam Family identifier number.
-#' @param polyCluster Cluster for polygamous animals, includes all families in
-#' which an individual is reproductive animal.
-#' @param isPolygamous Logical value (`TRUE`/`FALSE`) that identifies
-#' animal as polygamous (has >1 mates).
-#' @param rep Logical value (`TRUE`/`FALSE`) that determines if individual
-#' is reproductive or not in current family.
-#' @param later_rep Logical value (`TRUE`/`FALSE`) that determines if individual
-#' is reproductive or not in any other (later) family.
-#' @param dead Logical value (`TRUE/FALSE`) that identifies if the individual is dead.
+#' @param plottable Data frame. Output of [`plot_table()`] function.
 #' @param famSpacing Y-axis spacing between families. Should be even number!
 #' @param pClustSpacing Y-axis spacing between families. Should be even number!
-#' @param xWhiteSpace fill in
+#' @param xWhiteSpace Spacing on the X-axis at the beginning and end of the plot.
 #' @param xlabel X-axis label.
 #' @param ylabel Y-axis label.
 #' @param title Plot title.
@@ -31,7 +17,7 @@
 #' @param text_size Plot text size.
 #' @param fam_label_size Family label text size.
 #'
-#' @return a graphical representation of detected family members trough time.
+#' @return A graphical representation of detected family members trough time.
 #' @import ggplot2
 #' @export
 #'
@@ -61,56 +47,36 @@
 #'
 #' # Run the function.
 #' # Get a temporal pedigree plot.
-#' ped_satplot(
-#'   pt$Date,
-#'   pt$AnimalRef,
-#'   pt$plottingID,
-#'   pt$GeneticSex,
-#'   pt$FamID,
-#'   pt$polyCluster,
-#'   pt$isPolygamous,
-#'   pt$rep,
-#'   pt$later_rep,
-#'   pt$dead
-#' )
+#' ped_satplot(plottable = pt)
 #'
 #' @aliases ped_satplot PedigreeCMRSatplot
 #'
 #'
 #'
 #'
-ped_satplot <- function(date,
-                        animal,
-                        plottingID,
-                        sex,
-                        fam,
-                        polyCluster,
-                        isPolygamous,
-                        rep,
-                        later_rep,
-                        dead,
+ped_satplot <- function(plottable,
                         famSpacing = 2, pClustSpacing = 2,
                         xWhiteSpace = 100,
                         xlabel = "Date", ylabel = "Animal",
-                        title = "Pedigree CMR Graph", subtitle = "",
+                        title = "", subtitle = "",
                         LegendLabel = "Sex", xlegend = 0.2, ylegend = 0.94,
                         text_size = 2.5, fam_label_size = 2) {
 
-  data <- data.frame(date,
-                     animal,
-                     plottingID,
-                     sex,
-                     fam,
-                     polyCluster,
-                     isPolygamous,
-                     rep,
-                     later_rep,
-                     dead)
+  data <- data.frame(date = plottable$Date,
+                     animal = plottable$AnimalRef,
+                     plottingID = plottable$plottingID,
+                     sex = plottable$GeneticSex,
+                     fam = plottable$FamID,
+                     polyCluster = plottable$polyCluster,
+                     isPolygamous = plottable$isPolygamous,
+                     rep = plottable$rep,
+                     later_rep = plottable$later_rep,
+                     dead = plottable$dead)
 
   # NEED THIS TO DEFINE VARIABLES NOT DEFINED BY FUNCTION
   # ELSE check() RETURNS NOTE no visible binding for global variable
   # solution found https://www.r-bloggers.com/2019/08/no-visible-binding-for-global-variable/
-  first <- polyFirst <- famFirst <- Y <- yaxis <- NULL
+  first <- polyFirst <- famFirst <- Y <- yaxis <- animal <- plottingID <- sex <- NULL
 
   famlines <- NULL # family / polycluster separation lines
 
