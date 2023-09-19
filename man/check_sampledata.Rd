@@ -2,27 +2,31 @@
 % Please edit documentation in R/check_sampledata.R
 \name{check_sampledata}
 \alias{check_sampledata}
-\title{Check and prepare sample data}
+\title{Check and prepare genetic sample metadata}
 \usage{
 check_sampledata(Sample, Date, AnimalRef, GeneticSex, lat, lng, SType)
 }
 \arguments{
-\item{Sample}{A vector of sample unique identifier codes.}
+\item{Sample}{A vector of sample unique identifier codes (see Details).}
 
 \item{Date}{A vector of sample collection dates in 'YYYY-MM-DD' format.}
 
-\item{AnimalRef}{A vector of identifier codes of the particular individual that the sample belongs to.}
+\item{AnimalRef}{A vector of identifier codes of the particular individual
+that the sample belongs to (see Details).}
 
-\item{GeneticSex}{A vector of genetic sex information ('F' for female, 'M' for male, NA for unknown).}
+\item{GeneticSex}{A vector of genetic sex information
+('F' for female, 'M' for male, NA for unknown).}
 
-\item{lat}{A vector of latitude coordinates in the WGS84 coordinate system.}
+\item{lat}{A vector of latitude coordinates in the WGS84 coordinate system
+(EPSG: 4326).}
 
-\item{lng}{A vector of longitude coordinates in the WGS84 coordinate system.}
+\item{lng}{A vector of longitude coordinates in the WGS84 coordinate system
+(EPSG: 4326).}
 
-\item{SType}{A vector of sample types.}
+\item{SType}{A vector of sample types eg.: scat, hair, tissue.}
 }
 \value{
-A data frame with 8 columns and a number of rows equal to the length
+A data frame with 7 columns and a number of rows equal to the length
 of the input vector. Each column corresponds to one of the input parameters.
 If the function executes without warnings or errors, the result from
 \code{check_sampledata()} can be used as an input parameter for other functions
@@ -30,11 +34,31 @@ within this package: \code{\link[=get_colony]{get_colony()}}, \code{\link[=get_p
 and \code{\link[=plot_table]{plot_table()}}.
 }
 \description{
-Checks the integrity and compatibility of various columns in the sample data
-and prepares a well-structured sample data frame. It verifies the consistency of columns
-such as Sample, Date, AnimalRef, GeneticSex, IsAnimalReference, lat, lng, and SType.
-The function ensures that the provided data is properly formatted and conforms to the standards
+Verifies the consistency of columns in the genetic sample metadata
+prepares it for use with other functions in the \code{wpeR} package. The function
+ensures that the provided data is properly formatted and conforms to the standards
 of functions that make up the \code{wpeR} package.
+}
+\details{
+The \code{Sample} vector contains unique identifier codes for each sample, while the
+\code{AnimalRef} vector contains identifier codes for the particular individuals to
+which the samples belong. In \code{wpeR} package these two vectors are closely related,
+since the data has to be formatted in such way that one \code{Sample} identifier
+of every individual serves as an \code{AnimalRef} of that individual.
+
+This convention is intended to highlight a sample with the best genotype as a
+reference sample for each particular individual. To adhere to this convention,
+ensure that every entry in the \code{AnimalRef} vector corresponds to a valid entry
+in the \code{Sample} vector. In other words, individuals should be uniquely identified
+by one of their associated samples.
+
+If your data does not follow this convention, you have two options:
+\enumerate{
+\item Change one of the \code{Sample} identifiers of each individual to match that
+individual's name or identifier.
+\item Select a random sample from each individual's set of samples and designate
+it as the identifier for that individual by using it as the \code{AnimalRef}.
+}
 }
 \examples{
 sampledata <- check_sampledata(

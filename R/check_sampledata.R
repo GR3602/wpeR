@@ -1,20 +1,43 @@
-#' Check and prepare sample data
+#' Check and prepare genetic sample metadata
 #'
-#' Checks the integrity and compatibility of various columns in the sample data
-#' and prepares a well-structured sample data frame. It verifies the consistency of columns
-#' such as Sample, Date, AnimalRef, GeneticSex, IsAnimalReference, lat, lng, and SType.
-#' The function ensures that the provided data is properly formatted and conforms to the standards
+#' Verifies the consistency of columns in the genetic sample metadata
+#' prepares it for use with other functions in the `wpeR` package. The function
+#' ensures that the provided data is properly formatted and conforms to the standards
 #' of functions that make up the `wpeR` package.
 #'
-#' @param Sample A vector of sample unique identifier codes.
-#' @param Date A vector of sample collection dates in 'YYYY-MM-DD' format.
-#' @param AnimalRef A vector of identifier codes of the particular individual that the sample belongs to.
-#' @param GeneticSex A vector of genetic sex information ('F' for female, 'M' for male, NA for unknown).
-#' @param lat A vector of latitude coordinates in the WGS84 coordinate system.
-#' @param lng A vector of longitude coordinates in the WGS84 coordinate system.
-#' @param SType A vector of sample types.
+#' @details
+#' The `Sample` vector contains unique identifier codes for each sample, while the
+#' `AnimalRef` vector contains identifier codes for the particular individuals to
+#' which the samples belong. In `wpeR` package these two vectors are closely related,
+#' since the data has to be formatted in such way that one `Sample` identifier
+#' of every individual serves as an `AnimalRef` of that individual.
 #'
-#' @return A data frame with 8 columns and a number of rows equal to the length
+#' This convention is intended to highlight a sample with the best genotype as a
+#' reference sample for each particular individual. To adhere to this convention,
+#' ensure that every entry in the `AnimalRef` vector corresponds to a valid entry
+#' in the `Sample` vector. In other words, individuals should be uniquely identified
+#' by one of their associated samples.
+#'
+#' If your data does not follow this convention, you have two options:
+#'   1. Change one of the `Sample` identifiers of each individual to match that
+#'      individual's name or identifier.
+#'   2. Select a random sample from each individual's set of samples and designate
+#'      it as the identifier for that individual by using it as the `AnimalRef`.
+#'
+#'
+#' @param Sample A vector of sample unique identifier codes (see Details).
+#' @param Date A vector of sample collection dates in 'YYYY-MM-DD' format.
+#' @param AnimalRef A vector of identifier codes of the particular individual
+#' that the sample belongs to (see Details).
+#' @param GeneticSex A vector of genetic sex information
+#' ('F' for female, 'M' for male, NA for unknown).
+#' @param lat A vector of latitude coordinates in the WGS84 coordinate system
+#' (EPSG: 4326).
+#' @param lng A vector of longitude coordinates in the WGS84 coordinate system
+#' (EPSG: 4326).
+#' @param SType A vector of sample types eg.: scat, hair, tissue.
+#'
+#' @return A data frame with 7 columns and a number of rows equal to the length
 #' of the input vector. Each column corresponds to one of the input parameters.
 #' If the function executes without warnings or errors, the result from
 #' `check_sampledata()` can be used as an input parameter for other functions
@@ -107,6 +130,12 @@ check_sampledata <- function(Sample,
     stop("Duplicated entry in `Sample` vector: ", Sample[duplicated(Sample)])
   }
 
+  if (!all(AnimalRef %in% Sample)) {
+    stop("Individual/s: ", setdiff(unique(AnimalRef), Sample), " have names
+         that are not found as sample identifiers. Individuals have to be named
+         by one of its samples. For explanation ?check_sampledata" )
+  }
+
   if (!inherits(Date, "Date")) {
     stop("The specified `Date` vector is not in Date format")
   }
@@ -126,9 +155,13 @@ check_sampledata <- function(Sample,
     stop("It seems that the latitude column stores coordinates that are not in WGS84 coordinate system.")
   }
 
+
+
+
+
   sampledata <- data.frame(
     Sample = Sample,
-    Date = Date,
+    Date = as.Date(Date),
     AnimalRef = AnimalRef,
     GeneticSex = GeneticSex,
     lat = lat,
