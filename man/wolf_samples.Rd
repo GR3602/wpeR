@@ -9,7 +9,7 @@ A data frame with 407 rows and 7 columns:
 \describe{
 \item{Sample}{Sample unique identifier code}
 \item{Date}{Date of sample collection (format: \code{YYYY-MM-DD})}
-\item{AnimalRef}{Identification string for patricular animal}
+\item{AnimalRef}{Identification string for particular animal}
 \item{GeneticSex}{Sex of animal to which the sample belong (format: \code{M} = male, \code{F} = female)}
 \item{lat}{latitude (N-S) of the sample (CRS: WGS84; EPSG: 4326)}
 \item{lng}{longitude (W-E) of the sample (CRS: WGS84; EPSG: 4326)}
@@ -23,7 +23,7 @@ Slovenian National Wolf Monitoring
 wolf_samples
 }
 \description{
-Metadata of selected genetic samples of wolves collected between XXXX and YYYY,
+Metadata of selected genetic samples of wolves collected between 2015 and 2021,
 in the scope of Slovenian National Wolf Monitoring
 }
 \keyword{datasets}
