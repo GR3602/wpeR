@@ -161,8 +161,9 @@ org_fams <- function(ped, sampledata, output = "both") {
 
   # Base R (stats) version
   DadPolyClusters <- stats::aggregate(fams$father, by = list(fams$father), FUN = length)
-  DadPolyClusters <- DadPolyClusters[DadPolyClusters$x > 1 &
-    !grepl("\\*", DadPolyClusters$Group.1), ]
+  DadPolyClusters <- subset(DadPolyClusters, x > 1 & !grepl("\\*", Group.1))
+  #DadPolyClusters <- DadPolyClusters[DadPolyClusters$x > 1 &
+  #  !grepl("\\*", DadPolyClusters$Group.1), ]
   names(DadPolyClusters) <- c("father", "N")
 
 
@@ -175,8 +176,9 @@ org_fams <- function(ped, sampledata, output = "both") {
 
   # Base R (stats) version
   MomPolyClusters <- stats::aggregate(fams$mother, by = list(fams$mother), FUN = length)
-  MomPolyClusters <- MomPolyClusters[MomPolyClusters$x > 1 &
-    !grepl("\\*", MomPolyClusters$Group.1), ]
+  MomPolyClusters <- subset(MomPolyClusters, x > 1 & !grepl("#", Group.1))
+  #MomPolyClusters <- MomPolyClusters[MomPolyClusters$x > 1 &
+  #  !grepl("#", MomPolyClusters$Group.1), ]
   names(MomPolyClusters) <- c("mother", "n")
 
 
