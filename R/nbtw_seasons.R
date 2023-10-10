@@ -69,13 +69,14 @@ nbtw_seasons <- function(animal_id, capture_date,
 
   capdata <- data.frame(animal_id, capture_date)
 
-  season2data <- capdata[capdata$capture_date >= season2_start &
-    capdata$capture_date <= season2_end, ]
+  season2data <- subset(capdata,
+                        capture_date >= season2_start &
+                          capture_date <= season2_end)
 
-  season1data <- capdata[capdata$capture_date >= season1_start &
-    capdata$capture_date <= season1_end, ]
+  season1data <- subset(capdata, capture_date >= season1_start &
+                          capture_date <= season1_end)
 
-  post_seasondata <- capdata[capdata$capture_date > season2_end, ]
+  post_seasondata <- subset(capdata, capture_date > season2_end)
 
   # total captures in season 2
   total_cap <- length(unique(season2data$animal_id))
