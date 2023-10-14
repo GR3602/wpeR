@@ -192,13 +192,14 @@ ppsParLines <- function(ppsData) {
     }
   } # for end
 
-  if (nrow(father) > 0 & nrow(child) > 0) {
+  #hashed 2023-10-14 it looks like that the if not needed
+  #if (nrow(father) > 0 & nrow(child) > 0) {
     paternityLines <- dplyr::bind_rows(paternityLines)
-  }
+  #}
 
-  if (nrow(father) > 0 & nrow(child) > 0) {
+  #if (nrow(father) > 0 & nrow(child) > 0) {
     maternityLines <- dplyr::bind_rows(maternityLines)
-  }
+  #}
 
   return(list(
     maternityLines = maternityLines,
