@@ -318,6 +318,7 @@ ppsRefPoints <- function(ppsData) {
 
   # drop duplication columns
   fatherRefs <- fatherRefs[, !names(fatherRefs) %in% dupCols]
+  fatherRefs <- unique(fatherRefs)
 
   if (nrow(fatherRefs) > 0) {
     fatherRpoints <- st_as_sf(fatherRefs,
