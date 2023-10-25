@@ -118,6 +118,12 @@ check_sampledata <- function(Sample,
     stop("Wrong date format, date shuld be formatted as 'YYYY-MM-DD'")
   }
 
+  if (any(is.na(Date))) {
+    warning(paste(Sample[is.na(Date)], collapse = ", "),
+    " sample/s are widouth collection dates. It is recomendet to exclude
+            samples widouth collection dates from anaysis.")
+  }
+
   if (is.null(lat)) {
     stop("Looks like there are some characters in your latitude cordinate notation.")
   }
@@ -128,6 +134,12 @@ check_sampledata <- function(Sample,
 
   if (anyDuplicated.default(Sample) > 0) {
     stop("Duplicated entry in `Sample` vector: ", Sample[duplicated(Sample)])
+  }
+
+  if(any(is.na(AnimalRef))) {
+    stop(sum(is.na(AnimalRef)), "\n samples are not assigned to any individuals.
+         All samples shuld be assigened to individuals trough AnimalRef column.
+         For explanation ?check_sampledata")
   }
 
   if (!all(AnimalRef %in% Sample)) {
