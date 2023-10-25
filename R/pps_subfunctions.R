@@ -372,106 +372,64 @@ ppsMvLines <- function(ppsData) {
 
 
   #### Offspring####
-
-  indcount <- 1
-  individualLines <- NULL
-  offspringMoveLines <- NULL
-
-  offspringRefs <- ppsData$offspringRefs
-  offspring <- ppsData$offspring
-
-  for (i in seq_len(nrow(offspringRefs))) {
-    if (nrow(offspringRefs) == 0) break
-
-    individual <- offspring[offspring$AnimalRef == offspringRefs$AnimalRef[i], !names(offspring) %in% dupCols]
-
-    if (nrow(individual) == 0) next
-
-    individual <- unique(individual)
-
-    if (nrow(individual) >= 2) {
-      individualLines[[indcount]] <- st_geometry(st_as_sf(individual,
-                                                          coords = c("lng", "lat"),
-                                                          crs = 4326))
-      individualLines[[indcount]] <- st_cast(st_union(individualLines[[indcount]]),
-                                             "LINESTRING")
-      offspringMoveLines <- rbind(offspringMoveLines, data.frame(
-        ID = indcount,
-        AnimalID = offspringRefs$AnimalRef[i],
-        fam = offspringRefs$FamID[i],
-        plyClust = offspringRefs$polyCluster[i],
-        geometry = st_geometry(individualLines[[indcount]])
-      ))
-
-
-      indcount <- indcount + 1
-    }
+  if (nrow(ppsData$offspringRefs) == 0) {
+    offspringMoveLines <- st_sf(1, st_sfc(st_linestring())) # dummy... empty object
+    warning("No offspring included in dataset.
+          Creating empty sf data frame -> offspringMoveLines!")
   }
 
-  # hashed are options to deal with examples where there is just one sample
-  # option1
-  # no df created -> not working properly 2023-05-20
-  # if (nrow(individual) >= 2) {
-  #  offspringMoveLines = st_as_sf(offspringMoveLines, sf_column_name = "geometry")
-  # }
+  offspring <- ppsData$offspring
+  offspring <- unique(offspring[!names(offspring) %in% dupCols])
 
-  # option2
-  # empty file created
-  if (length(individualLines) > 0) {
-    offspringMoveLines <- st_as_sf(offspringMoveLines, sf_column_name = "geometry")
+  offspring_sf <- sf::st_as_sf(offspring,
+                               coords = c("lng", "lat"),
+                               crs = 4326)
+
+  #aggregate option just in case
+  #offspring_sf <- offspring[2]
+  #setNames(
+    #aggregate(offspring_sf, by = list(offspring_sf$AnimalRef), FUN = length, do_union = FALSE),
+    #c("animal", "no", "geometry"))
+
+  offspringMoveLines <- offspring_sf |>
+    dplyr::group_by(AnimalRef) |>
+    dplyr::summarise(no_mvPoints = dplyr::n(),
+                     do_union = FALSE) |>
+    sf::st_cast("LINESTRING")
+
+
+  if (length(which(offspringMoveLines$no_mvPoints > 1)) <= nrow(offspringMoveLines)){
+    offspringMoveLines <- offspringMoveLines[which(offspringMoveLines$no_mvPoints > 1),]
   } else {
     offspringMoveLines <- st_sf(1, st_sfc(st_linestring())) # dummy... empty object
     warning("None of the offspring has two samples needed to create a linestring.
             Creating empty sf data frame -> offspringMoveLines!")
   }
 
-
-
   #### Father####
 
-  indcount <- 1
-  individualLines <- NULL
-  fatherMoveLines <- NULL
-
-  fatherRefs <- ppsData$fatherRef
-  fatherAll <- ppsData$fatherAll
-
-  for (i in seq_len(nrow(fatherRefs))) {
-    if (nrow(fatherRefs) == 0) break
-
-    individual <- fatherAll[fatherAll$AnimalRef == fatherRefs$AnimalRef[i], !names(fatherAll) %in% dupCols]
-
-    if (nrow(individual) == 0) next
-
-    individual <- unique(individual)
-
-    if (nrow(individual) >= 2) {
-      individualLines[[indcount]] <- st_geometry(st_as_sf(individual,
-                                                          coords = c("lng", "lat"),
-                                                          crs = 4326))
-      individualLines[[indcount]] <- st_cast(st_union(individualLines[[indcount]]),
-                                             "LINESTRING")
-      fatherMoveLines <- rbind(fatherMoveLines, data.frame(
-        ID = indcount,
-        AnimalID = fatherRefs$AnimalRef[i],
-        fam = fatherRefs$FamID[i],
-        plyClust = fatherRefs$polyCluster[i],
-        geometry = st_geometry(individualLines[[indcount]])
-      ))
-
-
-      indcount <- indcount + 1
-    }
+  if (nrow(ppsData$fatherRefs) == 0) {
+    fatherMoveLines <- st_sf(1, st_sfc(st_linestring())) # dummy... empty object
+    warning("No fathers included in dataset.
+          Creating empty sf data frame -> fatherMoveLines!")
   }
 
-  # if (nrow(individual) >= 2) {
-  #  fatherMoveLines= st_as_sf(fatherMoveLines, sf_column_name = "geometry")
-  # }
+  fathers <- ppsData$fatherAll
+  fathers <- unique(fathers[!names(fathers) %in% dupCols])
 
-  # option2
-  # empty file created
-  if (length(individualLines) > 0) {
-    fatherMoveLines <- st_as_sf(fatherMoveLines, sf_column_name = "geometry")
+  fathers_sf <- sf::st_as_sf(fathers,
+                               coords = c("lng", "lat"),
+                               crs = 4326)
+
+  fatherMoveLines <- fathers_sf |>
+    dplyr::group_by(AnimalRef) |>
+    dplyr::summarise(no_mvPoints = dplyr::n(),
+                     do_union = FALSE) |>
+    sf::st_cast("LINESTRING")
+
+
+  if (length(which(fatherMoveLines$no_mvPoints > 1)) <= nrow(fatherMoveLines)){
+    fatherMoveLines <- fatherMoveLines[which(fatherMoveLines$no_mvPoints > 1),]
   } else {
     fatherMoveLines <- st_sf(1, st_sfc(st_linestring())) # dummy... empty object
     warning("None of the fathers has two samples needed to create a linestring.
@@ -479,55 +437,38 @@ ppsMvLines <- function(ppsData) {
   }
 
 
+
+
   #### Mother####
 
-  indcount <- 1
-  individualLines <- NULL
-  motherMoveLines <- NULL
-
-  motherRefs <- ppsData$motherRefs
-  motherAll <- ppsData$motherAll
-
-  for (i in seq_len(nrow(motherRefs))) {
-    if (nrow(motherRefs) == 0) break
-
-    individual <- motherAll[motherAll$AnimalRef == motherRefs$AnimalRef[i], !names(motherAll) %in% dupCols]
-
-    if (nrow(individual) == 0) next
-
-    individual <- unique(individual)
-
-    if (nrow(individual) >= 2) {
-      individualLines[[indcount]] <- st_geometry(st_as_sf(individual,
-                                                          coords = c("lng", "lat"),
-                                                          crs = 4326))
-      individualLines[[indcount]] <- st_cast(st_union(individualLines[[indcount]]),
-                                             "LINESTRING")
-      motherMoveLines <- rbind(motherMoveLines, data.frame(
-        ID = indcount,
-        AnimalID = motherRefs$AnimalRef[i],
-        fam = motherRefs$FamID[i],
-        plyClust = motherRefs$polyCluster[i],
-        geometry = st_geometry(individualLines[[indcount]])
-      ))
-
-
-      indcount <- indcount + 1
-    }
+  if (nrow(ppsData$motherRefs) == 0) {
+    motherMoveLines <- st_sf(1, st_sfc(st_linestring())) # dummy... empty object
+    warning("No mothers included in dataset.
+          Creating empty sf data frame -> motherMoveLines!")
   }
 
-  # if (nrow(individual) >= 2) {
-  #  motherMoveLines= st_as_sf(motherMoveLines, sf_column_name = "geometry")
-  # }
+  mothers <- ppsData$motherAll
+  mothers <- unique(mothers[!names(mothers) %in% dupCols])
 
-  # option2
-  if (length(individualLines) > 0) {
-    motherMoveLines <- st_as_sf(motherMoveLines, sf_column_name = "geometry")
+  mothers_sf <- sf::st_as_sf(mothers,
+                             coords = c("lng", "lat"),
+                             crs = 4326)
+
+  motherMoveLines <- mothers_sf |>
+    dplyr::group_by(AnimalRef) |>
+    dplyr::summarise(no_mvPoints = dplyr::n(),
+                     do_union = FALSE) |>
+    sf::st_cast("LINESTRING")
+
+
+  if (length(which(motherMoveLines$no_mvPoints > 1)) <= nrow(motherMoveLines)){
+    motherMoveLines <- motherMoveLines[which(motherMoveLines$no_mvPoints > 1),]
   } else {
     motherMoveLines <- st_sf(1, st_sfc(st_linestring())) # dummy... empty object
     warning("None of the mothers has two samples needed to create a linestring.
             Creating empty sf data frame -> motherMoveLines!")
   }
+
 
 
   return(list(
@@ -547,111 +488,82 @@ ppsMvLines <- function(ppsData) {
 #
 #
 ppsMvPolygons <- function(ppsData, MvPoints) {
+
+  excl_geom <- c("POINT", "LINESTRING")
+
   #### Mother####
-  # mother MovePolygons
-  # mother MovePolygon
-  indcount <- 1
 
-  motherMovePoints <- MvPoints$motherMovePoints
-  motherRefs <- ppsData$motherRefs
-
-  motherMovePolygons <- NULL
-  for (i in seq_len(nrow(motherRefs))) {
-    if (nrow(motherRefs) == 0) break
-    individualPoints <- motherMovePoints[motherMovePoints$AnimalRef == motherRefs$AnimalRef[i], ]
-    if (nrow(individualPoints) >= 3) {
-      animal <- unique(individualPoints$AnimalRef)
-      individualPoints <- individualPoints[, 2]
-      individualPoints <- st_combine(individualPoints)
-      individualPolygon <- st_convex_hull(individualPoints)
-      individualPolygon <- st_geometry(individualPolygon)
-      individualPolygon <- data.frame(
-        animal = animal,
-        geometry = individualPolygon
-      )
-      individualPolygon <- st_as_sf(individualPolygon, sf_column_name = "geometry")
-      motherMovePolygons <- rbind(motherMovePolygons, individualPolygon)
-    } else {
-      next
-    }
+  if (nrow(ppsData$motherRefs) == 0) {
+    motherMovePolygons <- st_sf(1, st_sfc(st_polygon())) # dummy... empty object
+    warning("No mothers included in dataset.
+          Creating empty sf data frame -> motherMovePolygons!")
   }
 
-  if (is.null(motherMovePolygons)) {
-    motherMovePolygons <- st_sf(1, st_sfc(st_polygon()))
+  motherMovePoints <- MvPoints$motherMovePoints
+
+  motherMovePolygons <- motherMovePoints|>
+    dplyr::group_by(AnimalRef) |>
+    dplyr::summarise(no_mvPoints = dplyr::n()) |>
+    sf::st_convex_hull()
+
+  if(length(which(motherMovePolygons$no_mvPoints > 2)) <= nrow(motherMovePolygons)) {
+    #motherMovePolygons <- motherMovePolygons[which(motherMovePolygons$no_mvPoints > 2),]
+    corr_geom <- which(!(sf::st_geometry_type(motherMovePolygons) %in% excl_geom))
+    motherMovePolygons <- motherMovePolygons[corr_geom,]
+
+  } else {
+    motherMovePolygons <- st_sf(1, st_sfc(st_polygon())) # dummy... empty object
     warning("Not enough mother samples to create at least one polygon.
             Creating empty sf data frame -> motherMovePolygons!")
   }
 
   #### Father####
-  # father MovePolygons
-  # father MovePolygon
-  indcount <- 1
 
-  fatherMovePoints <- MvPoints$fatherMovePoints
-  fatherRefs <- ppsData$fatherRefs
-
-  fatherMovePolygons <- NULL
-  for (i in seq_len(nrow(fatherRefs))) {
-    # offspring record
-    if (nrow(fatherRefs) == 0) break
-    individualPoints <- fatherMovePoints[fatherMovePoints$AnimalRef == fatherRefs$AnimalRef[i], ]
-    if (nrow(individualPoints) >= 3) {
-      animal <- unique(individualPoints$AnimalRef)
-      individualPoints <- individualPoints[, 2]
-      individualPoints <- st_combine(individualPoints)
-      individualPolygon <- st_convex_hull(individualPoints)
-      individualPolygon <- st_geometry(individualPolygon)
-      individualPolygon <- data.frame(
-        animal = animal,
-        geometry = individualPolygon
-      )
-      individualPolygon <- st_as_sf(individualPolygon, sf_column_name = "geometry")
-      fatherMovePolygons <- rbind(fatherMovePolygons, individualPolygon)
-    } else {
-      next
-    }
+  if (nrow(ppsData$fatherRefs) == 0) {
+    fatherMovePolygons <- st_sf(1, st_sfc(st_polygon())) # dummy... empty object
+    warning("No fathers included in dataset.
+          Creating empty sf data frame -> fatherMovePolygons!")
   }
 
-  if (is.null(fatherMovePolygons)) {
-    fatherMovePolygons <- st_sf(1, st_sfc(st_polygon()))
+  fatherMovePoints <- MvPoints$fatherMovePoints
+
+  fatherMovePolygons <- fatherMovePoints|>
+    dplyr::group_by(AnimalRef) |>
+    dplyr::summarise(no_mvPoints = dplyr::n()) |>
+    sf::st_convex_hull()
+
+  if(length(which(fatherMovePolygons$no_mvPoints > 2)) <= nrow(fatherMovePolygons)) {
+    #fatherMovePolygons <- fatherMovePolygons[which(fatherMovePolygons$no_mvPoints > 2), ]
+    corr_geom <- which(!(sf::st_geometry_type(fatherMovePolygons) %in% excl_geom))
+    fatherMovePolygons <- fatherMovePolygons[corr_geom,]
+  } else {
+    fatherMovePolygons <- st_sf(1, st_sfc(st_polygon())) # dummy... empty object
     warning("Not enough father samples to create at least one polygon.
             Creating empty sf data frame -> fatherMovePolygons!")
   }
 
 
-
   #### Offspring####
-  # offspring MovePolygons
-  # offspring MovePolygon
-  indcount <- 1
 
-  offspringMovePoints <- MvPoints$offspringMovePoints
-  offspringRefs <- ppsData$offspringRefs
-
-  offspringMovePolygons <- NULL
-  for (i in seq_len(nrow(offspringRefs))) {
-    # offspring record
-    if (nrow(offspringRefs) == 0) break
-    individualPoints <- offspringMovePoints[offspringMovePoints$AnimalRef == offspringRefs$AnimalRef[i], ]
-    if (nrow(individualPoints) >= 3) {
-      animal <- unique(individualPoints$AnimalRef)
-      individualPoints <- individualPoints[, 2]
-      individualPoints <- st_combine(individualPoints)
-      individualPolygon <- st_convex_hull(individualPoints)
-      individualPolygon <- st_geometry(individualPolygon)
-      individualPolygon <- data.frame(
-        animal = animal,
-        geometry = individualPolygon
-      )
-      individualPolygon <- st_as_sf(individualPolygon, sf_column_name = "geometry")
-      offspringMovePolygons <- rbind(offspringMovePolygons, individualPolygon)
-    } else {
-      next
-    }
+  if (nrow(ppsData$offspringRefs) == 0) {
+    offspringMovePolygons <- st_sf(1, st_sfc(st_polygon())) # dummy... empty object
+    warning("No offspring included in dataset.
+          Creating empty sf data frame -> offspringMovePolygons!")
   }
 
-  if (is.null(offspringMovePolygons)) {
-    offspringMovePolygons <- st_sf(1, st_sfc(st_polygon()))
+  offspringMovePoints <- MvPoints$offspringMovePoints
+
+  offspringMovePolygons <- offspringMovePoints|>
+    dplyr::group_by(AnimalRef) |>
+    dplyr::summarise(no_mvPoints = dplyr::n()) |>
+    sf::st_convex_hull()
+
+  if(length(which(offspringMovePolygons$no_mvPoints > 2)) <= nrow(offspringMovePolygons)) {
+    #offspringMovePolygons <- offspringMovePolygons[which(offspringMovePolygons$no_mvPoints > 2),]
+    corr_geom <- which(!(sf::st_geometry_type(offspringMovePolygons) %in% excl_geom))
+    offspringMovePolygons <- offspringMovePolygons[corr_geom,]
+  } else {
+    offspringMovePolygons <- st_sf(1, st_sfc(st_polygon())) # dummy... empty object
     warning("Not enough offspring samples to create at least one polygon.
             Creating empty sf data frame -> offspringMovePolygons!")
   }
