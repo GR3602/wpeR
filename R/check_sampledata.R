@@ -119,7 +119,7 @@ check_sampledata <- function(Sample,
   }
 
   if (any(is.na(Date))) {
-    warning(paste(Sample[is.na(Date)], collapse = ", "),
+    warning(sum(is.na(Date)),
     " sample/s are widouth collection dates. It is recomendet to exclude
             samples widouth collection dates from anaysis.")
   }
@@ -143,7 +143,7 @@ check_sampledata <- function(Sample,
   }
 
   if (!all(AnimalRef %in% Sample)) {
-    stop("Individual/s: ", setdiff(unique(AnimalRef), Sample), " have names
+    stop("Individual/s: ", paste(setdiff(unique(AnimalRef), Sample),collapse = ", "), " have names
          that are not found as sample identifiers. Individuals have to be named
          by one of its samples. For explanation ?check_sampledata" )
   }
@@ -159,12 +159,17 @@ check_sampledata <- function(Sample,
   }
 
 
-  if (!all(-90 <= lat & 90 >= lat)) {
+  if (!all(-90 <= lat[!is.na(lat)] & 90 >= lat[!is.na(lat)])) {
     stop("It seems that the latitude column stores coordinates that are not in WGS84 coordinate system.")
   }
 
-  if (!all(-180 <= lng & 180 >= lng)) {
+  if (!all(-180 <= lng[!is.na(lng)] & 180 >= lng[!is.na(lng)])) {
     stop("It seems that the latitude column stores coordinates that are not in WGS84 coordinate system.")
+  }
+
+  if(any(is.na(lat)|any(is.na(lng)))) {
+    warning("NA values in lng and/or lat column. When creating spatial
+            representation of pedigree such samples will be excluded.")
   }
 
 
