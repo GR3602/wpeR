@@ -109,9 +109,14 @@ org_fams <- function(ped, sampledata, output = "both") {
   ## FamID = NA for unknown animals
   ped$parents[is.na(ped$FamID)] <- NA
   ## from sample data add firs/lastseen and is dead data
-  ped$FirstSeen <- sampledata$FirstSeen[match(ped$id, sampledata$Sample)]
-  ped$LastSeen <- sampledata$LastSeen[match(ped$id, sampledata$Sample)]
-  ped$IsDead <- sampledata$IsDead[match(ped$id, sampledata$Sample)]
+  #ped$FirstSeen <- sampledata$FirstSeen[match(ped$id, sampledata$Sample)]
+  #ped$LastSeen <- sampledata$LastSeen[match(ped$id, sampledata$Sample)]
+  #ped$IsDead <- sampledata$IsDead[match(ped$id, sampledata$Sample)]
+  ## changed above lines so that animal reference do not need to be sample names
+  ## notice that match takes the first occurance of AnimalRef!
+  ped$FirstSeen <- sampledata$FirstSeen[match(ped$id, sampledata$AnimalRef)]
+  ped$LastSeen <- sampledata$LastSeen[match(ped$id, sampledata$AnimalRef)]
+  ped$IsDead <- sampledata$IsDead[match(ped$id, sampledata$AnimalRef)]
 
 
   # [FAMS]
@@ -127,8 +132,12 @@ org_fams <- function(ped, sampledata, output = "both") {
   for (par in fams$parents) {
     fam <- fams[fams$parents == par, ]
     offspring <- ped[ped$parents == par, ]
-    father <- sampledata[sampledata$Sample == fam$father, ]
-    mother <- sampledata[sampledata$Sample == fam$mother, ]
+    #changes for father and mother so that animal reference do not need to be
+    #sample names
+    #father <- sampledata[sampledata$Sample == fam$father, ]
+    father <- sampledata[which(sampledata$AnimalRef == fam$father)[1], ]
+    #mother <- sampledata[sampledata$Sample == fam$mother, ]
+    mother <- sampledata[which(sampledata$AnimalRef == fam$mother)[1], ]
 
     # family starts when first offspring seen
     famstart <- min(offspring$FirstSeen, na.rm = TRUE)
