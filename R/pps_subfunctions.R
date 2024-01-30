@@ -367,6 +367,12 @@ ppsRefPoints <- function(ppsData) {
 #
 
 ppsMvLines <- function(ppsData) {
+
+  # NEED THIS TO DEFINE VARIABLES NOT DEFINED BY FUNCTION
+  # ELSE check() RETURNS NOTE no visible binding for global variable
+  # solution found https://www.r-bloggers.com/2019/08/no-visible-binding-for-global-variable/
+  AnimalRef <- NULL
+
   # columns to be removed for movelines, movepoints and refpoints to remove spatial data duplication
   dupCols <- c("plottingID", "FamID", "polyCluster")
 
@@ -488,6 +494,11 @@ ppsMvLines <- function(ppsData) {
 #
 #
 ppsMvPolygons <- function(ppsData, MvPoints) {
+
+  # NEED THIS TO DEFINE VARIABLES NOT DEFINED BY FUNCTION
+  # ELSE check() RETURNS NOTE no visible binding for global variable
+  # solution found https://www.r-bloggers.com/2019/08/no-visible-binding-for-global-variable/
+  AnimalRef <- NULL
 
   excl_geom <- c("POINT", "LINESTRING")
 

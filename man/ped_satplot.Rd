@@ -72,7 +72,7 @@ ped_colony <- get_colony(path, sampledata, rm_obsolete_parents = TRUE, out = "Fa
 # Organize families and expand pedigree data using the org_fams function.
 org_tables <- org_fams(ped_colony, sampledata, output = "both")
 # Prepare data for plotting.
-pt <- plot_table(org_tables$fams[1, ],
+pt <- plot_table(plot.fams = 1,
   org_tables$fams,
   org_tables$ped,
   sampledata,

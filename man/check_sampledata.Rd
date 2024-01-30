@@ -4,15 +4,24 @@
 \alias{check_sampledata}
 \title{Check and prepare genetic sample metadata}
 \usage{
-check_sampledata(Sample, Date, AnimalRef, GeneticSex, lat, lng, SType)
+check_sampledata(
+  Sample,
+  Date,
+  AnimalRef,
+  GeneticSex,
+  lat,
+  lng,
+  SType,
+  extraCols = NULL
+)
 }
 \arguments{
-\item{Sample}{A vector of sample unique identifier codes (see Details).}
+\item{Sample}{A vector of sample unique identifier codes.}
 
 \item{Date}{A vector of sample collection dates in 'YYYY-MM-DD' format.}
 
 \item{AnimalRef}{A vector of identifier codes of the particular individual
-that the sample belongs to (see Details).}
+that the sample belongs to.}
 
 \item{GeneticSex}{A vector of genetic sex information
 ('F' for female, 'M' for male, NA for unknown).}
@@ -24,6 +33,9 @@ that the sample belongs to (see Details).}
 (EPSG: 4326).}
 
 \item{SType}{A vector of sample types eg.: scat, hair, tissue.}
+
+\item{extraCols}{A vector of extra column names that the user wants to include
+in sampledata data frame (see Details).}
 }
 \value{
 A data frame with 7 columns and a number of rows equal to the length
@@ -34,31 +46,20 @@ within this package: \code{\link[=get_colony]{get_colony()}}, \code{\link[=get_p
 and \code{\link[=plot_table]{plot_table()}}.
 }
 \description{
-Verifies the consistency of columns in the genetic sample metadata
+Verifies the consistency of columns in the genetic sample metadata and
 prepares it for use with other functions in the \code{wpeR} package. The function
 ensures that the provided data is properly formatted and conforms to the standards
 of functions that make up the \code{wpeR} package.
 }
 \details{
-The \code{Sample} vector contains unique identifier codes for each sample, while the
-\code{AnimalRef} vector contains identifier codes for the particular individuals to
-which the samples belong. In \code{wpeR} package these two vectors are closely related,
-since the data has to be formatted in such way that one \code{Sample} identifier
-of every individual serves as an \code{AnimalRef} of that individual.
-
-This convention is intended to highlight a sample with the best genotype as a
-reference sample for each particular individual. To adhere to this convention,
-ensure that every entry in the \code{AnimalRef} vector corresponds to a valid entry
-in the \code{Sample} vector. In other words, individuals should be uniquely identified
-by one of their associated samples.
-
-If your data does not follow this convention, you have two options:
-\enumerate{
-\item Change one of the \code{Sample} identifiers of each individual to match that
-individual's name or identifier.
-\item Select a random sample from each individual's set of samples and designate
-it as the identifier for that individual by using it as the \code{AnimalRef}.
-}
+By specifying the \code{extraCols} parameter additional information can be included
+in the sampledata dataframe. Such additional information is not required for
+the functioning of the \code{wpeR} package functions, but can be useful to the user
+when interpreting results. When including additional columns the function
+inputs (Sample, Date, AnimalRef...) have to be defined as a vector extracted from
+data frame column (eg. Sample = dataframe$column) and the \code{extraCols} parameter is defined,
+as a vector of column names form the same data frame (eg. extraCols = c(column1, column2,
+column3)).
 }
 \examples{
 sampledata <- check_sampledata(

@@ -1,34 +1,25 @@
 #' Check and prepare genetic sample metadata
 #'
-#' Verifies the consistency of columns in the genetic sample metadata
+#' Verifies the consistency of columns in the genetic sample metadata and
 #' prepares it for use with other functions in the `wpeR` package. The function
 #' ensures that the provided data is properly formatted and conforms to the standards
 #' of functions that make up the `wpeR` package.
 #'
 #' @details
-#' The `Sample` vector contains unique identifier codes for each sample, while the
-#' `AnimalRef` vector contains identifier codes for the particular individuals to
-#' which the samples belong. In `wpeR` package these two vectors are closely related,
-#' since the data has to be formatted in such way that one `Sample` identifier
-#' of every individual serves as an `AnimalRef` of that individual.
-#'
-#' This convention is intended to highlight a sample with the best genotype as a
-#' reference sample for each particular individual. To adhere to this convention,
-#' ensure that every entry in the `AnimalRef` vector corresponds to a valid entry
-#' in the `Sample` vector. In other words, individuals should be uniquely identified
-#' by one of their associated samples.
-#'
-#' If your data does not follow this convention, you have two options:
-#'   1. Change one of the `Sample` identifiers of each individual to match that
-#'      individual's name or identifier.
-#'   2. Select a random sample from each individual's set of samples and designate
-#'      it as the identifier for that individual by using it as the `AnimalRef`.
+#' By specifying the `extraCols` parameter additional information can be included
+#' in the sampledata dataframe. Such additional information is not required for
+#' the functioning of the `wpeR` package functions, but can be useful to the user
+#' when interpreting results. When including additional columns the function
+#' inputs (Sample, Date, AnimalRef...) have to be defined as a vector extracted from
+#' data frame column (eg. Sample = dataframe$column) and the `extraCols` parameter is defined,
+#' as a vector of column names form the same data frame (eg. extraCols = c(column1, column2,
+#' column3)).
 #'
 #'
-#' @param Sample A vector of sample unique identifier codes (see Details).
+#' @param Sample A vector of sample unique identifier codes.
 #' @param Date A vector of sample collection dates in 'YYYY-MM-DD' format.
 #' @param AnimalRef A vector of identifier codes of the particular individual
-#' that the sample belongs to (see Details).
+#' that the sample belongs to.
 #' @param GeneticSex A vector of genetic sex information
 #' ('F' for female, 'M' for male, NA for unknown).
 #' @param lat A vector of latitude coordinates in the WGS84 coordinate system
@@ -36,6 +27,8 @@
 #' @param lng A vector of longitude coordinates in the WGS84 coordinate system
 #' (EPSG: 4326).
 #' @param SType A vector of sample types eg.: scat, hair, tissue.
+#' @param extraCols A vector of extra column names that the user wants to include
+#' in sampledata data frame (see Details).
 #'
 #' @return A data frame with 7 columns and a number of rows equal to the length
 #' of the input vector. Each column corresponds to one of the input parameters.
@@ -63,7 +56,8 @@ check_sampledata <- function(Sample,
                              GeneticSex,
                              lat,
                              lng,
-                             SType) {
+                             SType,
+                             extraCols = NULL) {
   n <- length(Sample)
   if (n == 0) {
     stop("sample vector has length 0")
@@ -100,8 +94,9 @@ check_sampledata <- function(Sample,
                  n, length(SType)))
   }
 
-
-  Sample <- as.character(Sample)
+  #has to be sample with small s otherwise sub("\\$.*", "", deparse(substitute(sample)))
+  #returns the vector below and not function parameter Sample
+  sample <- as.character(Sample)
   Date <- try(as.Date(Date, tryFormats = "%Y-%m-%d"), silent = TRUE)
   AnimalRef <- as.character(AnimalRef)
   GeneticSex <- as.character(GeneticSex)
@@ -132,8 +127,8 @@ check_sampledata <- function(Sample,
     stop("Looks like there are some characters in your longitude cordinate notation.")
   }
 
-  if (anyDuplicated.default(Sample) > 0) {
-    stop("Duplicated entry in `Sample` vector: ", Sample[duplicated(Sample)])
+  if (anyDuplicated.default(sample) > 0) {
+    stop("Duplicated entry in `Sample` vector: ", sample[duplicated(sample)])
   }
 
   if(any(is.na(AnimalRef))) {
@@ -142,11 +137,11 @@ check_sampledata <- function(Sample,
          For explanation ?check_sampledata")
   }
 
-  if (!all(AnimalRef %in% Sample)) {
-    stop("Individual/s: ", paste(setdiff(unique(AnimalRef), Sample),collapse = ", "), " have names
-         that are not found as sample identifiers. Individuals have to be named
-         by one of its samples. For explanation ?check_sampledata" )
-  }
+  # if (!all(AnimalRef %in% Sample)) {
+  #   stop("Individual/s: ", paste(setdiff(unique(AnimalRef), Sample),collapse = ", "), " have names
+  #        that are not found as sample identifiers. Individuals have to be named
+  #        by one of its samples. For explanation ?check_sampledata" )
+  # }
 
   if (!inherits(Date, "Date")) {
     stop("The specified `Date` vector is not in Date format")
@@ -172,12 +167,8 @@ check_sampledata <- function(Sample,
             representation of pedigree such samples will be excluded.")
   }
 
-
-
-
-
   sampledata <- data.frame(
-    Sample = Sample,
+    Sample = sample,
     Date = as.Date(Date),
     AnimalRef = AnimalRef,
     GeneticSex = GeneticSex,
@@ -185,6 +176,13 @@ check_sampledata <- function(Sample,
     lng = lng,
     SType = SType
   )
+
+  if(!is.null(extraCols)) {
+    df_name <- sub("\\$.*", "", deparse(substitute(Sample)))
+    addCols <- get(df_name)[extraCols]
+
+    sampledata <- cbind(sampledata, addCols)
+  }
 
   return(sampledata)
 }
