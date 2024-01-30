@@ -43,9 +43,9 @@ sex to each individual included in \code{OffspringID} and adds the computed
 probabilities of paternity and maternity assignments (probability of assignments is visible
 only if the \code{out} parameter is set to \code{"table"}).
 The function also prepares data so that the output of the function can be directly analysed with
-\href{https://cran.r-project.org/web/packages/kinship2/index.html}{\code{kinship2}},
-\href{https://cran.r-project.org/web/packages/pedtools/index.html}{\code{pedtools}} or
-\href{http://bioconductor.org/packages/release/bioc/html/FamAgg.html}{\code{FamAgg}} packages.
+\href{https://cran.r-project.org/package=kinship2}{\code{kinship2}},
+\href{https://cran.r-project.org/package=pedtools}{\code{pedtools}} or
+\href{https://bioconductor.org/packages/FamAgg/}{\code{FamAgg}} packages.
 }
 \details{
 COLONY2 output tables needed for this function (\code{.BestConfig_Ordered},

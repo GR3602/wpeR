@@ -35,7 +35,6 @@
 #'   dead = c("Tissue")
 #' )
 #'
-#' @aliases anim_timespan make.animal.timespan
 #'
 
 anim_timespan <- function(individual_id, sample_date, sample_type, dead = "Tissue") {
@@ -45,6 +44,11 @@ anim_timespan <- function(individual_id, sample_date, sample_type, dead = "Tissu
   }
 
   unique_ind <- unique(individual_id)
+  if (any(is.na(unique_ind))) {
+    warning("looks like you have some missing values in the individual id column.\n",
+    "It is good practice that all samples have assigned individual\n. Validate your input dataframe with ?check_sampledata")
+  }
+
   out_individual <- NULL
   out_firstseen <- NULL
   out_lastseen <- NULL

@@ -8,23 +8,23 @@
 #'  probabilities of paternity and maternity assignments (probability of assignments is visible
 #'  only if the `out` parameter is set to `"table"`).
 #'  The function also prepares data so that the output of the function can be directly analysed with
-#'  [`kinship2`](https://cran.r-project.org/web/packages/kinship2/index.html),
-#'  [`pedtools`](https://cran.r-project.org/web/packages/pedtools/index.html) or
-#'  [`FamAgg`](http://bioconductor.org/packages/release/bioc/html/FamAgg.html) packages.
+#'  [`kinship2`](https://cran.r-project.org/package=kinship2),
+#'  [`pedtools`](https://cran.r-project.org/package=pedtools) or
+#'  [`FamAgg`](https://bioconductor.org/packages/FamAgg/) packages.
 #'
 #' @details
 #'  COLONY2 output tables needed for this function (`.BestConfig_Ordered`,
 #'  `.Maternity` and `.Paternity`) are read directly
 #'  from the colony output folder and do not need to be imported into R session.
-#'  The path to the outputs is defined with `bestconf_path` parameter.
-#'  When defining `bestconf_path` the user needs to define a complete path to
+#'  The path to the outputs is defined with `colony_project_path` parameter.
+#'  When defining `colony_project_path` the user needs to define a complete path to
 #'  the directory where colony outputs are stored and also the file name
 #'  (file name of COLONY2 outputs equals the project name \cr
 #'  eg. /path/to/the/COLONY2/output/folder/COLONY2_project_name).
 #'
 #'
 #'
-#' @param bestconf_path Character string. Path to the folder where COLONY2 output files are saved.
+#' @param colony_project_path Character string. Path to the folder where COLONY2 output files are saved.
 #'   Has to include file path and project name (see Details).
 #' @param sampledata Data frame. Metadata for all genetic samples that belong
 #'   to the individuals included in pedigree reconstruction analysis.
@@ -52,22 +52,37 @@
 #'
 #' # Get pedigree data in FamAgg format
 #' get_colony(
-#'     bestconf_path = path,
+#'     colony_project_path = path,
 #'     sampledata = wolf_samples
 #'     )
 #'
-#' @aliases get_colony GetDigestColony
+#'
 #'
 
 
-get_colony <- function(bestconf_path,
+get_colony <- function(colony_project_path,
                        sampledata,
                        rm_obsolete_parents = TRUE,
                        out = "FamAgg") {
 
-  # reads COLONY outputs needed for the function
+  bestconfig_file = paste0(colony_project_path, ".BestConfig_Ordered")
+  paternity_file = paste0(colony_project_path, ".Paternity")
+  maternity_file = paste0(colony_project_path, ".Maternity")
+
+  if(!file.exists(bestconfig_file)) {
+    stop("BestConfig_Ordered file not found at: ", bestconfig_file)
+  }
+  if(!file.exists(paternity_file)) {
+    stop("Paternity file not found at: ", paternity_file)
+  }
+  if(!file.exists(maternity_file)) {
+    stop("Maternity file not found at: ", maternity_file)
+  }
+
+
+  # reads COLONY outputs
   bestconfig <- utils::read.table(
-    paste(bestconf_path, ".BestConfig_Ordered", sep = ""),
+    bestconfig_file,
     sep = "",
     header = TRUE,
     fill = TRUE,
@@ -75,7 +90,7 @@ get_colony <- function(bestconf_path,
   )
 
   paternity <- utils::read.table(
-    paste(bestconf_path, ".Paternity", sep = ""),
+    paternity_file,
     sep = ",",
     header = TRUE,
     fill = TRUE,
@@ -83,7 +98,7 @@ get_colony <- function(bestconf_path,
   )
 
   maternity <- utils::read.table(
-    paste(bestconf_path, ".Maternity", sep = ""),
+    maternity_file,
     sep = ",",
     header = TRUE,
     fill = TRUE,
@@ -96,12 +111,12 @@ get_colony <- function(bestconf_path,
   # IDs of mothers with no samples -> vector with #XX codes (COLONY generated unknown mothers)
   umothers <- unique(bestconfig$MotherID[!bestconfig$MotherID %in% bestconfig$OffspringID])
 
-  # creates DF of unknown fathers, compatible with BestConfig_ordered data
+  # DF of unknown fathers
   ufathers <- data.frame(
     ufathers, as.factor(rep(0, length(ufathers))), as.factor(rep(0, length(ufathers))),
     bestconfig$ClusterIndex[match(ufathers, bestconfig$FatherID)]
   )
-  # creates DF of unknown mothers, compatible with BestConfig_ordered data
+  # DF of unknown mothers
   umothers <- data.frame(
     umothers, as.factor(rep(0, length(umothers))), as.factor(rep(0, length(umothers))),
     bestconfig$ClusterIndex[match(umothers, bestconfig$MotherID)]
@@ -160,13 +175,15 @@ get_colony <- function(bestconf_path,
   # adding sex to animals that are not parents, sex data has to be added form sampledata table
   # vector with two levels F,M extracted from sampledata$GeneticSex for all animals where bestconfig1$sex = 0
   unknownsex <- sampledata$GeneticSex[match(bestconfig1$OffspringID[bestconfig1$sex == 0], sampledata$Sample)]
-  unknownsex <- as.factor(unknownsex)
-  ## matching unknowns sex levels to bestconfig levels F=2, M=1
-  levels(unknownsex) <- c("2", "1")
-  # assigning values of unknownsex to bestconfig$sex == 0,
-  bestconfig1[bestconfig1$sex == 0, "sex"] <- as.numeric(as.character(unknownsex))
-  # sex == 3 assigned to all animals that sill have unknown sex
-  bestconfig1$sex[is.na(bestconfig1$sex)] <- 3
+  # 3 represents unknown sex
+  sex_numeric <- rep(3, length(unknownsex))
+  # M == 1
+  sex_numeric[unknownsex == "M" & !is.na(unknownsex)] <- 1
+  # F == 2
+  sex_numeric[unknownsex == "F"& !is.na(unknownsex)] <- 2
+  # writing back
+  bestconfig1[bestconfig1$sex == 0, "sex" ] <- sex_numeric
+
 
   ##### IF for OUTPUTS####
   # if you want to remove unknown parents form output of the function
@@ -222,11 +239,11 @@ get_colony <- function(bestconf_path,
   if (out == "table") {
     bestconfig1$sex[bestconfig1$sex == 1] <- "M"
     bestconfig1$sex[bestconfig1$sex == 2] <- "F"
+    bestconfig1$sex[bestconfig1$sex == 3] <- NA
     output <- bestconfig1
     return(output)
   }
 
-  # should jump out with return statements... if not...
   stop("Unknown output selected. The function excepts
     'kinship2', 'pedtools', 'FamAgg' and 'table' as out parameter strings")
 }

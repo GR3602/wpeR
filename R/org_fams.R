@@ -135,9 +135,9 @@ org_fams <- function(ped, sampledata, output = "both") {
     #changes for father and mother so that animal reference do not need to be
     #sample names
     #father <- sampledata[sampledata$Sample == fam$father, ]
-    father <- sampledata[which(sampledata$AnimalRef == fam$father)[1], ]
+    father <- sampledata[which(sampledata$AnimalRef == fam$father), ]
     #mother <- sampledata[sampledata$Sample == fam$mother, ]
-    mother <- sampledata[which(sampledata$AnimalRef == fam$mother)[1], ]
+    mother <- sampledata[which(sampledata$AnimalRef == fam$mother), ]
 
     # family starts when first offspring seen
     famstart <- min(offspring$FirstSeen, na.rm = TRUE)
@@ -145,8 +145,11 @@ org_fams <- function(ped, sampledata, output = "both") {
     famend <- max(c(father$LastSeen, mother$LastSeen), na.rm = TRUE)
 
     famdead <- FALSE
-    if (!(length(mother$IsDead)) == 0) if (mother$IsDead) famdead <- TRUE
-    if (!(length(father$IsDead)) == 0) if (father$IsDead) famdead <- TRUE
+    #if (!(length(mother$IsDead)) == 0) if (mother$IsDead) famdead <- TRUE
+    #if (!(length(father$IsDead)) == 0) if (father$IsDead) famdead <- TRUE
+
+    if (!(length(mother$IsDead)) == 0) if (any(mother$IsDead)) famdead <- TRUE
+    if (!(length(father$IsDead)) == 0) if (any(father$IsDead)) famdead <- TRUE
 
     fams$FamStart[fams$parents == par] <- famstart
     fams$FamEnd[fams$parents == par] <- famend

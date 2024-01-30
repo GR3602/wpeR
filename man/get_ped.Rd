@@ -31,9 +31,9 @@ Offers an alternative to \code{\link[=get_colony]{get_colony()}} function in cas
 was not reconstructed with \href{https://www.zsl.org/about-zsl/resources/software/colony}{COLONY 2}
 software. It takes a pedigree dataframe and assigns sex to each individual.
 The function also prepares data so that the output of the function can be directly analysed with
-\href{https://cran.r-project.org/web/packages/kinship2/index.html}{\code{kinship2}},
-\href{https://cran.r-project.org/web/packages/pedtools/index.html}{\code{pedtools}} or
-\href{https://bioconductor.org/packages/release/bioc/html/FamAgg.html}{\code{FamAgg}} packages.
+\href{https://cran.r-project.org/package=kinship2}{\code{kinship2}},
+\href{https://cran.r-project.org/package=pedtools}{\code{pedtools}} or
+\href{https://bioconductor.org/packages/FamAgg/}{\code{FamAgg}} packages.
 }
 \details{
 The custom pedigree specified through the \code{ped} parameter should mirror the

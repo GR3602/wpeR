@@ -5,9 +5,9 @@
 #'  was not reconstructed with [COLONY 2](https://www.zsl.org/about-zsl/resources/software/colony)
 #'  software. It takes a pedigree dataframe and assigns sex to each individual.
 #'  The function also prepares data so that the output of the function can be directly analysed with
-#'  [`kinship2`](https://cran.r-project.org/web/packages/kinship2/index.html),
-#'  [`pedtools`](https://cran.r-project.org/web/packages/pedtools/index.html) or
-#'  [`FamAgg`](https://bioconductor.org/packages/release/bioc/html/FamAgg.html) packages.
+#'  [`kinship2`](https://cran.r-project.org/package=kinship2),
+#'  [`pedtools`](https://cran.r-project.org/package=pedtools) or
+#'  [`FamAgg`](https://bioconductor.org/packages/FamAgg/) packages.
 #'
 #' @details
 #'  The custom pedigree specified through the `ped` parameter should mirror the

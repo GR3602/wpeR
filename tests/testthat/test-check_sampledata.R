@@ -93,16 +93,18 @@ test_that("lng error", {
   )
 })
 
-test_that("AnimalRef not in Sample", {
-  expect_error(
-    check_sampledata(
-      Sample = c("M10XC","M0PXH","M1J47"),
-      Date = c("2017-10-13","2017-11-22","2019-08-20"),
-      AnimalRef = c("M10XC","M10XC","M47"),
-      GeneticSex = c("M","M","F"),
-      lat = c("45.707663","45.713559","45.698983"),
-      lng = c("14.23122","14.104967","14.079067"),
-      SType = c("Scat","Scat","Saliva")
-    )
-  )
-})
+
+#removed this limitation form the pacakge =)
+# test_that("AnimalRef not in Sample", {
+#   expect_error(
+#     check_sampledata(
+#       Sample = c("M10XC","M0PXH","M1J47"),
+#       Date = c("2017-10-13","2017-11-22","2019-08-20"),
+#       AnimalRef = c("M10XC","M10XC","M47"),
+#       GeneticSex = c("M","M","F"),
+#       lat = c("45.707663","45.713559","45.698983"),
+#       lng = c("14.23122","14.104967","14.079067"),
+#       SType = c("Scat","Scat","Saliva")
+#     )
+#   )
+# })
