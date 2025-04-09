@@ -2,7 +2,6 @@
 % Please edit documentation in R/anim_timespan.R
 \name{anim_timespan}
 \alias{anim_timespan}
-\alias{make.animal.timespan}
 \title{Get dates of individuals first and last sample}
 \usage{
 anim_timespan(individual_id, sample_date, sample_type, dead = "Tissue")
@@ -42,5 +41,6 @@ anim_timespan(
   sample_type = wolf_samples$SType,
   dead = c("Tissue")
 )
+
 
 }

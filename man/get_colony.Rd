@@ -2,18 +2,17 @@
 % Please edit documentation in R/get_colony.R
 \name{get_colony}
 \alias{get_colony}
-\alias{GetDigestColony}
 \title{Organizes COLONY2 output}
 \usage{
 get_colony(
-  bestconf_path,
+  colony_project_path,
   sampledata,
   rm_obsolete_parents = TRUE,
   out = "FamAgg"
 )
 }
 \arguments{
-\item{bestconf_path}{Character string. Path to the folder where COLONY2 output files are saved.
+\item{colony_project_path}{Character string. Path to the folder where COLONY2 output files are saved.
 Has to include file path and project name (see Details).}
 
 \item{sampledata}{Data frame. Metadata for all genetic samples that belong
@@ -51,8 +50,8 @@ The function also prepares data so that the output of the function can be direct
 COLONY2 output tables needed for this function (\code{.BestConfig_Ordered},
 \code{.Maternity} and \code{.Paternity}) are read directly
 from the colony output folder and do not need to be imported into R session.
-The path to the outputs is defined with \code{bestconf_path} parameter.
-When defining \code{bestconf_path} the user needs to define a complete path to
+The path to the outputs is defined with \code{colony_project_path} parameter.
+When defining \code{colony_project_path} the user needs to define a complete path to
 the directory where colony outputs are stored and also the file name
 (file name of COLONY2 outputs equals the project name \cr
 eg. /path/to/the/COLONY2/output/folder/COLONY2_project_name).
@@ -63,8 +62,10 @@ path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
 
 # Get pedigree data in FamAgg format
 get_colony(
-    bestconf_path = path,
+    colony_project_path = path,
     sampledata = wolf_samples
     )
+
+
 
 }

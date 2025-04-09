@@ -91,16 +91,16 @@ get_ped <- function(ped, sampledata, out = "FamAgg") {
   # adding sex to ped
   ped$sex <- sex
 
-  # adding sex to animals that are not parents, sex data has to be added form sampledata table
-  # vector with two levels F,M extracted from sampledata$GeneticSex for all animals where bestconfig1$sex = 0
+
   unknownsex <- sampledata$GeneticSex[match(ped$OffspringID[ped$sex == 0], sampledata$Sample)]
-  unknownsex <- as.factor(unknownsex)
-  # matcihing unknowns sex levels to bestconfig levels F=2, M=1
-  levels(unknownsex) <- c("2", "1")
-  # assignig values of unknownsex to bestconfig$sex == 0
-  ped[ped$sex == 0, "sex"] <- as.numeric(as.character(unknownsex))
-  # sex == 3 assigned to all animals that sill have unknown sex
-  ped$sex[is.na(ped$sex)] <- 3
+  # 3 represents unknown sex
+  sex_numeric <- rep(3, length(unknownsex))
+  # M == 1
+  sex_numeric[unknownsex == "M" & !is.na(unknownsex)] <- 1
+  # F == 2
+  sex_numeric[unknownsex == "F"& !is.na(unknownsex)] <- 2
+  # writing back
+  ped[ped$sex == 0, "sex" ] <- sex_numeric
 
   ##### IF for OUTPUTS####
 
@@ -135,7 +135,15 @@ get_ped <- function(ped, sampledata, out = "FamAgg") {
     return(output)
   }
 
-  # should jump out with return statements... if not...
+  if (out == "table") {
+    ped$sex[ped$sex == 1] <- "M"
+    ped$sex[ped$sex == 2] <- "F"
+    ped$sex[ped$sex == 3] <- NA
+    output <- ped
+    return(output)
+  }
+
+
   stop("Unknown output selected. The function excepts
     'kinship2', 'pedtools', 'FamAgg' and 'table' as out parameter strings")
 }
