@@ -38,7 +38,7 @@
 #' # Organize families and expand pedigree data using the org_fams function.
 #' org_tables <- org_fams(ped_colony, sampledata, output = "both")
 #' # Prepare data for plotting.
-#' pt <- plot_table(plot.fams = 1,
+#' pt <- plot_table(plot_fams = 1,
 #'   org_tables$fams,
 #'   org_tables$ped,
 #'   sampledata,
@@ -49,7 +49,6 @@
 #' # Get a temporal pedigree plot.
 #' ped_satplot(plottable = pt)
 #'
-#' @aliases ped_satplot PedigreeCMRSatplot
 #'
 #'
 #'
@@ -98,8 +97,9 @@ ped_satplot <- function(plottable,
     numeric(1))
 
   # order data correctly, based on columns created above
-  dataOrdered <- data |>
-    dplyr::arrange(polyFirst, polyCluster, famFirst, fam, first, plottingID, date)
+  #dataOrdered <- data |>
+    #dplyr::arrange(polyFirst, polyCluster, famFirst, fam, first, plottingID, date)
+  dataOrdered <- dplyr::arrange(data, polyFirst, polyCluster, famFirst, fam, first, plottingID, date)
 
   # make Y coordinate for each plottingID
   dataOrdered$yaxis <- ordered(dataOrdered$plottingID,

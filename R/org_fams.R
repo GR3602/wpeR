@@ -82,7 +82,6 @@
 #'     sampledata = sampledata
 #'     )
 #'
-#' @aliases org_fams organizePacks
 #'
 org_fams <- function(ped, sampledata, output = "both") {
 

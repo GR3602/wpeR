@@ -39,7 +39,6 @@
 #' )
 #'
 #'
-#' @aliases nbtw_seasons nBetweenSeasons
 #'
 
 nbtw_seasons <- function(animal_id, capture_date,

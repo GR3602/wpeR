@@ -94,7 +94,6 @@
 #' # Get files for spatial pedigree representation in list format.
 #' ped_spatial(plottable = pt)
 #'
-#' @aliases ped_spatial PreparePedigreeSpatial
 #'
 ped_spatial <- function(plottable,
                         na.rm = TRUE,
