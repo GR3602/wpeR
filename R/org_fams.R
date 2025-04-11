@@ -12,7 +12,18 @@
 #'  parent and at least one offspring is known. A polygamy cluster refers to a
 #'  group of half-siblings, either maternally or paternally related. In the
 #'  function output the `DadPclust` groups paternal half-siblings and `MomPclust`
-#'  maternal half-siblings.
+#'  maternal half-siblings.\
+#'
+#'  The `fams` output dataframe contains `famStart` and `famEnd` columns, which estimate
+#'  a time window for the family based *solely on sample collection dates* provided in `sampledata`.
+#'  `famStart` marks the date of the earliest sample collected from *any* offspring
+#'  belonging to that family. `famEnd` indicates the date of the latest sample collected
+#'  from *either* the mother *or* the father of that family. It is important to recognize that this
+#'  method relies on observation (sampling) times. **Consequently,** `famEnd` (last parental sample date)
+#'  can precede `famStart` (first offspring sample date), creating a **biologically** impossible sequence
+#'  and a negative calculated family timespan. Users should interpret the interval
+#'  between `famStart` and `famEnd` with this understanding.
+#'
 #'
 #' @param ped Data frame. `FamAgg` output of [`get_colony()`] or [`get_ped()`] function.
 #'   With `rm_obsolete_parents` parameter set to `TRUE`.
@@ -48,8 +59,8 @@
 #'    - `father`: Identifier code of the father.
 #'    - `mother`: Identifier code of the mother.
 #'    - `FamID`: Numeric identifier for the family.
-#'    - `famStart`: Date when the first sample of any family member was collected.
-#'    - `famEnd`: Date when the last sample of any family member was collected.
+#'    - `famStart`: Date when the first sample of one of the offspring from this family was collected (see Details!).
+#'    - `famEnd`: Date when the last sample of mother or father of this family was collected (see Details!).
 #'    - `FamDead`: Logical value (`TRUE/FALSE`) indicating if the family no longer exists.
 #'    - `DadPclust`: Identifier connecting families that share the same father.
 #'    - `MomPclust`: Identifier connecting families that share the same mother.

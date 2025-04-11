@@ -19,7 +19,8 @@ Must be in \code{Date} format. Defined as \code{dataframe$column}.}
 on the type (eg. scat, tissue, saliva) of particular sample.
 Defined as \code{dataframe$column}.}
 
-\item{dead}{Single value or vector of different lethal sample types.
+\item{dead}{Single value or vector of different lethal sample types. If no lethal
+samples are included in the sampledata the dead parameter can be set to \code{FALSE} (dead = \code{FALSE}).
 Defaults to "Tissue".}
 }
 \value{

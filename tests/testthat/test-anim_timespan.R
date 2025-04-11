@@ -5,7 +5,7 @@ test_that("each row is one individual, all individuals are included", {
 
 test_that("FirstSeen and LastSeen are min and max sample dates of particular individual", {
   subset <- wolf_samples[wolf_samples$AnimalRef == "M2ALK",]
-  expect_identical(anim_timespan(subset$AnimalRef, subset$Date, subset$SType, dead = "Tissue")[c(2,3)],
+  expect_identical(anim_timespan(subset$AnimalRef, subset$Date, subset$SType, dead = FALSE)[c(2,3)],
                    data.frame(FirstSeen = min(subset$Date),LastSeen = max(subset$Date)))
 })
 

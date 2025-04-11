@@ -45,8 +45,8 @@ belong to. The families are described by:
 \item \code{father}: Identifier code of the father.
 \item \code{mother}: Identifier code of the mother.
 \item \code{FamID}: Numeric identifier for the family.
-\item \code{famStart}: Date when the first sample of any family member was collected.
-\item \code{famEnd}: Date when the last sample of any family member was collected.
+\item \code{famStart}: Date when the first sample of one of the offspring from this family was collected (see Details!).
+\item \code{famEnd}: Date when the last sample of mother or father of this family was collected (see Details!).
 \item \code{FamDead}: Logical value (\code{TRUE/FALSE}) indicating if the family no longer exists.
 \item \code{DadPclust}: Identifier connecting families that share the same father.
 \item \code{MomPclust}: Identifier connecting families that share the same mother.
@@ -66,7 +66,17 @@ output of this function is defined as a group of animals where at least one
 parent and at least one offspring is known. A polygamy cluster refers to a
 group of half-siblings, either maternally or paternally related. In the
 function output the \code{DadPclust} groups paternal half-siblings and \code{MomPclust}
-maternal half-siblings.
+maternal half-siblings.\
+
+The \code{fams} output dataframe contains \code{famStart} and \code{famEnd} columns, which estimate
+a time window for the family based \emph{solely on sample collection dates} provided in \code{sampledata}.
+\code{famStart} marks the date of the earliest sample collected from \emph{any} offspring
+belonging to that family. \code{famEnd} indicates the date of the latest sample collected
+from \emph{either} the mother \emph{or} the father of that family. It is important to recognize that this
+method relies on observation (sampling) times. \strong{Consequently,} \code{famEnd} (last parental sample date)
+can precede \code{famStart} (first offspring sample date), creating a \strong{biologically} impossible sequence
+and a negative calculated family timespan. Users should interpret the interval
+between \code{famStart} and \code{famEnd} with this understanding.
 }
 \examples{
 

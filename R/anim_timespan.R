@@ -16,7 +16,8 @@
 #' @param sample_type Column in the dataframe of all samples containing the data
 #'   on the type (eg. scat, tissue, saliva) of particular sample.
 #'   Defined as `dataframe$column`.
-#' @param dead Single value or vector of different lethal sample types.
+#' @param dead Single value or vector of different lethal sample types. If no lethal
+#'  samples are included in the sampledata the dead parameter can be set to `FALSE` (dead = `FALSE`).
 #'   Defaults to "Tissue".
 #'
 #' @return
@@ -38,9 +39,12 @@
 #'
 
 anim_timespan <- function(individual_id, sample_date, sample_type, dead = "Tissue") {
-  if (!all(dead %in% unique(sample_type), na.rm = TRUE)) {
-    warning("one or more lethal sample type, defined with dead parameter,
-    are not present in the sample_type vector")
+
+  if (any(dead != FALSE)){
+    if (!all(dead %in% unique(sample_type), na.rm = TRUE)) {
+      warning("one or more lethal sample type, defined with dead parameter,
+      are not present in the sample_type vector")
+    }
   }
 
   unique_ind <- unique(individual_id)
