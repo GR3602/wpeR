@@ -149,11 +149,11 @@ ppsParLines <- function(ppsData) {
 
     if (nrow(father) > 0 & nrow(child) > 0) {
       paternityLines[[dadcount]] <- rbind(father[, c("lat", "lng")], child[, c("lat", "lng")])
-      paternityLines[[dadcount]] <- st_as_sf(paternityLines[[dadcount]],
+      paternityLines[[dadcount]] <- sf::st_as_sf(paternityLines[[dadcount]],
                                              coords = c("lng", "lat"),
                                              crs = 4326)
-      paternityLines[[dadcount]] <- st_combine(paternityLines[[dadcount]])
-      paternityLines[[dadcount]] <- st_cast(paternityLines[[dadcount]], "LINESTRING")
+      paternityLines[[dadcount]] <- sf::st_combine(paternityLines[[dadcount]])
+      paternityLines[[dadcount]] <- sf::st_cast(paternityLines[[dadcount]], "LINESTRING")
       paternityLines[[dadcount]] <- data.frame(
         ID = dadcount,
         pair = i,
@@ -162,20 +162,20 @@ ppsParLines <- function(ppsData) {
         relation = "paternity",
         child = child$AnimalRef,
         parent = father$AnimalRef,
-        geometry = st_geometry(paternityLines[[dadcount]])
+        geometry = sf::st_geometry(paternityLines[[dadcount]])
       )
-      paternityLines[[dadcount]] <- st_as_sf(paternityLines[[dadcount]],
+      paternityLines[[dadcount]] <- sf::st_as_sf(paternityLines[[dadcount]],
                                              sf_column_name = "geometry")
       dadcount <- dadcount + 1
     }
 
     if (nrow(mother) > 0 & nrow(child) > 0) {
       maternityLines[[momcount]] <- rbind(mother[, c("lat", "lng")], child[, c("lat", "lng")])
-      maternityLines[[momcount]] <- st_as_sf(maternityLines[[momcount]],
+      maternityLines[[momcount]] <- sf::st_as_sf(maternityLines[[momcount]],
                                              coords = c("lng", "lat"),
                                              crs = 4326)
-      maternityLines[[momcount]] <- st_combine(maternityLines[[momcount]])
-      maternityLines[[momcount]] <- st_cast(maternityLines[[momcount]], "LINESTRING")
+      maternityLines[[momcount]] <- sf::st_combine(maternityLines[[momcount]])
+      maternityLines[[momcount]] <- sf::st_cast(maternityLines[[momcount]], "LINESTRING")
       maternityLines[[momcount]] <- data.frame(
         ID = momcount,
         pair = i,
@@ -184,9 +184,9 @@ ppsParLines <- function(ppsData) {
         relation = "maternity",
         child = child$AnimalRef,
         parent = mother$AnimalRef,
-        geometry = st_geometry(maternityLines[[momcount]])
+        geometry = sf::st_geometry(maternityLines[[momcount]])
       )
-      maternityLines[[momcount]] <- st_as_sf(maternityLines[[momcount]],
+      maternityLines[[momcount]] <- sf::st_as_sf(maternityLines[[momcount]],
                                              sf_column_name = "geometry")
       momcount <- momcount + 1
     }
@@ -230,11 +230,11 @@ ppsMvPoints <- function(ppsData) {
   offspringMoveData <- offspring[offspring$AnimalRef %in% offspringRefs$AnimalRef, ]
 
   if (nrow(offspringMoveData) > 0) {
-    offspringMovePoints <- st_as_sf(offspringMoveData,
+    offspringMovePoints <- sf::st_as_sf(offspringMoveData,
                                     coords = c("lng", "lat"),
                                     crs = 4326)
   } else {
-    offspringMovePoints <- st_sf(1, st_sfc(st_point()))
+    offspringMovePoints <- sf::st_sf(1, sf::st_sfc(sf::st_point()))
     warning("No offspring samples within selected time period.
                   Creating empty sf data frame -> offspringMovePoints!")
   }
@@ -250,11 +250,11 @@ ppsMvPoints <- function(ppsData) {
   fatherMoveData <- unique(fatherMoveData)
 
   if (nrow(fatherMoveData) > 0) {
-    fatherMovePoints <- st_as_sf(fatherMoveData,
+    fatherMovePoints <- sf::st_as_sf(fatherMoveData,
                                  coords = c("lng", "lat"),
                                  crs = 4326)
   } else {
-    fatherMovePoints <- st_sf(1, st_sfc(st_point()))
+    fatherMovePoints <- sf::st_sf(1, sf::st_sfc(sf::st_point()))
     warning("No father samples within selected time period.
                   Creating empty sf data frame -> fatherMovePoints!")
   }
@@ -270,11 +270,11 @@ ppsMvPoints <- function(ppsData) {
   motherMoveData <- unique(motherMoveData)
 
   if (nrow(motherMoveData) > 0) {
-    motherMovePoints <- st_as_sf(motherMoveData,
+    motherMovePoints <- sf::st_as_sf(motherMoveData,
                                  coords = c("lng", "lat"),
                                  crs = 4326)
   } else {
-    motherMovePoints <- st_sf(1, st_sfc(st_point()))
+    motherMovePoints <- sf::st_sf(1, sf::st_sfc(sf::st_point()))
     warning("No mother samples within selected time period.
                   Creating empty sf data frame -> motherMovePoints!")
   }
@@ -303,11 +303,11 @@ ppsRefPoints <- function(ppsData) {
   offspringRefs <- ppsData$offspringRefs
 
   if (nrow(offspringRefs) > 0) {
-    offspringRpoints <- st_as_sf(offspringRefs,
+    offspringRpoints <- sf::st_as_sf(offspringRefs,
                                  coords = c("lng", "lat"),
                                  crs = 4326)
   } else {
-    offspringRpoints <- st_sf(1, st_sfc(st_point()))
+    offspringRpoints <- sf::st_sf(1, sf::st_sfc(sf::st_point()))
     warning("No offspring samples within selected time period.
                   Creating empty sf data frame -> offspringRpoints!")
   }
@@ -321,11 +321,11 @@ ppsRefPoints <- function(ppsData) {
   fatherRefs <- unique(fatherRefs)
 
   if (nrow(fatherRefs) > 0) {
-    fatherRpoints <- st_as_sf(fatherRefs,
+    fatherRpoints <- sf::st_as_sf(fatherRefs,
                               coords = c("lng", "lat"),
                               crs = 4326)
   } else {
-    fatherRpoints <- st_sf(1, st_sfc(st_point()))
+    fatherRpoints <- sf::st_sf(1, sf::st_sfc(sf::st_point()))
     warning("No father samples within selected time period.
                   Creating empty sf data frame -> fatherRpoints!")
   }
@@ -339,11 +339,11 @@ ppsRefPoints <- function(ppsData) {
   motherRefs <- unique(motherRefs)
 
   if (nrow(motherRefs) > 0) {
-    motherRpoints <- st_as_sf(motherRefs,
+    motherRpoints <- sf::st_as_sf(motherRefs,
                               coords = c("lng", "lat"),
                               crs = 4326)
   } else {
-    motherRpoints <- st_sf(1, st_sfc(st_point()))
+    motherRpoints <- sf::st_sf(1, sf::st_sfc(sf::st_point()))
     warning("No father samples within selected time period.
                   Creating empty sf data frame -> motherRpoints!")
   }
@@ -379,7 +379,7 @@ ppsMvLines <- function(ppsData) {
 
   #### Offspring####
   if (nrow(ppsData$offspringRefs) == 0) {
-    offspringMoveLines <- st_sf(1, st_sfc(st_linestring())) # dummy... empty object
+    offspringMoveLines <- sf::st_sf(1, sf::st_sfc(sf::st_linestring())) # dummy... empty object
     warning("No offspring included in dataset.
           Creating empty sf data frame -> offspringMoveLines!")
   }
@@ -407,7 +407,7 @@ ppsMvLines <- function(ppsData) {
   if (length(which(offspringMoveLines$no_mvPoints > 1)) <= nrow(offspringMoveLines)){
     offspringMoveLines <- offspringMoveLines[which(offspringMoveLines$no_mvPoints > 1),]
   } else {
-    offspringMoveLines <- st_sf(1, st_sfc(st_linestring())) # dummy... empty object
+    offspringMoveLines <- sf::st_sf(1, sf::st_sfc(sf::st_linestring())) # dummy... empty object
     warning("None of the offspring has two samples needed to create a linestring.
             Creating empty sf data frame -> offspringMoveLines!")
   }
@@ -415,7 +415,7 @@ ppsMvLines <- function(ppsData) {
   #### Father####
 
   if (nrow(ppsData$fatherRefs) == 0) {
-    fatherMoveLines <- st_sf(1, st_sfc(st_linestring())) # dummy... empty object
+    fatherMoveLines <- sf::st_sf(1, sf::st_sfc(sf::st_linestring())) # dummy... empty object
     warning("No fathers included in dataset.
           Creating empty sf data frame -> fatherMoveLines!")
   }
@@ -437,7 +437,7 @@ ppsMvLines <- function(ppsData) {
   if (length(which(fatherMoveLines$no_mvPoints > 1)) <= nrow(fatherMoveLines)){
     fatherMoveLines <- fatherMoveLines[which(fatherMoveLines$no_mvPoints > 1),]
   } else {
-    fatherMoveLines <- st_sf(1, st_sfc(st_linestring())) # dummy... empty object
+    fatherMoveLines <- sf::st_sf(1, sf::st_sfc(sf::st_linestring())) # dummy... empty object
     warning("None of the fathers has two samples needed to create a linestring.
             Creating empty sf data frame -> fatherMoveLines!")
   }
@@ -448,7 +448,7 @@ ppsMvLines <- function(ppsData) {
   #### Mother####
 
   if (nrow(ppsData$motherRefs) == 0) {
-    motherMoveLines <- st_sf(1, st_sfc(st_linestring())) # dummy... empty object
+    motherMoveLines <- sf::st_sf(1, sf::st_sfc(sf::st_linestring())) # dummy... empty object
     warning("No mothers included in dataset.
           Creating empty sf data frame -> motherMoveLines!")
   }
@@ -470,7 +470,7 @@ ppsMvLines <- function(ppsData) {
   if (length(which(motherMoveLines$no_mvPoints > 1)) <= nrow(motherMoveLines)){
     motherMoveLines <- motherMoveLines[which(motherMoveLines$no_mvPoints > 1),]
   } else {
-    motherMoveLines <- st_sf(1, st_sfc(st_linestring())) # dummy... empty object
+    motherMoveLines <- sf::st_sf(1, sf::st_sfc(sf::st_linestring())) # dummy... empty object
     warning("None of the mothers has two samples needed to create a linestring.
             Creating empty sf data frame -> motherMoveLines!")
   }
@@ -505,7 +505,7 @@ ppsMvPolygons <- function(ppsData, MvPoints) {
   #### Mother####
 
   if (nrow(ppsData$motherRefs) == 0) {
-    motherMovePolygons <- st_sf(1, st_sfc(st_polygon())) # dummy... empty object
+    motherMovePolygons <- sf::st_sf(1, sf::st_sfc(sf::st_polygon())) # dummy... empty object
     warning("No mothers included in dataset.
           Creating empty sf data frame -> motherMovePolygons!")
   }
@@ -523,7 +523,7 @@ ppsMvPolygons <- function(ppsData, MvPoints) {
     motherMovePolygons <- motherMovePolygons[corr_geom,]
 
   } else {
-    motherMovePolygons <- st_sf(1, st_sfc(st_polygon())) # dummy... empty object
+    motherMovePolygons <- sf::st_sf(1, sf::st_sfc(sf::st_polygon())) # dummy... empty object
     warning("Not enough mother samples to create at least one polygon.
             Creating empty sf data frame -> motherMovePolygons!")
   }
@@ -531,7 +531,7 @@ ppsMvPolygons <- function(ppsData, MvPoints) {
   #### Father####
 
   if (nrow(ppsData$fatherRefs) == 0) {
-    fatherMovePolygons <- st_sf(1, st_sfc(st_polygon())) # dummy... empty object
+    fatherMovePolygons <- sf::st_sf(1, sf::st_sfc(sf::st_polygon())) # dummy... empty object
     warning("No fathers included in dataset.
           Creating empty sf data frame -> fatherMovePolygons!")
   }
@@ -548,7 +548,7 @@ ppsMvPolygons <- function(ppsData, MvPoints) {
     corr_geom <- which(!(sf::st_geometry_type(fatherMovePolygons) %in% excl_geom))
     fatherMovePolygons <- fatherMovePolygons[corr_geom,]
   } else {
-    fatherMovePolygons <- st_sf(1, st_sfc(st_polygon())) # dummy... empty object
+    fatherMovePolygons <- sf::st_sf(1, sf::st_sfc(sf::st_polygon())) # dummy... empty object
     warning("Not enough father samples to create at least one polygon.
             Creating empty sf data frame -> fatherMovePolygons!")
   }
@@ -557,7 +557,7 @@ ppsMvPolygons <- function(ppsData, MvPoints) {
   #### Offspring####
 
   if (nrow(ppsData$offspringRefs) == 0) {
-    offspringMovePolygons <- st_sf(1, st_sfc(st_polygon())) # dummy... empty object
+    offspringMovePolygons <- sf::st_sf(1, sf::st_sfc(sf::st_polygon())) # dummy... empty object
     warning("No offspring included in dataset.
           Creating empty sf data frame -> offspringMovePolygons!")
   }
@@ -574,7 +574,7 @@ ppsMvPolygons <- function(ppsData, MvPoints) {
     corr_geom <- which(!(sf::st_geometry_type(offspringMovePolygons) %in% excl_geom))
     offspringMovePolygons <- offspringMovePolygons[corr_geom,]
   } else {
-    offspringMovePolygons <- st_sf(1, st_sfc(st_polygon())) # dummy... empty object
+    offspringMovePolygons <- sf::st_sf(1, sf::st_sfc(sf::st_polygon())) # dummy... empty object
     warning("Not enough offspring samples to create at least one polygon.
             Creating empty sf data frame -> offspringMovePolygons!")
   }
@@ -626,17 +626,17 @@ ppsFsLines <- function(ppsData, fullsibdata, sibthreshold = 1) {
       for (j in 1:(nrow(sibgroupsamples) - 1)) {
         for (k in (j + 1):nrow(sibgroupsamples)) {
           individualLines[[indcount]] <- sibgroupsamples[c(j, k), c("lng", "lat")]
-          individualLines[[indcount]] <- st_as_sf(individualLines[[indcount]],
+          individualLines[[indcount]] <- sf::st_as_sf(individualLines[[indcount]],
                                                   coords = c("lng", "lat"),
                                                   crs = 4326)
-          individualLines[[indcount]] <- st_combine(individualLines[[indcount]])
-          individualLines[[indcount]] <- st_cast(individualLines[[indcount]],
+          individualLines[[indcount]] <- sf::st_combine(individualLines[[indcount]])
+          individualLines[[indcount]] <- sf::st_cast(individualLines[[indcount]],
                                                  "LINESTRING")
           individualLines[[indcount]] <- data.frame(
             ID = indcount,
             AnimalID1 = sibgroupsamples$AnimalRef[j],
             AnimalID2 = sibgroupsamples$AnimalRef[k],
-            geometry = st_geometry(individualLines[[indcount]])
+            geometry = sf::st_geometry(individualLines[[indcount]])
           )
           indcount <- indcount + 1
         }
@@ -646,7 +646,7 @@ ppsFsLines <- function(ppsData, fullsibdata, sibthreshold = 1) {
 
   # FullsibLines <- do.call(rbind.data.frame, individualLines) #slow
   FullsibLines <- dplyr::bind_rows(individualLines)
-  FullsibLines <- st_as_sf(FullsibLines, sf_column_name = "geometry")
+  FullsibLines <- sf::st_as_sf(FullsibLines, sf_column_name = "geometry")
 
   return(FullsibLines)
 } # end pssFsLines

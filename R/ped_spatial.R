@@ -63,8 +63,8 @@
 #'
 #'
 #' @export
-#' @import sf dplyr
 #'
+#' @importFrom sf write_sf
 #'
 #' @examples
 #' # Prepare the data for usage with ped_spatial() function.
@@ -82,8 +82,8 @@
 #' ped_colony <- get_colony(path, sampledata, rm_obsolete_parents = TRUE, out = "FamAgg")
 #' # Organize families and expand pedigree data using the org_fams function.
 #' org_tables <- org_fams(ped_colony, sampledata, output = "both")
-#' # Prepare data for plotting.#'
-#' pt <- plot_table(plot.fams = 1,
+#' # Prepare data for plotting.
+#' pt <- plot_table(plot_fams = 1,
 #'   org_tables$fams,
 #'   org_tables$ped,
 #'   sampledata,

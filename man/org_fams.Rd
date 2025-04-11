@@ -2,7 +2,6 @@
 % Please edit documentation in R/org_fams.R
 \name{org_fams}
 \alias{org_fams}
-\alias{organizePacks}
 \title{Organize animals into families and expand pedigree data}
 \usage{
 org_fams(ped, sampledata, output = "both")
@@ -92,5 +91,6 @@ org_fams(
     ped = ped_colony,
     sampledata = sampledata
     )
+
 
 }

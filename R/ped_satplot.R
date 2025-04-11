@@ -18,7 +18,10 @@
 #' @param fam_label_size Family label text size.
 #'
 #' @return A graphical representation of detected family members trough time.
-#' @import ggplot2
+#'
+#' @importFrom ggplot2 ggplot aes geom_line geom_point geom_text geom_hline
+#' @importFrom ggplot2 geom_label ggtitle labs expand_limits theme theme_bw
+#' @importFrom ggplot2 scale_colour_brewer ylab xlab scale_x_date
 #' @export
 #'
 #' @examples
@@ -42,7 +45,7 @@
 #'   org_tables$fams,
 #'   org_tables$ped,
 #'   sampledata,
-#'   deadSample = c("Tissue", "Decomposing Tissue", "Blood")
+#'   deadSample = c("Tissue")
 #' )
 #'
 #' # Run the function.
@@ -185,7 +188,7 @@ ped_satplot <- function(plottable,
     ylab(ylabel) +
     xlab(xlabel) +
     scale_x_date(date_labels = ("%m-%Y")) +
-    theme(legend.position = c(xlegend, ylegend), legend.direction = "horizontal")
+    theme(legend.position.inside = c(xlegend, ylegend), legend.direction = "horizontal")
 
 
 

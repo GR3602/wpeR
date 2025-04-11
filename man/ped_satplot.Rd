@@ -2,7 +2,6 @@
 % Please edit documentation in R/ped_satplot.R
 \name{ped_satplot}
 \alias{ped_satplot}
-\alias{PedigreeCMRSatplot}
 \title{Temporal plot of pedigree}
 \usage{
 ped_satplot(
@@ -72,15 +71,19 @@ ped_colony <- get_colony(path, sampledata, rm_obsolete_parents = TRUE, out = "Fa
 # Organize families and expand pedigree data using the org_fams function.
 org_tables <- org_fams(ped_colony, sampledata, output = "both")
 # Prepare data for plotting.
-pt <- plot_table(plot.fams = 1,
+pt <- plot_table(plot_fams = 1,
   org_tables$fams,
   org_tables$ped,
   sampledata,
-  deadSample = c("Tissue", "Decomposing Tissue", "Blood")
+  deadSample = c("Tissue")
 )
 
 # Run the function.
 # Get a temporal pedigree plot.
 ped_satplot(plottable = pt)
+
+
+
+
 
 }

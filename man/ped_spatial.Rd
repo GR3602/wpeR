@@ -2,7 +2,6 @@
 % Please edit documentation in R/ped_spatial.R
 \name{ped_spatial}
 \alias{ped_spatial}
-\alias{PreparePedigreeSpatial}
 \title{Get files for spatial representation of pedigree}
 \usage{
 ped_spatial(
@@ -113,8 +112,8 @@ path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
 ped_colony <- get_colony(path, sampledata, rm_obsolete_parents = TRUE, out = "FamAgg")
 # Organize families and expand pedigree data using the org_fams function.
 org_tables <- org_fams(ped_colony, sampledata, output = "both")
-# Prepare data for plotting.#'
-pt <- plot_table(plot.fams = 1,
+# Prepare data for plotting.
+pt <- plot_table(plot_fams = 1,
   org_tables$fams,
   org_tables$ped,
   sampledata,
@@ -124,5 +123,6 @@ pt <- plot_table(plot.fams = 1,
 # Run the function
 # Get files for spatial pedigree representation in list format.
 ped_spatial(plottable = pt)
+
 
 }

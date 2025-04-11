@@ -6,11 +6,11 @@ sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", al
 path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
 ped_colony <- get_colony(path, sampledata, rm_obsolete_parents = TRUE, out = "FamAgg")
 org_tables <- org_fams(ped_colony, sampledata, output = "both")
-pt <- plot_table(plot.fams = "all",
+pt <- plot_table(plot_fams = "all",
                  org_tables$fams,
                  org_tables$ped,
                  sampledata,
-                 deadSample = c("Tissue", "Decomposing Tissue", "Blood"))
+                 deadSample = "Tissue")
 
 test_that("Is plot produced", {
  # test.plot <- ped_satplot(pt$Date, pt$AnimalRef, pt$plottingID, pt$GeneticSex, pt$FamID,

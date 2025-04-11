@@ -2,7 +2,6 @@
 % Please edit documentation in R/dyn_matrix.R
 \name{dyn_matrix}
 \alias{dyn_matrix}
-\alias{MakeDynamicsMatrix}
 \title{Get matrix ff apparent survival}
 \usage{
 dyn_matrix(animal_id, capture_date, start_dates, end_dates)
@@ -59,5 +58,6 @@ dyn_matrix(
   start_dates = seasons$start,
   end_dates = seasons$end
 )
+
 
 }
