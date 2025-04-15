@@ -30,7 +30,7 @@
 #' @param extraCols A vector of extra column names that the user wants to include
 #' in sampledata data frame (see Details).
 #'
-#' @return A data frame with 7 columns and a number of rows equal to the length
+#' @return A data frame with at least 7 columns and a number of rows equal to the length
 #' of the input vector. Each column corresponds to one of the input parameters.
 #' If the function executes without warnings or errors, the result from
 #' `check_sampledata()` can be used as an input parameter for other functions

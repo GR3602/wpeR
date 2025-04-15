@@ -7,7 +7,7 @@
 #'  sex to each individual included in `OffspringID` and adds the computed
 #'  probabilities of paternity and maternity assignments (probability of assignments is visible
 #'  only if the `out` parameter is set to `"table"`).
-#'  The function also prepares data so that the output of the function can be directly analysed with
+#'  The function also prepares data so that the output of the function can be directly analyzed with
 #'  [`kinship2`](https://cran.r-project.org/package=kinship2),
 #'  [`pedtools`](https://cran.r-project.org/package=pedtools) or
 #'  [`FamAgg`](https://bioconductor.org/packages/FamAgg/) packages.

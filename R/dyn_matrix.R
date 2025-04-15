@@ -1,4 +1,4 @@
-#' Get matrix ff apparent survival
+#' Get matrix of apparent survival
 #'
 #' @description
 #' Creates a matrix that shows number of captured animals

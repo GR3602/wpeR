@@ -35,7 +35,7 @@
 #' @param datacolumns Vector of column names included `sampledata` that are needed to produce
 #' this functions output (see Details).
 #' @param deadSample Single value or vector of different lethal sample types.
-#' Defaults to c("Tissue", "Decomposing Tissue", "Bone").
+#' Defaults to c("Tissue").
 #'
 #' @return
 #' Extended `sampledata` data frame that includes all columns defined in `datacolumns`
@@ -81,7 +81,7 @@
 #'   org_tables$fams,
 #'   org_tables$ped,
 #'   sampledata,
-#'   deadSample = c("Tissue", "Decomposing Tissue", "Blood")
+#'   deadSample = c("Tissue")
 #' )
 #'
 #'
@@ -89,7 +89,7 @@ plot_table <- function(plot_fams = "all", all_fams, ped, sampledata,
                        datacolumns = c("Sample", "AnimalRef", "GeneticSex",
                                        "Date", "SType", "lat", "lng",
                                        "FirstSeen", "LastSeen", "IsDead"),
-                       deadSample = c("Tissue", "Decomposing Tissue", "Bone")) {
+                       deadSample = c("Tissue")) {
 
   if (all(plot_fams == "all")) {
     sel_fams <- all_fams

@@ -3,7 +3,7 @@
 \docType{data}
 \name{wolf_samples}
 \alias{wolf_samples}
-\title{Wolf Monitoring Genetic Samples Data}
+\title{Wolf monitoring genetic samples metadata}
 \format{
 A data frame with 407 rows and 7 columns:
 \describe{

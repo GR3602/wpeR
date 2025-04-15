@@ -41,7 +41,7 @@ in pedigree. The function adds missing parents to \code{OffspringID}, assigns
 sex to each individual included in \code{OffspringID} and adds the computed
 probabilities of paternity and maternity assignments (probability of assignments is visible
 only if the \code{out} parameter is set to \code{"table"}).
-The function also prepares data so that the output of the function can be directly analysed with
+The function also prepares data so that the output of the function can be directly analyzed with
 \href{https://cran.r-project.org/package=kinship2}{\code{kinship2}},
 \href{https://cran.r-project.org/package=pedtools}{\code{pedtools}} or
 \href{https://bioconductor.org/packages/FamAgg/}{\code{FamAgg}} packages.
