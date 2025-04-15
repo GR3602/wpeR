@@ -11,7 +11,7 @@ plot_table(
   sampledata,
   datacolumns = c("Sample", "AnimalRef", "GeneticSex", "Date", "SType", "lat", "lng",
     "FirstSeen", "LastSeen", "IsDead"),
-  deadSample = c("Tissue", "Decomposing Tissue", "Bone")
+  deadSample = c("Tissue")
 )
 }
 \arguments{
@@ -31,7 +31,7 @@ For description of \code{sampledata} structure and sample information needed for
 this functions output (see Details).}
 
 \item{deadSample}{Single value or vector of different lethal sample types.
-Defaults to c("Tissue", "Decomposing Tissue", "Bone").}
+Defaults to c("Tissue").}
 }
 \value{
 Extended \code{sampledata} data frame that includes all columns defined in \code{datacolumns}
@@ -104,7 +104,7 @@ plot_table(plot_fams = "all",
   org_tables$fams,
   org_tables$ped,
   sampledata,
-  deadSample = c("Tissue", "Decomposing Tissue", "Blood")
+  deadSample = c("Tissue")
 )
 
 

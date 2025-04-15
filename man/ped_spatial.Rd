@@ -51,7 +51,7 @@ reference samples of offspring.}
 movement data.}
 }
 \value{
-Depending on the \code{output} parameter the function can return a list of \code{\link{sf}} objects,
+Depending on the \code{output} parameter the function can return a list of \code{\link[sf:sf]{sf}} objects,
 a georeferenced vector data files or both.
 
 Most of the objects are created separately for mothers, fathers and offspring,
@@ -117,7 +117,7 @@ pt <- plot_table(plot_fams = 1,
   org_tables$fams,
   org_tables$ped,
   sampledata,
-  deadSample = c("Tissue", "Decomposing Tissue", "Blood")
+  deadSample = c("Tissue")
 )
 
 # Run the function

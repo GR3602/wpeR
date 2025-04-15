@@ -1,10 +1,10 @@
-#' Organizes Pedigree Data
+#' Organizes pedigree data
 #'
 #' @description
 #'  Offers an alternative to [`get_colony()`] function in cases where the pedigree
 #'  was not reconstructed with [COLONY 2](https://www.zsl.org/about-zsl/resources/software/colony)
 #'  software. It takes a pedigree dataframe and assigns sex to each individual.
-#'  The function also prepares data so that the output of the function can be directly analysed with
+#'  The function also prepares data so that the output of the function can be directly analyzed with
 #'  [`kinship2`](https://cran.r-project.org/package=kinship2),
 #'  [`pedtools`](https://cran.r-project.org/package=pedtools) or
 #'  [`FamAgg`](https://bioconductor.org/packages/FamAgg/) packages.
@@ -31,7 +31,8 @@
 #'   outlined in the [`check_sampledata()`] documentation.
 #' @param out Character string. For use with which package should the output be formatted?
 #'   `kinship2` (out = "kinship2"), `pedtools` (out = "pedtools") or
-#'   `FamAgg` (out = "FamAgg"). Defaults to "FamAgg"
+#'   `FamAgg` (out = "FamAgg") or the created data.frame can be outputted as is
+#'   (out = "table"). Defaults to "FamAgg"
 #'
 #' @return
 #'  A data frame describing a common pedigree structure. Each individual included in

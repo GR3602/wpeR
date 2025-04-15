@@ -38,7 +38,7 @@ that the sample belongs to.}
 in sampledata data frame (see Details).}
 }
 \value{
-A data frame with 7 columns and a number of rows equal to the length
+A data frame with at least 7 columns and a number of rows equal to the length
 of the input vector. Each column corresponds to one of the input parameters.
 If the function executes without warnings or errors, the result from
 \code{check_sampledata()} can be used as an input parameter for other functions

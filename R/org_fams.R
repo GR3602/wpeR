@@ -12,15 +12,15 @@
 #'  parent and at least one offspring is known. A polygamy cluster refers to a
 #'  group of half-siblings, either maternally or paternally related. In the
 #'  function output the `DadPclust` groups paternal half-siblings and `MomPclust`
-#'  maternal half-siblings.\
+#'  maternal half-siblings.
 #'
 #'  The `fams` output dataframe contains `famStart` and `famEnd` columns, which estimate
-#'  a time window for the family based *solely on sample collection dates* provided in `sampledata`.
-#'  `famStart` marks the date of the earliest sample collected from *any* offspring
+#'  a time window for the family based solely on sample collection dates provided in `sampledata`.
+#'  `famStart` marks the date of the earliest sample collected from any offspring
 #'  belonging to that family. `famEnd` indicates the date of the latest sample collected
-#'  from *either* the mother *or* the father of that family. It is important to recognize that this
-#'  method relies on observation (sampling) times. **Consequently,** `famEnd` (last parental sample date)
-#'  can precede `famStart` (first offspring sample date), creating a **biologically** impossible sequence
+#'  from either the mother or the father of that family. It is important to recognize that this
+#'  method relies on observation (sampling) times. Consequently, `famEnd` (last parental sample date)
+#'  can precede `famStart` (first offspring sample date), creating a biologically impossible sequence
 #'  and a negative calculated family timespan. Users should interpret the interval
 #'  between `famStart` and `famEnd` with this understanding.
 #'
@@ -40,7 +40,7 @@
 #'  Depending on the `output` parameter, the function returns either a data frame
 #'  (`ped` or `fams`) or a list containing both data frames (`ped` and `fams`).
 #'
-#'   * `ped` data frame. An extended version of the pedigree data from `get_colony()`.
+#'   * `ped` data frame. An extended version of the pedigree data from `get_colony()`/`get_ped()`.
 #'   In addition to common pedigree information (individual, mother, father, sex,
 #'   family), `ped` includes columns for:
 #'     - `parents`: Identifier codes of both parents separated with `_`.
@@ -59,8 +59,8 @@
 #'    - `father`: Identifier code of the father.
 #'    - `mother`: Identifier code of the mother.
 #'    - `FamID`: Numeric identifier for the family.
-#'    - `famStart`: Date when the first sample of one of the offspring from this family was collected (see Details!).
-#'    - `famEnd`: Date when the last sample of mother or father of this family was collected (see Details!).
+#'    - `famStart`: Date when the first sample of one of the offspring from this family was collected (see Details).
+#'    - `famEnd`: Date when the last sample of mother or father of this family was collected (see Details).
 #'    - `FamDead`: Logical value (`TRUE/FALSE`) indicating if the family no longer exists.
 #'    - `DadPclust`: Identifier connecting families that share the same father.
 #'    - `MomPclust`: Identifier connecting families that share the same mother.

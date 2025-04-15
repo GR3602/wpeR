@@ -2,7 +2,7 @@
 % Please edit documentation in R/dyn_matrix.R
 \name{dyn_matrix}
 \alias{dyn_matrix}
-\title{Get matrix ff apparent survival}
+\title{Get matrix of apparent survival}
 \usage{
 dyn_matrix(animal_id, capture_date, start_dates, end_dates)
 }

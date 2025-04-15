@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_ped.R
 \name{get_ped}
 \alias{get_ped}
-\title{Organizes Pedigree Data}
+\title{Organizes pedigree data}
 \usage{
 get_ped(ped, sampledata, out = "FamAgg")
 }
@@ -18,7 +18,8 @@ outlined in the \code{\link[=check_sampledata]{check_sampledata()}} documentatio
 
 \item{out}{Character string. For use with which package should the output be formatted?
 \code{kinship2} (out = "kinship2"), \code{pedtools} (out = "pedtools") or
-\code{FamAgg} (out = "FamAgg"). Defaults to "FamAgg"}
+\code{FamAgg} (out = "FamAgg") or the created data.frame can be outputted as is
+(out = "table"). Defaults to "FamAgg"}
 }
 \value{
 A data frame describing a common pedigree structure. Each individual included in
@@ -30,7 +31,7 @@ output (\code{out} parameter).
 Offers an alternative to \code{\link[=get_colony]{get_colony()}} function in cases where the pedigree
 was not reconstructed with \href{https://www.zsl.org/about-zsl/resources/software/colony}{COLONY 2}
 software. It takes a pedigree dataframe and assigns sex to each individual.
-The function also prepares data so that the output of the function can be directly analysed with
+The function also prepares data so that the output of the function can be directly analyzed with
 \href{https://cran.r-project.org/package=kinship2}{\code{kinship2}},
 \href{https://cran.r-project.org/package=pedtools}{\code{pedtools}} or
 \href{https://bioconductor.org/packages/FamAgg/}{\code{FamAgg}} packages.

@@ -1,4 +1,4 @@
-#'Wolf Monitoring Genetic Samples Data
+#'Wolf monitoring genetic samples metadata
 #'
 #'Metadata of selected genetic samples of wolves collected between 2015 and 2021,
 #'in the scope of Slovenian National Wolf Monitoring
