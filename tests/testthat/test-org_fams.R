@@ -13,7 +13,7 @@ test_that("Expect error when output parameter uncorrectly specified", {
 test_that("ped data frame has correct columns", {
   result <- org_fams(ped_colony, sampledata, output = "ped")
   expect_s3_class(result, "data.frame")
-  colnams <- c("family", "id", "father", "mother", "sex", "parents", "FamID",
+  colnams <- c("ClusterIndex", "id", "father", "mother", "sex", "parents", "FamID",
                "FirstSeen", "LastSeen", "IsDead", "DadPclust", "MomPclust",
                "polyCluster")
   expect_true(all(colnams %in% names(result)))

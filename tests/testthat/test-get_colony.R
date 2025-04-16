@@ -5,12 +5,12 @@ test_that("Expect error when out parameter not correctly specified", {
 })
 
 test_that("Output kinship2 structure", {
-  ks2 <- c("id", "dadid", "momid", "sex", "famid")
+  ks2 <- c("id", "dadid", "momid", "sex", "ClusterIndex")
   expect_identical(names(get_colony(path, wolf_samples, out = "kinship2")), ks2)
 })
 
 test_that("Output famagg structure", {
-  famagg <- c("family", "id", "father", "mother", "sex")
+  famagg <- c("ClusterIndex", "id", "father", "mother", "sex")
   expect_identical(names(get_colony(path, wolf_samples, out = "FamAgg")), famagg)
 })
 

@@ -107,7 +107,7 @@ get_ped <- function(ped, sampledata, out = "FamAgg") {
 
   if (out == "FamAgg") {
     pedtable <- data.frame(
-      family = ped$ClusterIndex,
+      ClusterIndex = ped$ClusterIndex,
       id = ped$OffspringID, father = ped$FatherID,
       mother = ped$MotherID, sex = ped$sex
     )
@@ -121,7 +121,7 @@ get_ped <- function(ped, sampledata, out = "FamAgg") {
     output <- data.frame(
       id = ped$OffspringID, dadid = ped$FatherID,
       momid = ped$MotherID, sex = ped$sex,
-      famid = ped$ClusterIndex
+      ClusterIndex = ped$ClusterIndex
     )
     return(output)
   }
