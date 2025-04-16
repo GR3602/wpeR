@@ -1,0 +1,1035 @@
+---
+title: "Introduction to wpeR package"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{Introduction to wpeR package}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: inline
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = "center"
+)
+```
+
+Welcome to the **wpeR** vignette! **wpeR** is an R package designed for analyzing wild pedigree data. Pedigree reconstruction is a powerful tool for understanding the genetic structure of wild populations, but it can also generate large and complex datasets that can be difficult to analyze. **wpeR** provides a streamlined solution for exploring and visualizing this type of data, allowing the user to gain insights into the genetic relationships between individuals in wild populations. In this vignette, we will introduce the main features of **wpeR** and demonstrate how they can be used to analyze and interpret wild pedigrees.
+
+To get started install the the latest development of the package from GitHub:
+
+```{r, eval = FALSE}
+#devtools::install_github()
+```
+
+You should be now able to load **wpeR**.
+
+```{r setup}
+#library(wpeR)
+devtools::load_all()
+```
+
+# Input data
+
+**wpeR** works with two main input datasets:
+
+1.  **Pedigree**
+<ol type="a">
+ <li>[COLONY2](https://www.zsl.org/about-zsl/resources/software/colony) pedigree data.The reconstructed pedigree is an output of COLONY2 software and is stored in the colony project output folder. The function `get_colony()` automatically reads the pedigree file so you do not need to import it into the R session.</li>
+ <li>Custom pedigree data. Users can work with pedigree data reconstructed by any software as long as it follows the formatting rules specified in the `get_ped()` function.</li>
+</ol>
+
+2.  **Genetic samples metadata**.<br /> This dataset should include information on all genetic samples belonging to the animals included in the pedigree and must include columns that describe:
+
+    -   Sample unique identifier code.
+    -   Date of sample collection in `YYYY-MM-DD` format.
+    -   Identifier code of the particular individual that the sample belongs to.
+    -   Genetic sex coded as `M` for males, `F` for females and `NA` for unknown sex.
+    -   Geographic location from where the sample was collected, as latitude and longitude in WGS84 coordinate system (EPSG: 4326).
+    -   Sample type (eg: scat, urine, tissue)<br />
+
+Correctly formatted genetic samples metadata is crucial for the proper functioning of **wpeR** functions. To ensure that your genetic samples metadata conforms to the package's rules, the package includes `check_sampledata()` function. This function performs a series of checks and validations on your input data to verify its integrity and compatibility. If all the validations are passed the `check_sampledata()` function outputs the sample metadata data frame that can be seamlessly used in downstream analyses.
+
+An example pedigree and sample metadata (`wolf_samples`) is included in this package and this two datasets will be used throughout this vignette.
+
+To check if the genetic sample metadata is formatted correctly you can link the columns in the data frame with the parameters of the `check_sampledata()` function:
+
+```{r}
+sampledata <- check_sampledata(
+  Sample = wolf_samples$Sample,
+  Date = wolf_samples$Date,
+  AnimalRef = wolf_samples$AnimalRef,
+  GeneticSex = wolf_samples$GeneticSex,
+  lat = wolf_samples$lat,
+  lng = wolf_samples$lng,
+  SType = wolf_samples$SType
+)
+```
+
+If there are no errors or warnings during the execution of the `check_sampledata()` function, it indicates that the genetic sample metadata is correctly formatted. You can use the returned data frame, in downstream analyses. Example of properly formatted sample metadata with all required columns looks like this:
+
+```{r}
+head(sampledata)
+```
+
+# The workflow
+
+Since many of the functions in **wpeR** build upon the results of previous functions, it is recommended to follow a specific sequence when using the package. Here, we present the optimal workflow for using **wpeR**.
+
+| Function <br /> call <br /> order |     Function      | Description                                                    |
+|:-------------:|:-------------:|-------------------------------------------|
+|                 1a                 |  *get_colony()*   | Organizes COLONY2 output                                       |
+|                 1b                |  *get_ped()*      | Organizes Pedigree Data
+|                 2                 | *anim_timespan()* | Get dates of individuals first and last sample                 |
+|                 3                 |   *org_fams()*    | Organizes animals into families and expands pedigree data      |
+|                 4                 |   *plot_table()*  | Prepares pedigree data for plotting and spatial representation |
+|                5.1                |  *ped_satplot()*  |  Temporal plot of pedigree                |
+|                5.2                |  *ped_spatial()*  | Get Files For Spatial Representation Of Pedigree               |
+
+## Import the pedigree
+
+**COLONY2 PEDIGREE DATA**
+
+Pedigree reconstructed by COLONY2 software is imported into the R session by `get_colony()` function. Apart form reading the colony output file `get_colony()` also adds missing parents to OffspirngID, assigns sex to each animal and adds the probability of paternity and maternity assignment as calculated by COLONY2.
+
+```{r}
+path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
+ped_colony <- get_colony(
+  colony_project_path = path, 
+  sampledata =  wolf_samples
+  )
+
+tail(ped_colony)
+```
+
+**CUSTOM PEDIGREE DATA**
+
+In cases when the pedigree was not reconstructed with COLONY2 software you must use the `get_ped()` function. Under the hood the `get_colony()` and `get_ped()` are very similar, the latter having a little less functionalities, because it is primarily designed so that any pedigree data can be used in downstream analysis. When using `get_ped()` function it is important to note that the `ped` parameter (the reconstructed pedigree) has to be formatted as a basic pedigree with four columns corresponding to offspring (has to be named OffspringID), father (has to be named FatherID), mother (has to be named MotherID) and family (has to be named ClusterIndex). Unknown parents should be represented by `NA` values.
+
+```{r}
+ped <- data.frame(
+  OffspringID = c(
+    "M273P", "M20AM", "M2757", "M2ALK", "M2ETE", "M2EUJ", "MSV00E",
+    "MSV018", "MSV05L", "MSV0M6", "MSV0T4", "MSV0T7", "MSV0TJ", "MSV0UL"
+  ),
+  FatherID = c(
+    NA, NA, "M20AM", "M20AM", "M20AM", "M20AM", "M20AM",
+    "M20AM", "M20AM", "M20AM", "M20AM", "M20AM", "M20AM", "M20AM"
+  ),
+  MotherID = c(
+    NA, NA, "M273P", "M273P", "M273P", "M273P", "M273P",
+    "M273P", "M273P", "M273P", "M273P", "M273P", "M273P", "M273P"
+  ),
+  ClusterIndex = c(rep(1, 14))
+)
+
+
+get_ped(
+    ped = ped,
+    sampledata = wolf_samples
+    )
+```
+
+The output of the `get_colony()` and `get_ped()` functions can can be formatted in different ways to facilitate downstream analysis with other R packages for pedigree analysis and visualization. The format of the output is defined by `out` parameter. Both functions support downstream analysis with [`kinship2`](https://cran.r-project.org/package=kinship2), [`pedtools`](https://cran.r-project.org/package=pedtools) or [`FamAgg`](https://bioconductor.org/packages/FamAgg/) packages.
+
+### [example] get_colony() & kinship2
+
+```{r}
+library(kinship2)
+ped_ks2 <- get_colony(path, wolf_samples, out = "kinship2")
+
+ped_ks2 <- ped_ks2[!(ped_ks2$dadid %in% "M2AM8"),]
+
+ped_ks2 <- pedigree(
+  ped_ks2$id,
+  ped_ks2$dadid,
+  ped_ks2$momid,
+  ped_ks2$sex
+)
+
+```
+
+```{r fig.width=7, fig.height=4}
+plot(ped_ks2, symbolsize = 1.5, cex = 0.4)
+```
+
+
+
+## Animal timespan
+
+`anim_timespan()` function creates 'first seen' and 'last seen' columns for each animal in the pedigree by examining the dates of all genetic samples associated with that animal. This is an important step in obtaining a temporal perspective of the pedigree, as it allows other functions to work with time frame over which each animal was observed. Besides that the functions determines if animal is dead based on predefined sample type eg. tissue.
+
+```{r}
+animal_ts <- anim_timespan(
+  individual_id = wolf_samples$AnimalRef,
+  sample_date = wolf_samples$Date,
+  sample_type = wolf_samples$SType,
+  dead = c("Tissue")
+)
+
+head(animal_ts)
+```
+
+As shown above the `anim_timespan()` function creates a sort of a code list of animal detection time frame. To feed this data to subsequent functions the `anim_timespan()` function output needs to be merged with sample metadata. This additional step ensures that all relevant information about each animal is included and facilitates downstream analysis.
+
+```{r}
+sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE )
+head(sampledata)
+```
+
+## Organize families
+
+The `org_fams()` function takes the pedigree data generated by the `get_colony()`/`get_ped()` function and groups animals into families. This function expands the pedigree by adding information about the family that each individual was born in and the individual's status as a reproductive animal. Based on the ´output´ parameter the function can return a data frame (ped or fams) or a list with two objects (ped and fams). In the examples below we will present each of the two data frames separately.
+
+The result of `org_fams()` function introduces us to two important concepts within the context of this package: *family* and *polygamy cluster*. In the **wpeR** package, a *family* is defined as a group of animals where at least one parent and at least one offspring are known. Meanwhile, a *polygamy cluster* refers to a group of half-siblings who are either maternally or paternally related. In the function's output, the `DadPclust` parameter groups paternal half-siblings, while the `MomPclust` parameter groups maternal half-siblings.
+
+### Pedigree
+
+```{r}
+ped_org <- org_fams(ped = ped_colony, sampledata = sampledata, output = "ped")
+
+tail(ped_org)
+```
+
+The `ped` output is just an extend version of pedigree obtained by `get_colony()` function. Apart from common pedigree information individual, mother, father, sex, family), `ped` also includes information on:
+
+         
+  -    `parents`: identifier codes of both parents separated with ⁠_⁠,
+  -    `FamID`: number of family that the individual belongs to (see Families below),
+  -    `FirstSeen`: date of first sample of individual,
+  -    `LastSeen`: date of last sample of individual,
+  -    `IsDead`: logical value (TRUE/FALSE) that identifies if the individual is dead,
+  -    `DadPclust`: identifier of fathers polygamy cluster,
+  -    `MomPclust`: identifier of mothers polygamy cuter,
+  -    `polyCluster`: polygamy cluster of the individual.
+
+### Families
+
+```{r}
+fams_org <- org_fams(ped = ped_colony, sampledata = sampledata, output = "fams")
+
+head(fams_org)
+```
+
+The `fams` output contains information about the families to which individuals in the pedigree belong. The families are described by:
+
+  -   `parents`: identifier codes of both parents separated with ⁠_⁠,
+  -   `father`: identifier code of the father,
+  -   `mother`: identifier code of the mother,
+  -   `FamID`: numeric value that identifies a particular family,
+  -   `famStart`: date when the first sample of any of the family members was collected^1^,
+  -   `famEnd`: date when the last sample of any of the family members was collected^1^,
+  -   `FamDead`: logical value (TRUE/FALSE) that identifies if the family does not exist any more,
+  -   `DadPclust`: identifier that connects families that share the same father,
+  -   `MomPclust`: identifier that connects families that share the same mother,
+  -   `polyCluster`: numeric value that connects families that share one of the parents.
+  
+^1^<small>`famStart` and `famEnd` columns, estimate a time window for the family based solely on sample collection dates provided in `sampledata`. `famStart` indicates the date of the earliest sample collected from any offspring belonging to that family. `famEnd` indicates the date of the latest sample collected from either the mother or the father of that family. It is important to recognize that this method relies on observation (sampling) dates. Consequently, `famEnd` (last parental sample date) can precede `famStart` (first offspring sample date), creating a biologically impossible sequence and a negative calculated family timespan. Users should interpret the interval between `famStart` and `famEnd` with this understanding.</small>
+
+
+
+
+## Plotting table
+To produce a temporal and spatial pedigree representation, the sample metadata needs to be formatted in a specific way, which can be achieved with the `plot_table()` function. This function combines the outputs of previous functions (`fams` and `ped` from the `org_fams()` function) with sample metadata, with all three data frames serving as inputs.
+
+The function offers flexibility in selecting families for visualization through the `plot_fams` parameter. To include all families included in the pedigree, `plot_fams` should be set to "all" (which is the default). For plotting a subset of families, provide a numeric vector of the desired FamIDs, which are the family identification numbers generated by `org_fams()` and can be seen in the `fams` output table.
+
+In order for the `plot_table()` function to work sample metadata has to include some specific information, most of them are already defined in the Input data part of this vignette, apart form them the sample metadata must also include columns on the date of first and last sample of individual and logical value identifying if the individual is dead. All this additional information can be added by `anim_timespan()` function (see Animal timespan). If the information stored in sample data does not use default column names (to see them check documentation `?plot_table`) the custom names can be defined as a vector with parameter *datacolumns*.
+
+```{r}
+pt <- plot_table(
+  plot_fams = "all",
+  all_fams = fams_org,
+  ped = ped_org,
+  sampledata = sampledata,
+  deadSample = c("Tissue")
+)
+
+head(pt)
+```
+
+The `plot_table()` function output adds additional information to sample metadata which include:
+
+  -   `plottingID`: Identifier number for temporal pedigree plot `ped_satplot`. In case of polygamous animals same individual can be included in more than one family,
+  -   `FamID`: Identifier number of family that individual belongs to,
+  -   `polyCluster`: Identifier number for the polygamy cluster of individual,
+  -   `rep`: Is individual reproductive in current family, (current family defined with FamID for a particular entry),
+  -   `later_rep`: Is individual reproductive in any other (later) families,
+  -   `isPolygamous`: Has individual more than one mate,
+  -   `dead`:  Is individual dead,
+  -   `first_sample`: Is this particular sample the first sample of individual,
+  -   `last_sample`:  Is this particular sample the last sample of individual,
+  -   `isReference`:  Is this particular sample reference sample of individual.
+
+Apart from adding additional information to sample metadata, `plot_table()` also duplicates sample entries (rows) for animals  that are present in more than one family (eg. polygamous animals, animals that were detected as offspring in one family and later as reproductive animal in another). Considering that, it is crucial for users to be aware of this data duplication when utilizing the `plot_table()` output in analysis outside of the scope of this package. 
+  
+```{r}
+nrow(sampledata) == nrow(pt)
+```
+
+After applying the `plot_table()` function, the pedigree data is prepared for temporal and spatial visualization, marking the completion of the data preparation phase in this package's workflow. The data visualization stage involves two functions: `ped_satplot()` for temporal representation and `ped_spatial()` for spatial representation.
+  
+## Temporal plot
+
+The core of the temporal plot, generated by the `ped_satplot()` function, is the representation of the occurrence of samples for each individual (y-axis) trough time (x-axis). Furthermore the individuals are first grouped by families and then by polygamy clusters. Within each family, the individuals are arranged from top to bottom based on the date of their first sample collection. At the bottom of each family, the animal that was initially detected is positioned, followed by subsequent animals in chronological order. This layout enables a visual understanding of the temporal relationships within and between families, with each family forming a distinct cluster in the plot.
+
+Each sample is visually depicted as a point on the plot, and these points are connected by lines to represent the continuous survival of the individual. This connection remains intact even during periods where no samples of that particular individual were collected. Each sample can be additional marked to represent any additional characteristics of a particular individual (eg. reproductive animal, polygamous animal). Additionally, certain samples can be marked to indicate mortality (eg. tissue samples).
+
+
+```{r ped_satplot legend, echo=FALSE}
+library(ggplot2)
+ggplot()+
+  #FEMALE SAMPLES
+  annotate("text",label = "Female samples", x = 1.75, y=4, hjust = 0 )+
+  geom_line(aes(x = c(1,1.5), y = c(4,4)),alpha = 0.5, color = "red")+
+  geom_point(aes(x = c(1,1.5), y = c(4,4)), size = 1, color = "red")+
+  #MALE SAMPLES
+  annotate("text",label = "Male samples", x = 1.75, y=3.75, hjust = 0 )+
+  geom_line(aes(x = c(1,1.5), y = c(3.75,3.75)),alpha = 0.5, color = "blue")+
+  geom_point(aes(x = c(1,1.5), y = c(3.75,3.75)), size = 1, color = "blue")+
+  #REPRODUCTIVE ANIMAL
+  annotate("text",label = "Reproductive animal - this family", x = 1.75, y=3.5, hjust = 0 )+
+  geom_point(aes(x = c(1,1.5), y =c(3.5, 3.5)), shape=0, size = 3, color = "red")+
+  geom_point(aes(x = c(1.5), y =c(3.5)), size = 1, color = "blue")+
+  geom_point(aes(x = c(1), y =c(3.5)), size = 1, color = "red")+
+  #POLYGAMOUS ANIMAL
+  annotate("text",label = "Polygamous animal", x = 1.75, y=3.25, hjust = 0 )+
+  geom_point(aes(x = c(1,1.5), y =c(3.25, 3.25)), shape=5, size = 2, color = "purple")+
+  geom_point(aes(x = c(1.5), y =c(3.25)), size = 1, color = "blue")+
+  geom_point(aes(x = c(1), y =c(3.25)), size = 1, color = "red")+
+  #REPRODUCTIVE ANIMAL - LATER
+  annotate("text",label = "Reproductive animal - later family", x = 1.75, y=3, hjust = 0 )+
+  geom_point(aes(x = c(1,1.5), y =c(3,3)), shape=1, size = 3, color = "green")+
+  geom_point(aes(x = c(1.5), y =c(3)), size = 1, color = "blue")+
+  geom_point(aes(x = c(1), y =c(3)), size = 1, color = "red")+
+  #DEAD
+  annotate("text",label = "Mortality sample", x = 1.75, y=2.75, hjust = 0 )+
+  geom_point(aes(x = c(1,1.5), y =c(2.75,2.75)), shape=4, size = 3, color = "black")+
+  geom_point(aes(x = c(1.5), y =c(2.75)), size = 1, color = "blue")+
+  geom_point(aes(x = c(1), y =c(2.75)), size = 1, color = "red")+
+  #SEPARATORS
+  annotate("text",label = "Family separator", x = 1.75, y=2.5, hjust = 0 )+
+  geom_line(aes(x = c(1,1.5), y = c(2.5,2.5)), linetype = "dashed", linewidth = 0.3)+
+  annotate("text",label = "Polygamy cluster separator", x = 1.75, y=2.25, hjust = 0 )+
+  geom_line(aes(x = c(1,1.5), y = c(2.25,2.25)), color = "yellow", linewidth = 1)+
+  theme_void()+
+  xlim(c(1,5))
+    
+
+```
+
+
+Before we get started with the first plot it is important to look back at `plot_table()` function and the previously mentioned *plot_fams* parameter. This parameter allow us to select a subset of families that we would like to plot. In the below example just one family (FamID = 4) is selected for plotting.
+
+```{r fig.width=6.5, fig.height=4}
+pt <- plot_table(
+  plot_fams = 4,
+  all_fams = fams_org,
+  ped = ped_org,
+  sampledata = sampledata,
+  deadSample = c("Tissue", "Decomposing Tissue", "Blood")
+)
+
+sp <- ped_satplot(pt)
+
+sp 
+```
+
+An example of two families that share the same mother (FamID = 1 & 4)
+
+```{r fig.width=6.5, fig.height=6}
+pt <- plot_table(
+  plot_fams = c(1,4),
+  all_fams = fams_org,
+  ped = ped_org,
+  sampledata = sampledata,
+  deadSample = c("Tissue", "Decomposing Tissue", "Blood")
+)
+
+sp <- ped_satplot(pt)
+
+sp
+```
+
+
+Technically, there is no limit to the number of families that can be plotted in this manner. However, as the number of families increases, the complexity of the graph intensifies, making it progressively more challenging to comprehend. This can be observed in the example of five families,  two of which share a reproductive animal.
+
+```{r fig.width=6.5, fig.height=10}
+pt <- plot_table(
+  plot_fams = c(1:5),
+  all_fams = fams_org,
+  ped = ped_org,
+  sampledata = sampledata,
+  deadSample = c("Tissue", "Decomposing Tissue", "Blood")
+)
+
+sp <- ped_satplot(pt)
+
+sp
+```
+
+## Spatial files
+To incorporate a spatial dimension into the pedigree analysis, the `ped_spatial()` function comes into play. Acting as a wrapper function, `ped_spatial()` combines multiple functions that utilize the output of the `plot_table()` function, transforming it into various [sf](https://r-spatial.github.io/sf/articles/sf1.html) objects that can be visualized on a map. It's worth noting that the function automatically removes samples without coordinates, as they cannot be plotted. 
+
+By utilizing the default function parameters, the ped_spatial() function produces a list containing 14 `sf` objects.
+  
+
+```{r}
+pt <- plot_table(
+  plot_fams = 1,
+  all_fams = fams_org,
+  ped = ped_org,
+  sampledata = sampledata,
+  deadSample = c("Tissue", "Decomposing Tissue", "Blood")
+)
+
+ps <- ped_spatial(pt)
+
+summary(ps)
+
+```
+
+Through the integration of `POINT`, `LINESTRING`, and `POLYGON` geometries, the `ped_spatial()` function generates `sf` objects that establish connections between parent and offspring samples, as well as samples of the same individual. This enables users to analyze and interpret the spatial progression of a pedigree. Created objects can be categorized into 5 broader categories:
+
+   -   `...Rpoints`: POINT object representing reference sample of each animal. In the case of `...Rpoints` the number of points      represents the number of animals included in `plot_table()` function output. The reference points represent just one sample of each individual. For reproductive individuals (mothers and fathers), a reference point is the location of their last sample within the specified time window. For offspring, the reference point is the location of their first sample within the time window.
+  -   `...MovePoints`: POINT object representing all samples of a particular animal.
+  -   `maternity/paternityLines`: LINESTRING object connecting reference samples of mothers (`motherRpoints`) or fathers (`fatherRpoints`) with reference samples of their offspring (`offspringRpoints`). These lines visually depict the parent-offspring relationships in the pedigree.
+  -   `...MoveLines`: LINESTRING object connecting `...MovePoints` of an individual in chronological order, showcasing the movement or changes in location over time for the specific animal.
+  -   `...MovePolygons`: POLYGON object representing a convex hull that encloses all the samples of an individual. It provides a graphical representation of the spatial extent or range covered by the animal based on its sample locations.
+
+By specifying the *fulsibdata* parameter in the `ped_spatial()` function, you can include the `FullsibLines` object in the output list. The `FullsibLines` is a LINESTRING object connecting reference samples of full siblings.
+
+
+```{r}
+fullsibdata <- read.csv(paste0(path,".FullSibDyad"))
+
+ps <- ped_spatial(pt, fullsibdata = fullsibdata)
+
+summary(ps)
+```
+
+In the `ped_spatial()` function, you have the flexibility to define the time window for selecting the samples used to generate the spatial pedigree outputs. By specifying the *time.limits* parameter, you can set the start and end dates that limit the samples included in the spatial representation. The *time.limits* parameter is defined as a vector of two dates in `Date` format. Moreover, the function provides the option to apply *time.limits* selectively to specific types of output data:
+ -    `time.limit.rep`parameter enables the application of time limits solely to offspring reference and movement points,
+ -    `time.limit.offspring` parameter applies the time.limits to offspring reference and movement points,
+ -    `time.limit.moves` parameter permits the application of time limits to the movement lines of all individuals.
+ 
+
+
+```{r, eval = FALSE}
+ps_tl <- ped_spatial(
+  plottable = pt,
+  time.limits = c(as.Date("2017-01-01"), as.Date("2018-01-01")),
+  time.limit.rep = TRUE,
+  time.limit.offspring = TRUE,
+  time.limit.moves = TRUE
+)
+
+
+```
+### [example] Drawing maps in R
+To showcase the capabilities of the `ped_spatial()` function and to deepen our comprehension of the data frames generated by this function, we present a series of examples that highlight maps produced through the utilization of the wpeR package. These examples make use of various R packages enable visual representation of geographic datasets.
+
+#### ggplot2
+
+In the similar fashion as the temporal plots in chapter 2.5, the first set of maps shows just one family. The maps are static and produced with [`ggplot2`](https://CRAN.R-project.org/package=ggplot2), [`basemaps`](https://CRAN.R-project.org/package=basemaps) and [`ggsflabel`](https://github.com/yutannihilation/ggsflabel) packages. To clearly represent the output of `ped_spatial()` function different spatial files are presented separately on three maps. First showing the pedigree, second movement of reproductive animals and the third movement of the offspring. Furthermore, each of the three maps is represented in two different variants, one showing all the samples of the family members included in the sample metadata table and the other utilizing the *time.limits* parameter, subletting the samples to within a defined time window (presented on temporal plot with orange dotted rectangle). 
+
+We begin by creating a plotting table (plot.table) of the  family/families we would like to plot (in this example family with FamID == 1), through the `plot_table()` function. Subsequently, the `ped_spatial()` function is applied to generate a list of `sf` data frames representing the distribution of animal samples and their relationships. Additionally we generate a second list of `sf` files in which all the generated dataframes are limited to the period between "2017-01-01" and "2018-01-01". 
+
+It is worth noting that depending on the number of families, individuals and samples the maps generated from these data can appear complex and cluttered, especially if the time.limits parameter is not employed. This parameter is crucial in refining the visualizations, enhancing their clarity and interpretability.
+
+
+```{r}
+pt <- plot_table(
+  plot_fams = 1,
+  all_fams = fams_org,
+  ped = ped_org,
+  sampledata = sampledata,
+  deadSample = c("Tissue", "Decomposing Tissue", "Blood")
+)
+
+ps <- ped_spatial(pt)
+
+ps.tl <- ped_spatial(
+  plottable = pt,
+  time.limits = c(as.Date("2017-01-01"), as.Date("2018-01-01")),
+  time.limit.rep = TRUE,
+  time.limit.offspring = TRUE,
+  time.limit.moves = TRUE
+)
+```
+
+```{r echo=FALSE, fig.width=6.5, fig.height=4}
+#| fig.cap="Temporal plot, showing all individuals and samples of the plotted family.
+#|  Orange dashed rectangle encopasses samples that fall within defined time limits."
+sp <- ped_satplot(pt)
+
+
+sp +
+    geom_rect(aes(xmin = as.Date("2017-01-01"), xmax = as.Date("2018-01-01"), ymin = 0, ymax = 12.5),
+               fill = "transparent", color = "orange", linetype = "dotted", linewidth = 0.5)
+```
+<br />
+```{r ggplot legend, echo=FALSE, fig.cap = "Legend explaining symbols used for spatial pedigree representation."}
+library(ggplot2)
+library(ggforce)
+ggplot()+
+  xlim(0.5,5)+
+  theme_void()+
+  #POINTS
+  annotate("text",label = "Points", x = 0.5, y = 5.25, hjust = 0, size = 4 )+
+  #momRef/dadRef
+  annotate("text",label = "Mother/father reference sample", x = 1.75, y = 5, hjust = 0 )+
+  geom_point(aes(x = c(1, 1.5), y = c(5,5)), color = "black", size = 6)+
+  geom_point(aes(x = 1, y = 5) , color = "#b7484b", size = 5)+
+  geom_point(aes(x = 1.5, y = 5) , color = "#1f78b4", size = 5)+
+  geom_point(aes(x =  c(1, 1.5), y = c(5,5)), color = "white", size = 3)+
+  #momMovPt
+  annotate("text", label = "Mother/father other samples", x = 1.75, y = 4.75, hjust = 0)+
+  geom_point(aes(x = 1, y = 4.75) , color = "#b7484b", size = 2.5, alpha = 0.5)+
+  #dadMovPt
+  geom_point(aes(x = 1.5, y = 4.75) , color = "#1f78b4", size = 2.5, alpha = 0.5)+
+  #offsprRefs
+  annotate("text", label = "Offspring reference sample", x = 1.75, y = 4.5, hjust = 0)+
+  geom_point(aes(x = 1, y = 4.5), shape = 18, color = "#b7484b", size = 6)+
+  geom_point(aes(x = 1.5, y = 4.5), shape = 18, color = "#1f78b4", size = 6)+
+  geom_point(aes(x = c(1,1.5), y = 4.5), shape = 18, color = "#ff7f00", size = 3)+
+  #offsporMovPt
+  annotate("text", label = "Offspring other samples", x = 1.75, y = 4.25, hjust = 0)+
+  geom_point(aes(x = 1, y = 4.25),  color = "#b7484b", size = 4)+
+  geom_point(aes(x = 1.5, y = 4.25),  color = "#1f78b4", size = 4)+
+  geom_point(aes(x = c(1,1.5), y = 4.25),  color = "black", size = 2) +
+  #LINES
+  annotate("text",label = "Lines", x = 0.5, y = 4, hjust = 0, size = 4 )+
+  #matLn
+  annotate("text", label = "Maternity line", x = 1.75, y = 3.75, hjust = 0)+
+  geom_segment(aes(x = 1, xend = 1.5, y = 3.75, yend = 3.75), linewidth = 1, color = "#b7484b",
+               arrow = arrow(length = unit(0.3, "cm")))+
+  #patLn
+  annotate("text", label = "Paternity line", x = 1.75, y = 3.5, hjust = 0)+
+  geom_segment(aes(x = 1, xend = 1.5, y = 3.5, yend = 3.5), linewidth = 1, color = "#1f78b4",
+               arrow = arrow(length = unit(0.3, "cm")))+
+  #momMovLn
+  annotate("text", label = "Mother movement line", x = 1.75, y = 3.25, hjust = 0)+
+  geom_line(aes(x = c(1,1.5), y = c(3.25,3.25)),alpha = 0.5, color = "#b7484b")+
+  #dadMovLn
+  annotate("text", label = "Father movement line", x = 1.75, y = 3, hjust = 0)+
+  geom_line(aes(x = c(1,1.5), y = c(3,3)),alpha = 0.5, color = "#1f78b4")+
+  #offsprMvolLn
+  annotate("text", label = "Offspring movement line", x = 1.75, y = 2.75, hjust = 0)+
+  geom_line(aes(x = c(1,1.5), y = c(2.75,2.75)),alpha = 0.5, color = "#ff7f00")+
+  #LABELS
+  annotate("text",label = "Labels", x = 0.5, y = 2.5, hjust = 0, size = 4 )+
+  #Reference
+  annotate("text", label = "Mother/father/offspring reference", x = 1.75, y = 2.25, hjust = 0)+
+  #Mother Ref
+  geom_ellipse(aes(x0 = 1, y0 = 2.25, a = 0.07, b = 0.05, angle = 0), fill = "#b7484b", color = "#b7484b", alpha = 0.5 )+
+  #FatherRef
+  geom_ellipse(aes(x0 = 1.25, y0 = 2.25, a = 0.07, b = 0.05, angle = 0), fill = "#1f78b4", color = "#1f78b4", alpha = 0.5 )+
+  #Offspring Ref
+  geom_ellipse(aes(x0 = 1.5, y0 = 2.25, a = 0.07, b = 0.05, angle = 0), fill = "#ff7f00", color = "#ff7f00", alpha = 0.5 )+
+  #Movement offspring
+  annotate("text", label = "Offspring reference for other samples", x = 1.75, y = 2, hjust = 0)+
+  geom_ellipse(aes(x0 = 1, y0 = 2, a = 0.07, b = 0.05, angle = 0), fill = "white", color = "black", alpha = 0.5 )+
+  #Date
+  annotate("text", label = "Sample collection date", x = 1.75, y = 1.75, hjust = 0)+
+  annotate("text",label = "YYYY-MM-DD", x = 1, y=1.75, size = 3, hjust = 0.27, alpha = 0.6 ) 
+
+  
+ 
+
+```
+
+```{r ggplot map examples, include=FALSE}
+library(ggplot2)
+library(basemaps)
+#library(ggsflabel) not a CRAN package solved bellow
+library(gridExtra)
+library(sf)
+
+ps.t<-lapply(ps, function(x) st_transform(x, crs = st_crs(3857)))
+
+ps.tl.t<-lapply(ps.tl, function(x) st_transform(x, crs = st_crs(3857)))
+
+ext <- st_bbox(c(ps.t$motherRpoints$geometry, 
+          ps.t$fatherRpoints$geometry, 
+          ps.t$offspringRpoints$geometry,
+          ps.t$motherMovePoints$geometry,
+          ps.t$fatherMovePoints$geometry))
+          
+ext1000 <- ext+c(-1000, -1000, 1000, 1000)
+
+p.marg.l <-c(0,-0.3,0,0)
+p.marg.r <- c(0,0,0,-0.3)
+
+bm <- ggplot() + 
+  basemap_gglayer(ext1000, map_service = "carto", map_type = "light") +
+  scale_fill_identity()
+
+ped.ref<-bm+
+  geom_sf(data = ps.t$maternityLines, color = "#b7484b", linewidth = 0.3 )+
+  geom_sf(data = ps.t$paternityLines, color = "#1f78b4", linewidth = 0.3 )+
+  geom_sf(data = ps.t$motherRpoints$geometry, color = "#b7484b", size = 3, shape = 21, stroke = 2)+
+  
+  geom_sf(data = ps.t$fatherRpoints$geometry, color = "#1f78b4", size = 3, shape = 21, stroke = 2)+
+  
+  geom_sf(data = ps.t$offspringRpoints, aes(color = GeneticSex) , fill = "#ff7f00", size = 1, shape = 23, stroke = 1)+
+  
+  scale_color_manual(values = c("#b7484b", "#1f78b4"), labels = c("F", "M"))+
+  theme_void() +
+  theme(legend.position = "none", 
+        plot.margin=unit(p.marg.l, "cm"))
+
+
+
+
+ped.ref2<-bm+
+  geom_sf(data = ps.tl.t$maternityLines, color = "#b7484b", linewidth = 0.3 )+
+  geom_sf(data = ps.tl.t$paternityLines, color = "#1f78b4", linewidth = 0.3 )+
+  geom_sf(data = ps.tl.t$motherRpoints$geometry, color = "#b7484b", size = 3, shape = 21, stroke = 2)+
+  geom_sf(data = ps.tl.t$fatherRpoints$geometry, color = "#1f78b4", size = 3, shape = 21, stroke = 2)+
+  geom_sf(data = ps.tl.t$offspringRpoints, aes(color = GeneticSex) , fill = "#ff7f00", size = 1, shape = 23, stroke = 1)+
+  
+  scale_color_manual(values = c("#b7484b", "#1f78b4"), labels = c("F", "M"))+
+  theme_void(base_size = 3) +
+  theme(legend.position = "none",
+        plot.margin=unit(p.marg.r, "cm"))
+
+
+
+
+
+
+par.mov <-bm+
+  geom_sf(data = ps.t$motherMoveLines, color = "#b7484b", linewidth = 0.3, alpha = 0.4)+
+  geom_sf(data = ps.t$fatherMoveLines, color = "#1f78b4", linewidth = 0.3, alpha = 0.4)+
+  geom_sf(data = ps.t$motherRpoints$geometry, color = "#b7484b", size = 3, shape = 21, stroke = 2)+
+  geom_sf(data = ps.t$motherMovePoints, color = "#b7484b", size = 2, shape = 16, alpha = 0.5 )+
+  
+  geom_sf(data = ps.t$fatherRpoints$geometry, color = "#1f78b4", size = 3, shape = 21, stroke = 2)+
+  geom_sf(data = ps.t$fatherMovePoints, color = "#1f78b4", size = 2, shape = 16, alpha = 0.5 )+
+  theme_void() +
+  theme(legend.position = "none",
+        plot.margin=unit(p.marg.l, "cm"))
+
+
+
+
+par.mov2 <-bm+
+  geom_sf(data = ps.tl.t$motherMoveLines, color = "#b7484b", linewidth = 0.3, alpha = 0.4)+
+  geom_sf(data = ps.tl.t$fatherMoveLines, color = "#1f78b4", linewidth = 0.3, alpha = 0.4)+
+  geom_sf(data = ps.tl.t$motherRpoints$geometry, color = "#b7484b", size = 3, shape = 21, stroke = 2)+
+  geom_sf(data = ps.tl.t$motherMovePoints, color = "#b7484b", size = 2, shape = 16, alpha = 0.5 )+
+  geom_sf(data = ps.tl.t$fatherRpoints$geometry, color = "#1f78b4", size = 3, shape = 21, stroke = 2)+
+  geom_sf(data = ps.tl.t$fatherMovePoints, color = "#1f78b4", size = 2, shape = 16, alpha = 0.5 )+
+  theme_void() +
+  theme(legend.position = "none",
+        plot.margin=unit(p.marg.r, "cm"))
+
+
+
+
+
+
+
+ext2 <- st_bbox(c(ps.t$motherRpoints$geometry, 
+          ps.t$fatherRpoints$geometry, 
+          ps.t$offspringRpoints$geometry,
+          ps.t$motherMovePoints$geometry,
+          ps.t$fatherMovePoints$geometry,
+          ps.t$offspringMovePoints$geometry))
+
+ext21000 <- ext2+c(-1000, -1000, 1000, 1000)
+
+
+
+
+
+bm <- ggplot() + 
+  basemap_gglayer(ext21000, map_service = "carto", map_type = "light_no_labels") +
+  scale_fill_identity()
+
+offs.mov <- bm+
+  
+  geom_sf(data = ps.t$offspringMoveLines[-c(1),], color = "#ff7f00", linewidth = 0.3, alpha = 0.4)+
+  geom_sf(data = ps.t$offspringMovePoints, aes(color = GeneticSex), shape = 21, fill = "black", stroke = 1)+
+  geom_sf(data = ps.t$offspringRpoints, aes(color = GeneticSex) , fill = "#ff7f00", size = 1, shape = 23, stroke = 1)+
+  scale_color_manual(values = c("#b7484b", "#1f78b4"), labels = c("F", "M"))+
+  theme_void() +
+  theme(legend.position = "none",
+        plot.margin=unit(p.marg.l, "cm"))
+
+
+
+
+
+
+ext3 <- st_bbox(c(ps.tl.t$motherRpoints$geometry, 
+          ps.tl.t$fatherRpoints$geometry, 
+          ps.tl.t$offspringRpoints$geometry,
+          ps.tl.t$motherMovePoints$geometry,
+          ps.tl.t$fatherMovePoints$geometry,
+          ps.tl.t$offspringMovePoints$geometry))
+
+ext31000 <- ext3+c(-1000, -1000, 1000, 1000)
+
+bm <- ggplot() + 
+  basemap_gglayer(ext31000, map_service = "carto", map_type = "light_no_labels") +
+  scale_fill_identity()
+
+
+offs.mov2 <- bm+
+  geom_sf(data = ps.tl.t$offspringMoveLines[-c(1),], color = "#ff7f00", linewidth = 0.3, alpha = 0.4)+
+  geom_sf(data = ps.tl.t$offspringMovePoints, aes(color = GeneticSex), shape = 21, fill = "black", stroke = 1)+
+  geom_sf(data = ps.tl.t$offspringRpoints, aes(color = GeneticSex) , fill = "#ff7f00", size = 1, shape = 23, stroke = 1)+
+  scale_color_manual(values = c("#b7484b", "#1f78b4"), labels = c("F", "M"))+
+  theme_void() +
+  theme(legend.position = "none",
+        plot.margin=unit(p.marg.r, "cm"))
+
+
+
+#since ggsflabel is not CRAN package the labels are added seperatly
+if (requireNamespace("ggsflabel")) {
+  library(ggsflabel)
+  
+  ped.ref <- ped.ref+
+    geom_sf_label_repel(data = ps.t$motherRpoints, aes(label = AnimalRef ), size = 2, , fill = "#b7484b", alpha = 0.6)+
+    geom_sf_label_repel(data = ps.t$fatherRpoints, aes(label = AnimalRef ), size = 2, , fill = "#1f78b4", alpha = 0.6)+
+    geom_sf_label_repel(data = ps.t$offspringRpoints, aes(label = AnimalRef ), size = 1.5, fill = "#ff7f00", alpha = 0.6)
+
+  
+  ped.ref2 <- ped.ref2 +
+    geom_sf_label_repel(data = ps.tl.t$motherRpoints, aes(label = AnimalRef ), size = 2, , fill = "#b7484b", alpha = 0.6)+
+    geom_sf_label_repel(data = ps.tl.t$fatherRpoints, aes(label = AnimalRef ), size = 2, , fill = "#1f78b4", alpha = 0.6)+
+    geom_sf_label_repel(data = ps.tl.t$offspringRpoints, aes(label = AnimalRef ), size = 1.5, fill = "#ff7f00", alpha = 0.6)
+  
+  par.mov <- par.mov+
+    geom_sf_label_repel(data = ps.t$motherRpoints, aes(label = AnimalRef ), size = 2, , fill = "#b7484b", alpha = 0.6)+
+    geom_sf_label_repel(data = ps.t$fatherRpoints, aes(label = AnimalRef ), size = 2, , fill = "#1f78b4", alpha = 0.6)+
+    geom_sf_text_repel(data = ps.t$motherMovePoints, aes(label = as.character(Date)), size = 1.5, alpha = 0.4)+
+    geom_sf_text_repel(data = ps.t$fatherMovePoints, aes(label = as.character(Date)), size = 1.5, alpha = 0.4)
+
+  
+  par.mov2 <- par.mov2+
+    geom_sf_label_repel(data = ps.tl.t$motherRpoints, aes(label = AnimalRef ), size = 2, , fill = "#b7484b", alpha = 0.6)+
+    geom_sf_label_repel(data = ps.tl.t$fatherRpoints, aes(label = AnimalRef ), size = 2, , fill = "#1f78b4", alpha = 0.6)+
+    geom_sf_text_repel(data = ps.tl.t$fatherMovePoints, aes(label = as.character(Date)), size = 1.5, alpha = 0.4)+
+    geom_sf_text_repel(data = ps.tl.t$motherMovePoints, aes(label = as.character(Date)), size = 1.5, alpha = 0.4)
+
+
+  
+  offs.mov <- offs.mov+
+    geom_sf_text_repel(data = ps.t$offspringMovePoints, aes(label = as.character(Date)), size = 1.5, alpha = 0.4)+
+    geom_sf_label_repel(data = ps.t$offspringRpoints, aes(label = AnimalRef ), size = 1.5, fill = "#ff7f00", alpha = 0.6)+
+    geom_sf_label_repel(data = ps.t$offspringMovePoints, aes(label = AnimalRef ), size = 1.5, fill = "white", alpha = 0.3)
+  
+  offs.mov2 <- offs.mov2+
+    geom_sf_text_repel(data = ps.tl.t$offspringMovePoints, aes(label = as.character(Date)), size = 1.5, alpha = 0.4)+
+    geom_sf_label_repel(data = ps.tl.t$offspringRpoints, aes(label = AnimalRef ), size = 1.5, fill = "#ff7f00", alpha = 0.6)+
+    geom_sf_label_repel(data = ps.tl.t$offspringMovePoints, aes(label = AnimalRef ), size = 1.5, fill = "white", alpha = 0.3)
+
+}else{
+  message("Package 'ggsflabel' is not installed. If you want to display the labels with as little work as posiible install it from GitHub: devtools::install_github('yutannihilation/ggsflabel')")
+}
+
+
+```
+
+
+
+<br />
+```{r, fig.width=7, out.width="100%", fig.asp=0.5, dpi=300, echo=FALSE, message=FALSE, warning=FALSE}
+#| fig.cap="Spatial pedigree representation. a) all samples, b) time window."
+grid.arrange(arrangeGrob(ped.ref, top = "a)"),arrangeGrob(ped.ref2, top = "b)"), ncol = 2)
+```
+<br />
+```{r, fig.width=7, out.width="100%", fig.asp=0.5, dpi=300, echo=FALSE, message=FALSE, warning=FALSE}
+#| fig.cap="Movement of reproductive animals as inffered from collected samples. a) all samples, b) time window."
+grid.arrange(par.mov,par.mov2, ncol = 2)
+```
+<br />
+```{r, fig.width=7, out.width="100%", fig.asp=0.7, dpi=300, echo=FALSE, message=FALSE, warning=FALSE}
+#| fig.cap="Movement of offspring as inffered from collected samples. a) all samples, b) time window."
+grid.arrange(offs.mov,offs.mov2, ncol = 2)
+```
+<br />
+
+
+#### leaflet
+```{r}
+library(leaflet)
+library(leaflet.providers)
+
+pt <- plot_table(plot_fams = c(1:5),
+                        fams_org,
+                        ped_org,
+                        sampledata,
+                        deadSample = c("Tissue", "Decomposing Tissue", "Blood"))
+
+ps <- ped_spatial(pt,
+                  time.limits = c(as.Date("2020-07-01"), as.Date("2021-06-30")),
+            time.limit.rep = TRUE,
+            time.limit.offspring = TRUE,
+            time.limit.moves = TRUE)
+
+
+```
+
+
+```{r, out.width = '100%', fig.asp=1.5, echo=FALSE}
+leaflet() |> 
+  addTiles() |>
+  addProviderTiles(providers$CartoDB.PositronNoLabels)|>
+  #FATHER REFERENCE
+  addCircleMarkers(data=ps$fatherRpoints,
+                     #clusterOptions = markerClusterOptions(),
+                     label = ~AnimalRef, 
+                     popup = ~paste(
+                                   "Sex:", GeneticSex, "<br>"),
+                     labelOptions = labelOptions(noHide = TRUE, 
+                                                 textOnly = TRUE,
+                                                 textsize = "10px",
+                                                 offset=c(12,12,12,12),
+                                                 style = list("color" = "#1f78b4")),
+                     radius=5,
+                     color = "#1f78b4",
+                     fillColor = "#1f78b4",
+                   group = "Father Reference")|>
+  #FATHER MOVEMENT
+  addCircleMarkers(data=ps$fatherMovePoints,
+                     #clusterOptions = markerClusterOptions(),
+                     label = ~AnimalRef, 
+                     popup = ~paste(
+                                   "Sex:", GeneticSex, "<br>"),
+                     labelOptions = labelOptions(noHide = TRUE, 
+                                                 textOnly = TRUE,
+                                                 textsize = "10px",
+                                                 offset=c(12,12,12,12),
+                                                 style = list("color" = "black")),
+                     radius=2,
+                   opacity = 0.5,
+                     color = "#1f78b4",
+                     fillColor = "#1f78b4",
+                   group = "Father Movemet")|>
+  #MOTHER REFERENCE
+  addCircleMarkers(data=ps$motherRpoints,
+                     #clusterOptions = markerClusterOptions(),
+                     label = ~AnimalRef, 
+                     popup = ~paste(
+                                   "Sex:", GeneticSex, "<br>"),
+                     labelOptions = labelOptions(noHide = TRUE, 
+                                                 textOnly = TRUE,
+                                                 textsize = "10px",
+                                                 offset=c(12,12,12,12),
+                                                 style = list("color" = "#b7484b")),
+                     radius=5,
+                     color = "#b7484b",
+                     fillColor = "#b7484b",
+                   group = "Mother Reference") |>
+  #MOTHER MOVEMENT
+  addCircleMarkers(data=ps$motherMovePoints,
+                     #clusterOptions = markerClusterOptions(),
+                     label = ~AnimalRef, 
+                     popup = ~paste(
+                                   "Sex:", GeneticSex, "<br>"),
+                     labelOptions = labelOptions(noHide = TRUE, 
+                                                 textOnly = TRUE,
+                                                 textsize = "10px",
+                                                 offset=c(12,12,12,12),
+                                                 style = list("color" = "black")),
+                     radius=2,
+                   opacity = 0.5,
+                     color = "#b7484b",
+                     fillColor = "#b7484b",
+                   group = "Mother Movement")|>
+  #OFFSPRING REFERENCE
+  addCircleMarkers(data=ps$offspringRpoints,
+                     #clusterOptions = markerClusterOptions(),
+                     label = ~AnimalRef, 
+                     popup = ~paste(
+                                    "Sex:", GeneticSex, "<br>"
+                                    ),
+                     labelOptions = labelOptions(noHide = FALSE, 
+                                                 textOnly = TRUE,
+                                                 opacity = 0.5,
+                                                 textsize = "3px",
+                                                 offset=c(12,12,12,12),
+                                                 style = list("color" = "gray")),
+                     radius=3,
+                     color = "orange",
+                     fillColor = "orange",
+                   group = "Offspring Reference")|>
+  #OFFSPRING MOVEMENT
+    addCircleMarkers(data=ps$offspringMovePoints,
+                     #clusterOptions = markerClusterOptions(),
+                     label = ~AnimalRef, 
+                     popup = ~paste(
+                                    "Sex:", GeneticSex, "<br>"
+                                    ),
+                     labelOptions = labelOptions(noHide = F, 
+                                                 textOnly = TRUE,
+                                                 opacity = 0.5,
+                                                 textsize = "3px",
+                                                 offset=c(12,12,12,12),
+                                                 style = list("color" = "gray")),
+                     radius=1,
+                     color = "black",
+                     fillColor = "black",
+                   group = "Offspring Movement")|>
+   addPolylines(data = ps$maternityLines, stroke = TRUE, weight = 1.5, color = "#b7484b", opacity = 1, group = "Maternity") |>
+   addPolylines(data = ps$paternityLines, stroke = TRUE, weight = 1.5, color = "#1f78b4", opacity = 1, group = "Paternity") |>
+   addPolylines(data = ps$fatherMoveLines, stroke = TRUE, weight = 0.5, color = "#1f78b4", opacity = 0.4, group = "Father Movement Line") |>
+   addPolylines(data = ps$offspringMoveLines, stroke = TRUE, weight = 0.5, color = "black", opacity = 0.4, group = "Offspring Movement Line")|>
+
+  addLayersControl(
+    overlayGroups = c("Father Reference",
+                      "Father Movemet",
+                      "Mother Reference",
+                      "Mother Movement",
+                      "Offspring Reference",
+                      "Offspring Movement",
+                      "Maternity",
+                      "Paternity",
+                      "Father Movement Line",
+                      "Mother Movement Line",
+                      "Offspring Movement Line"),
+    options = layersControlOptions(collapsed = FALSE)) |>
+    hideGroup(c("Father Movemet",
+                "Mother Movement",
+                "Offspring Movement",
+                "Maternity",
+                "Paternity",
+                "Father Movement Line",
+                "Mother Movement Line",
+                "Offspring Movement Line"))
+
+  
+   
+```
+
+
+### GIS output
+As described above the default output of the `ped_spatila()` function is a list of `sf` objects that can be further analyzed and visualized using R packages that enable visual representation of geographic datasets such as [leaflet](https://rstudio.github.io/leaflet/) and [mapview](https://r-spatial.github.io/mapview/). 
+
+To extend the possibilities of spatial analysis and visualization outside of R, `ped_spatial() `provides the flexibility for users to export the spatial data in formats compatible with Geographic Information System (GIS) software. By specifying the `"gis"` value for the *output* parameter and defining a folder path in the *path* parameter, users can store the georeferenced files in the designated folder. This allows for seamless integration and utilization of the pedigree data with GIS software, unlocking a wide range of spatial analysis capabilities and visualization options. 
+
+
+
+
+```{r, eval = FALSE}
+pt <- plot_table(
+  plot_fams = 1
+  all_fams = fams_org,
+  ped = ped_org,
+  sampledata = sampledata,
+  deadSample = c("Tissue", "Decomposing Tissue", "Blood")
+)
+
+ps <- ped_spatial(
+  plottable = pt,
+  output = "gis",
+  path = "/folder/where/GIS/files/shuld/be/saved/"
+)
+```
+
+The created GIS files follow the same structure as described above, just the output file names are different:
+
+| sf object | file name |
+|:---------:|:--------:|
+|motherRpoints|momRef|
+|fatherRpoints|dadRef|
+|offspringRpoints |ofsprRef|
+|motherMovePoints|momMovPt|
+|fatherMovePoints |dadMovPt|
+|offspringMovePoints|offsprMovPt|
+|maternityLines|matLn|
+|paternityLines|patLn|
+|motherMoveLines|momMovLn|
+|fatherMoveLines|dadMovLn|
+|offspringMoveLines|offsprMovLn|
+|motherMovePolygons|momMovPoly|
+|fatherMovePolygons|dadMovPoly|
+|offspringMovePolygons|offsMovPoly|
+|FullsibLines|FsLines|
+
+To distinguish or avoid overwriting of generated files, the parameter *filename* can be used. The string specified with this parameter acts as a common name for all the files generated. When generating GIS files the all the other function parameters can be used as described in the beginning of this chapter (eg. *fullsibdata*, *time.limits*). 
+<br />
+
+
+
+# Outside of the workflow
+
+Besides the functions that facilitate the visualization and analysis of pedigree data in temporal and spatial dimensions, the **wpeR** package currently provides an additional function designed to aid in the calculation and representation of detected animals across multiple time periods. This functions works just with sample metadata and can be used independently of the workflow described in previous chapter.
+
+
+To calculate the number of captured animals between two or more time periods the function `nbtw_seasons()` is used. The function takes four parameters the first two: *animal_id* and *capture_date* correspond to AnimalRef and Date column in the same meta data table, respectively. The other two are vectors  in ´Date´ format one corresponding to start and the other to end of the time periods of interest. It is worth noting that the function refers to these time periods as "seasons" in its terminology.
+
+```{r}
+seasons <- data.frame(
+  start = c(
+    as.Date("2017-01-01"),
+    as.Date("2018-01-01"),
+    as.Date("2019-01-01")
+  ),
+  end = c(
+    as.Date("2017-12-31"),
+    as.Date("2018-12-31"),
+    as.Date("2019-12-31")
+  )
+)
+
+dyn_mat <- dyn_matrix(
+  animal_id = wolf_samples$AnimalRef,
+  capture_date = wolf_samples$Date,
+  start_dates = seasons$start,
+  end_dates = seasons$end
+)
+
+
+dyn_mat
+```
+
+The function outputs a matrix with 1 + no. of time periods rows and columns explaining the dynamics of animal deception between included time periods. It conveys the information on all detected animals, newly detected animals, recaptured animals and skipped animals. For the purpose a more detailed explanation, we will drop the row and column names.
+
+```{r}
+unname(dyn_mat)
+```
+
+In the matrix presented above:
+
+  -   Column and row 4 correspond to the number of captured and number of skipped animals in the particular time period.
+  -   The **diagonal** gives number of new detection in each time period.
+  -   Numbers **above diagonal** correspond to the number of re-detected (recaptured) animals in time period x (column names) compared to time period y (row names).
+  -   Numbers **below diagonal** correspond to the number of animals from time period y that were skipped in time period x.
+  
+  
+**JUST TWO TIME PERIODS**
+<br />
+To get the animal detection dynamics between just two time periods `nbtw_seasons()` function can be called. This function provides a simple output representing a detection dynamics between two time periods. The function takes six parameters. First two are the same as described above. The other parameters correspond to strings in `Date` format defining the start and end of time periods of interest.
+
+```{r}
+nbtw_seasons(
+ animal_id = wolf_samples$AnimalRef,
+ capture_date = wolf_samples$Date,
+ season1_start = as.Date("2017-01-01"),
+ season1_end = as.Date("2017-12-31"),
+ season2_start = as.Date("2018-01-01"),
+ season2_end = as.Date("2018-12-31")
+)
+```
+
+The returned data frame first defines the two time periods and than gives five values describing the detection of animals. `total_cap` gives the number of detected animal in season 2, `new_captures` corresponds  to the number of new detection in season 2, `recaptured` to the number of animals detected in season 1 and in season 2 and `skipped` just the opposite, number of animals detected in season 1 but not in season 2.
+
+
+
+
+
+
