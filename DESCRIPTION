@@ -2,10 +2,8 @@ Type: Package
 Package: wpeR
 Title: Streamlined Analysis of Wild Pedigree Data
 Version: 0.1.0
-Authors@R: c(
-    person("Tomaz", "Skrbinsek", role = "aut"),
-    person("Gregor", "Simcic", email = "your@email.com", role = c("aut", "cre"))
-)
+Authors@R: c(person("Tomaz", "Skrbinsek", role = "aut"),
+    person("Gregor", "Simcic", email = "your@email.com", role = c("aut", "cre")))
 Description: Provides tools for analyzing pedigree data of wild populations. 
     While primarily designed to process outputs from the 'COLONY2' pedigree 
     reconstruction software <https://www.zsl.org/science/software/colony>, 

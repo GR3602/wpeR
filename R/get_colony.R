@@ -207,7 +207,7 @@ get_colony <- function(colony_project_path,
 
   if (out == "FamAgg") {
     pedtable <- data.frame(
-      family = bestconfig1$ClusterIndex,
+      ClusterIndex = bestconfig1$ClusterIndex,
       id = bestconfig1$OffspringID, father = bestconfig1$FatherID,
       mother = bestconfig1$MotherID, sex = bestconfig1$sex
     )
@@ -221,7 +221,7 @@ get_colony <- function(colony_project_path,
     output <- data.frame(
       id = bestconfig1$OffspringID, dadid = bestconfig1$FatherID,
       momid = bestconfig1$MotherID, sex = bestconfig1$sex,
-      famid = bestconfig1$ClusterIndex
+      ClusterIndex = bestconfig1$ClusterIndex
     )
     return(output)
   }
