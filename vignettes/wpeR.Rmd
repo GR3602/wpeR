@@ -550,9 +550,11 @@ ggplot()+
 ```{r ggplot map examples, include=FALSE}
 library(ggplot2)
 library(basemaps)
-#library(ggsflabel) not a CRAN package solved bellow
+
 library(gridExtra)
 library(sf)
+library(ggrepel)
+library(dplyr)
 
 ps.t<-lapply(ps, function(x) st_transform(x, crs = st_crs(3857)))
 
@@ -573,15 +575,63 @@ bm <- ggplot() +
   basemap_gglayer(ext1000, map_service = "carto", map_type = "light") +
   scale_fill_identity()
 
+#table for labels
+ped.ref.labels <- bind_rows(
+  mutate(ps.t$motherRpoints, group = "mother", fill = "#b7484b", size = 2), 
+  mutate(ps.t$fatherRpoints, group = "father", fill = "#1f78b4", size = 2),
+  mutate(ps.t$offspringRpoints, group = "offspring", fill = "#ff7f00", size = 1.5))
+ped.ref.labels <- cbind(ped.ref.labels, st_coordinates(ped.ref.labels))
+
+ped.ref2.labels <- bind_rows(
+  mutate(ps.tl.t$motherRpoints, group = "mother", fill = "#b7484b", size = 2), 
+  mutate(ps.tl.t$fatherRpoints, group = "father", fill = "#1f78b4", size = 2),
+  mutate(ps.tl.t$offspringRpoints, group = "offspring", fill = "#ff7f00", size = 1.5))
+ped.ref2.labels <- cbind(ped.ref2.labels, st_coordinates(ped.ref2.labels))
+
+par.mov.labels = bind_rows(
+  mutate(ps.t$motherRpoints, label = AnimalRef, fill = "#b7484b", size = 2, alpha = 0.6, label.size = 0.25),
+  mutate(ps.t$fatherRpoints, label = AnimalRef, fill = "#1f78b4", size = 2, alpha = 0.6, label.size = 0.25),
+  mutate(ps.t$motherMovePoints, label = as.character(Date), fill = NA, size = 1.5, alpha = 0.4, label.size = 0),
+  mutate(ps.t$fatherMovePoints, label = as.character(Date), fill = NA, size = 1.5, alpha = 0.4, label.size = 0)
+)
+par.mov.labels = cbind(par.mov.labels, st_coordinates(par.mov.labels))
+
+par.mov2.labels = bind_rows(
+  mutate(ps.tl.t$motherRpoints, label = AnimalRef, fill = "#b7484b", size = 2, alpha = 0.6, label.size = 0.25),
+  mutate(ps.tl.t$fatherRpoints, label = AnimalRef, fill = "#1f78b4", size = 2, alpha = 0.6, label.size = 0.25),
+  mutate(ps.tl.t$motherMovePoints, label = as.character(Date), fill = NA, size = 1.5, alpha = 0.4, label.size = 0),
+  mutate(ps.tl.t$fatherMovePoints, label = as.character(Date), fill = NA, size = 1.5, alpha = 0.4, label.size = 0)
+)
+par.mov2.labels = cbind(par.mov2.labels, st_coordinates(par.mov2.labels))
+
+offs.mov.labels = bind_rows(
+  mutate(ps.t$offspringRpoints, label = AnimalRef, fill = "#ff7f00", size = 1.5, alpha = 0.6, label.size = 0.25),
+  mutate(ps.t$offspringMovePoints, label = AnimalRef, fill = "white", size = 1.5, alpha = 0.3, label.size = 0.25),
+  mutate(ps.t$offspringMovePoints, label = as.character(Date), fill = NA, size = 1.5, alpha = 0.4, label.size = 0)
+)
+offs.mov.labels = cbind(offs.mov.labels, st_coordinates(offs.mov.labels))
+
+offs.mov2.labels = bind_rows(
+  mutate(ps.tl.t$offspringRpoints, label = AnimalRef, fill = "#ff7f00", size = 1.5, alpha = 0.6, label.size = 0.25),
+  mutate(ps.tl.t$offspringMovePoints, label = AnimalRef, fill = "white", size = 1.5, alpha = 0.3, label.size = 0.25),
+  mutate(ps.tl.t$offspringMovePoints, label = as.character(Date), fill = NA, size = 1.5, alpha = 0.4, label.size = 0)
+)
+offs.mov2.labels = cbind(offs.mov2.labels, st_coordinates(offs.mov2.labels))
+
+
+
+
+
 ped.ref<-bm+
+  #plotting sf
   geom_sf(data = ps.t$maternityLines, color = "#b7484b", linewidth = 0.3 )+
   geom_sf(data = ps.t$paternityLines, color = "#1f78b4", linewidth = 0.3 )+
   geom_sf(data = ps.t$motherRpoints$geometry, color = "#b7484b", size = 3, shape = 21, stroke = 2)+
-  
   geom_sf(data = ps.t$fatherRpoints$geometry, color = "#1f78b4", size = 3, shape = 21, stroke = 2)+
-  
   geom_sf(data = ps.t$offspringRpoints, aes(color = GeneticSex) , fill = "#ff7f00", size = 1, shape = 23, stroke = 1)+
-  
+  #adding labels
+  geom_label_repel(data = ped.ref.labels, aes(x = X, y= Y, label = AnimalRef, fill = fill), size = ped.ref.labels$size, alpha = 0.6)+
+  #style
   scale_color_manual(values = c("#b7484b", "#1f78b4"), labels = c("F", "M"))+
   theme_void() +
   theme(legend.position = "none", 
@@ -591,12 +641,15 @@ ped.ref<-bm+
 
 
 ped.ref2<-bm+
+  #plotting sf
   geom_sf(data = ps.tl.t$maternityLines, color = "#b7484b", linewidth = 0.3 )+
   geom_sf(data = ps.tl.t$paternityLines, color = "#1f78b4", linewidth = 0.3 )+
   geom_sf(data = ps.tl.t$motherRpoints$geometry, color = "#b7484b", size = 3, shape = 21, stroke = 2)+
   geom_sf(data = ps.tl.t$fatherRpoints$geometry, color = "#1f78b4", size = 3, shape = 21, stroke = 2)+
   geom_sf(data = ps.tl.t$offspringRpoints, aes(color = GeneticSex) , fill = "#ff7f00", size = 1, shape = 23, stroke = 1)+
-  
+  #adding labels
+  geom_label_repel(data = ped.ref2.labels, aes(x = X, y= Y, label = AnimalRef, fill = fill), size = ped.ref2.labels$size, alpha = 0.6)+
+  #style
   scale_color_manual(values = c("#b7484b", "#1f78b4"), labels = c("F", "M"))+
   theme_void(base_size = 3) +
   theme(legend.position = "none",
@@ -612,7 +665,8 @@ par.mov <-bm+
   geom_sf(data = ps.t$fatherMoveLines, color = "#1f78b4", linewidth = 0.3, alpha = 0.4)+
   geom_sf(data = ps.t$motherRpoints$geometry, color = "#b7484b", size = 3, shape = 21, stroke = 2)+
   geom_sf(data = ps.t$motherMovePoints, color = "#b7484b", size = 2, shape = 16, alpha = 0.5 )+
-  
+  geom_label_repel(data = par.mov.labels, aes(x = X, y = Y, label = label, fill = fill,), 
+                   size = par.mov.labels$size, alpha = par.mov.labels$alpha, label.size = 0)+
   geom_sf(data = ps.t$fatherRpoints$geometry, color = "#1f78b4", size = 3, shape = 21, stroke = 2)+
   geom_sf(data = ps.t$fatherMovePoints, color = "#1f78b4", size = 2, shape = 16, alpha = 0.5 )+
   theme_void() +
@@ -627,6 +681,8 @@ par.mov2 <-bm+
   geom_sf(data = ps.tl.t$fatherMoveLines, color = "#1f78b4", linewidth = 0.3, alpha = 0.4)+
   geom_sf(data = ps.tl.t$motherRpoints$geometry, color = "#b7484b", size = 3, shape = 21, stroke = 2)+
   geom_sf(data = ps.tl.t$motherMovePoints, color = "#b7484b", size = 2, shape = 16, alpha = 0.5 )+
+  geom_label_repel(data = par.mov2.labels, aes(x = X, y = Y, label = label, fill = fill,), 
+                   size = par.mov2.labels$size, alpha = par.mov2.labels$alpha, label.size = 0)+
   geom_sf(data = ps.tl.t$fatherRpoints$geometry, color = "#1f78b4", size = 3, shape = 21, stroke = 2)+
   geom_sf(data = ps.tl.t$fatherMovePoints, color = "#1f78b4", size = 2, shape = 16, alpha = 0.5 )+
   theme_void() +
@@ -661,6 +717,8 @@ offs.mov <- bm+
   geom_sf(data = ps.t$offspringMoveLines[-c(1),], color = "#ff7f00", linewidth = 0.3, alpha = 0.4)+
   geom_sf(data = ps.t$offspringMovePoints, aes(color = GeneticSex), shape = 21, fill = "black", stroke = 1)+
   geom_sf(data = ps.t$offspringRpoints, aes(color = GeneticSex) , fill = "#ff7f00", size = 1, shape = 23, stroke = 1)+
+  geom_label_repel(data = offs.mov.labels, aes(x = X, y = Y, label = label, fill = fill,), 
+                   size = offs.mov.labels$size, alpha = offs.mov.labels$alpha, label.size = 0, max.overlaps = 30)+
   scale_color_manual(values = c("#b7484b", "#1f78b4"), labels = c("F", "M"))+
   theme_void() +
   theme(legend.position = "none",
@@ -689,57 +747,13 @@ offs.mov2 <- bm+
   geom_sf(data = ps.tl.t$offspringMoveLines[-c(1),], color = "#ff7f00", linewidth = 0.3, alpha = 0.4)+
   geom_sf(data = ps.tl.t$offspringMovePoints, aes(color = GeneticSex), shape = 21, fill = "black", stroke = 1)+
   geom_sf(data = ps.tl.t$offspringRpoints, aes(color = GeneticSex) , fill = "#ff7f00", size = 1, shape = 23, stroke = 1)+
+  geom_label_repel(data = offs.mov2.labels, aes(x = X, y = Y, label = label, fill = fill,), 
+                   size = offs.mov2.labels$size, alpha = offs.mov2.labels$alpha, label.size = 0)+
   scale_color_manual(values = c("#b7484b", "#1f78b4"), labels = c("F", "M"))+
   theme_void() +
   theme(legend.position = "none",
         plot.margin=unit(p.marg.r, "cm"))
-
-
-
-#since ggsflabel is not CRAN package the labels are added seperatly
-if (requireNamespace("ggsflabel")) {
-  library(ggsflabel)
-  
-  ped.ref <- ped.ref+
-    geom_sf_label_repel(data = ps.t$motherRpoints, aes(label = AnimalRef ), size = 2, , fill = "#b7484b", alpha = 0.6)+
-    geom_sf_label_repel(data = ps.t$fatherRpoints, aes(label = AnimalRef ), size = 2, , fill = "#1f78b4", alpha = 0.6)+
-    geom_sf_label_repel(data = ps.t$offspringRpoints, aes(label = AnimalRef ), size = 1.5, fill = "#ff7f00", alpha = 0.6)
-
-  
-  ped.ref2 <- ped.ref2 +
-    geom_sf_label_repel(data = ps.tl.t$motherRpoints, aes(label = AnimalRef ), size = 2, , fill = "#b7484b", alpha = 0.6)+
-    geom_sf_label_repel(data = ps.tl.t$fatherRpoints, aes(label = AnimalRef ), size = 2, , fill = "#1f78b4", alpha = 0.6)+
-    geom_sf_label_repel(data = ps.tl.t$offspringRpoints, aes(label = AnimalRef ), size = 1.5, fill = "#ff7f00", alpha = 0.6)
-  
-  par.mov <- par.mov+
-    geom_sf_label_repel(data = ps.t$motherRpoints, aes(label = AnimalRef ), size = 2, , fill = "#b7484b", alpha = 0.6)+
-    geom_sf_label_repel(data = ps.t$fatherRpoints, aes(label = AnimalRef ), size = 2, , fill = "#1f78b4", alpha = 0.6)+
-    geom_sf_text_repel(data = ps.t$motherMovePoints, aes(label = as.character(Date)), size = 1.5, alpha = 0.4)+
-    geom_sf_text_repel(data = ps.t$fatherMovePoints, aes(label = as.character(Date)), size = 1.5, alpha = 0.4)
-
-  
-  par.mov2 <- par.mov2+
-    geom_sf_label_repel(data = ps.tl.t$motherRpoints, aes(label = AnimalRef ), size = 2, , fill = "#b7484b", alpha = 0.6)+
-    geom_sf_label_repel(data = ps.tl.t$fatherRpoints, aes(label = AnimalRef ), size = 2, , fill = "#1f78b4", alpha = 0.6)+
-    geom_sf_text_repel(data = ps.tl.t$fatherMovePoints, aes(label = as.character(Date)), size = 1.5, alpha = 0.4)+
-    geom_sf_text_repel(data = ps.tl.t$motherMovePoints, aes(label = as.character(Date)), size = 1.5, alpha = 0.4)
-
-
-  
-  offs.mov <- offs.mov+
-    geom_sf_text_repel(data = ps.t$offspringMovePoints, aes(label = as.character(Date)), size = 1.5, alpha = 0.4)+
-    geom_sf_label_repel(data = ps.t$offspringRpoints, aes(label = AnimalRef ), size = 1.5, fill = "#ff7f00", alpha = 0.6)+
-    geom_sf_label_repel(data = ps.t$offspringMovePoints, aes(label = AnimalRef ), size = 1.5, fill = "white", alpha = 0.3)
-  
-  offs.mov2 <- offs.mov2+
-    geom_sf_text_repel(data = ps.tl.t$offspringMovePoints, aes(label = as.character(Date)), size = 1.5, alpha = 0.4)+
-    geom_sf_label_repel(data = ps.tl.t$offspringRpoints, aes(label = AnimalRef ), size = 1.5, fill = "#ff7f00", alpha = 0.6)+
-    geom_sf_label_repel(data = ps.tl.t$offspringMovePoints, aes(label = AnimalRef ), size = 1.5, fill = "white", alpha = 0.3)
-
-}else{
-  message("Package 'ggsflabel' is not installed. If you want to display the labels with as little work as posiible install it from GitHub: devtools::install_github('yutannihilation/ggsflabel')")
-}
-
+   
 
 ```
 
