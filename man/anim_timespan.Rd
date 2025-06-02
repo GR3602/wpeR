@@ -42,6 +42,4 @@ anim_timespan(
   sample_type = wolf_samples$SType,
   dead = c("Tissue")
 )
-
-
 }

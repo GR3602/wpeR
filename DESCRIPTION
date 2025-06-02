@@ -47,3 +47,5 @@ Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+URL: https://GR3602.github.io/wpeR, https://gr3602.github.io/wpeR/
+BugReports: https://github.com/GR3602/wpeR/issues

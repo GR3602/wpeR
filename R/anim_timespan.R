@@ -7,17 +7,22 @@
 #' sample type eg. tissue.
 #'
 #'
-#' @param individual_id Column in the dataframe of all samples containing
-#'  individual animal identifier code.
+#'
+#' @param individual_id
+#'   Column in the dataframe of all samples containing
+#'   individual animal identifier code.
 #'   Defined as `dataframe$column`.
-#' @param sample_date Column in the dataframe of all samples containing
+#' @param sample_date
+#'   Column in the dataframe of all samples containing
 #'   the date of sample collection.
 #'   Must be in `Date` format. Defined as `dataframe$column`.
-#' @param sample_type Column in the dataframe of all samples containing the data
+#' @param sample_type
+#'   Column in the dataframe of all samples containing the data
 #'   on the type (eg. scat, tissue, saliva) of particular sample.
 #'   Defined as `dataframe$column`.
-#' @param dead Single value or vector of different lethal sample types. If no lethal
-#'  samples are included in the sampledata the dead parameter can be set to `FALSE` (dead = `FALSE`).
+#' @param dead
+#'   Single value or vector of different lethal sample types. If no lethal
+#'   samples are included in the sampledata the dead parameter can be set to `FALSE` (dead = `FALSE`).
 #'   Defaults to "Tissue".
 #'
 #' @return
@@ -35,8 +40,8 @@
 #'   sample_type = wolf_samples$SType,
 #'   dead = c("Tissue")
 #' )
-#'
-#'
+
+
 
 anim_timespan <- function(individual_id, sample_date, sample_type, dead = "Tissue") {
 
