@@ -27,7 +27,7 @@ Welcome to the **wpeR** vignette! **wpeR** is an R package designed for analyzin
 To get started install the the latest development of the package from GitHub:
 
 ```{r, eval = FALSE}
-devtools::github_install("GR3602/wpeR")
+devtools::install_github("GR3602/wpeR")
 ```
 
 You should be now able to load **wpeR**.

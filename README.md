@@ -1,4 +1,5 @@
 
+
 # wpeR
 
 **w**ild **p**edigree **e**xplorer**R** is an R package designed to
@@ -16,7 +17,7 @@ genetic relationships within wild animal populations.
 
 ## Installation
 
-    devtools::github_install("GR3602/wpeR")
+    devtools::install_github("GR3602/wpeR")
 
 ## Key Features
 
@@ -34,15 +35,15 @@ The wpeR package requires two main input datasets for analysis:
 
 ## Basic workflow
 
-| Function <br /> call <br /> order |     Function      | Description                                                    |
-|:---------------------------------:|:-----------------:|----------------------------------------------------------------|
-|                1a                 |  *get_colony()*   | Organizes COLONY2 output                                       |
-|                1b                 |    *get_ped()*    | Organizes pedigree data                                        |
-|                 2                 | *anim_timespan()* | Get dates of individuals first and last sample                 |
-|                 3                 |   *org_fams()*    | Organizes animals into families and expands pedigree data      |
-|                 4                 |  *plot_table()*   | Prepares pedigree data for plotting and spatial representation |
-|                5.1                |  *ped_satplot()*  | Temporal plot of pedigree                                      |
-|                5.2                |  *ped_spatial()*  | Get files for spatial representation of pedigree               |
+| Function <br /> call <br /> order | Function | Description |
+|:--:|:--:|----|
+| 1a | *get_colony()* | Organizes COLONY2 output |
+| 1b | *get_ped()* | Organizes pedigree data |
+| 2 | *anim_timespan()* | Get dates of individuals first and last sample |
+| 3 | *org_fams()* | Organizes animals into families and expands pedigree data |
+| 4 | *plot_table()* | Prepares pedigree data for plotting and spatial representation |
+| 5.1 | *ped_satplot()* | Temporal plot of pedigree |
+| 5.2 | *ped_spatial()* | Get files for spatial representation of pedigree |
 
     ####DATA PREPARATION####
     # Define the path to the pedigree data file.
@@ -97,129 +98,217 @@ The wpeR package requires two main input datasets for analysis:
 ![image](man/figures/ks2_pedigree_exmpl.png)
 
     ## Create spatial files
-    ps <- ped_spatial(pt)
+    <!-- ps <- ped_spatial(pt) -->
     summary(ps)
 
 <table style="border-collapse: collapse; width: 100%; background-color: white;">
+
 <thead>
+
 <tr>
+
 <th colspan="2">
+
 Object Name
 </th>
+
 <th>
+
 Description
 </th>
+
 </tr>
+
 </thead>
+
 <tbody>
+
 <!-- Rpoints -->
+
 <tr>
+
 <td>
+
 mother…
 </td>
+
 <td rowspan="3">
+
 Rpoints
 </td>
+
 <td rowspan="3">
+
 POINT object representing reference samples of each animal. Reference
 sample for parents is their first sample, reference sample for the
 offspring is their last sample within the user defined time frame.
 </td>
+
 </tr>
+
 <tr>
+
 <td>
+
 father…
 </td>
+
 </tr>
+
 <tr>
+
 <td>
+
 offspring…
 </td>
+
 </tr>
+
 <!-- MovePoints -->
+
 <tr>
+
 <td>
+
 mother…
 </td>
+
 <td rowspan="3">
+
 MovePoints
 </td>
+
 <td rowspan="3">
+
 POINT object representing all samples of a particular animal.
 </td>
+
 </tr>
+
 <tr>
+
 <td>
+
 father…
 </td>
+
 </tr>
+
 <tr>
+
 <td>
+
 offspring…
 </td>
+
 </tr>
+
 <!-- Lines -->
+
 <tr>
+
 <td>
+
 maternity…
 </td>
+
 <td rowspan="2">
+
 Lines
 </td>
+
 <td rowspan="2">
+
 LINESTRING object connecting reference samples of mothers or fathers
 with reference samples of their offspring.
 </td>
+
 </tr>
+
 <tr>
+
 <td>
+
 paternity…
 </td>
+
 </tr>
+
 <!-- MoveLines -->
+
 <tr>
+
 <td>
+
 mother…
 </td>
+
 <td rowspan="3">
+
 MoveLines
 </td>
+
 <td rowspan="3">
+
 LINESTRING object connecting all samples of an individual in
 chronological order, showcasing the movement or changes in location over
 time for the specific animal.
 </td>
+
 </tr>
+
 <tr>
+
 <td>
+
 father…
 </td>
+
 </tr>
+
 <tr>
+
 <td>
+
 offspring…
 </td>
+
 </tr>
+
 <!-- MovePolygon -->
+
 <tr>
+
 <td>
+
 mother…
 </td>
+
 <td rowspan="2">
+
 MovePolygon
 </td>
+
 <td rowspan="2">
+
 POLYGON object representing a convex hull that encloses all the samples
 of an individual. It provides a graphical representation of the spatial
 extent or range covered by the animal based on its sample locations.
 </td>
+
 </tr>
+
 <tr>
+
 <td>
+
 father…
 </td>
+
 </tr>
+
 </tbody>
+
 </table>
 
 <br/>
@@ -230,8 +319,8 @@ father…
 [`ggsflabel`](https://github.com/yutannihilation/ggsflabel) for spatial
 visualization.
 
-|                        ![image](man/figures/ped_spatial_exmpl1.png)                        |
-|:------------------------------------------------------------------------------------------:|
+| ![image](man/figures/ped_spatial_exmpl1.png) |
+|:--:|
 | *Spatial representation using mother/father/offspringRpoints and maternety/paternitylines* |
 
 |              ![!image](man/figures/ped_spatial_exmpl2.png)               |
