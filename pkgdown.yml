@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   wpeR: wpeR.html
-last_built: 2025-06-03T11:28Z
+last_built: 2025-06-03T16:45Z
 urls:
   reference: https://gr3602.github.io/wpeR/reference
   article: https://gr3602.github.io/wpeR/articles
