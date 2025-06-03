@@ -65,6 +65,24 @@
 #'     )
 #'
 get_ped <- function(ped, sampledata, out = "FamAgg") {
+
+  ufathers <- unique(ped$FatherID[!ped$FatherID %in%
+                                    ped$OffspringID])
+  umothers <- unique(ped$MotherID[!ped$MotherID %in%
+                                    ped$OffspringID])
+  ufathers <- data.frame(ufathers, as.factor(rep(0, length(ufathers))),
+                         as.factor(rep(0, length(ufathers))), ped$ClusterIndex[match(ufathers,
+                                                                                     ped$FatherID)])
+  umothers <- data.frame(umothers, as.factor(rep(0, length(umothers))),
+                         as.factor(rep(0, length(umothers))), ped$ClusterIndex[match(umothers,
+                                                                                     ped$MotherID)])
+  names(ufathers) <- names(ped)
+  names(umothers) <- names(ped)
+  ped <- rbind(ped, ufathers, umothers)
+  ped$FatherID[ped$FatherID == 0] <- NA
+  ped$MotherID[ped$MotherID == 0] <- NA
+  ped <- ped[!is.na(ped$OffspringID), ]
+
   ##### SEX####
   # solving founders
   # adding sex to offspring (Offspring ID) that are also mothers/fathers ->
