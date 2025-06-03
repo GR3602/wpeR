@@ -1,0 +1,11 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+excl/
+LICENSE.md
+READNE.qmd
+inst/doc
+/doc/
+/Meta/
+docs
