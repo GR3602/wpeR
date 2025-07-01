@@ -76,10 +76,10 @@ pedigrees.</p>
 <p>To get started install the the latest development of the package from
 GitHub:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"GR3602/wpeR"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"GR3602/wpeR"</span><span class="op">)</span></span></code></pre></div>
 <p>You should be now able to load <strong>wpeR</strong>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://GR3602.github.io/wpeR" class="external-link">wpeR</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gr3602.github.io/wpeR/">wpeR</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="input-data">Input data<a class="anchor" aria-label="anchor" href="#input-data"></a>
 </h2>
@@ -89,9 +89,9 @@ GitHub:</p>
 <p><strong>Pedigree</strong></p>
 <ol type="a">
 <li>
-<p><a href="https://www.zsl.org/about-zsl/resources/software/colony" class="external-link">COLONY2</a>
-pedigree data.The reconstructed pedigree is an output of COLONY2
-software and is stored in the colony project output folder. The function
+<p><a href="https://www.zsl.org/about-zsl/resources/software/colony" class="external-link">COLONY</a>
+pedigree data.The reconstructed pedigree is an output of COLONY software
+and is stored in the colony project output folder. The function
 <code><a href="../reference/get_colony.html">get_colony()</a></code> automatically reads the pedigree file so you
 do not need to import it into the R session.</p>
 </li>
@@ -182,7 +182,7 @@ for using <strong>wpeR</strong>.</p>
 <tr class="odd">
 <td align="center">1a</td>
 <td align="center"><em>get_colony()</em></td>
-<td>Organizes COLONY2 output</td>
+<td>Organizes COLONY output</td>
 </tr>
 <tr class="even">
 <td align="center">1b</td>
@@ -219,12 +219,12 @@ for using <strong>wpeR</strong>.</p>
 <div class="section level3">
 <h3 id="import-the-pedigree">Import the pedigree<a class="anchor" aria-label="anchor" href="#import-the-pedigree"></a>
 </h3>
-<p><strong>COLONY2 PEDIGREE DATA</strong></p>
-<p>Pedigree reconstructed by COLONY2 software is imported into the R
+<p><strong>COLONY PEDIGREE DATA</strong></p>
+<p>Pedigree reconstructed by COLONY software is imported into the R
 session by <code><a href="../reference/get_colony.html">get_colony()</a></code> function. Apart form reading the
 colony output file <code><a href="../reference/get_colony.html">get_colony()</a></code> also adds missing parents
 to OffspirngID, assigns sex to each animal and adds the probability of
-paternity and maternity assignment as calculated by COLONY2.</p>
+paternity and maternity assignment as calculated by COLONY.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"wpeR"</span><span class="op">)</span>, <span class="st">"/wpeR_samplePed"</span><span class="op">)</span></span>
 <span><span class="va">ped_colony</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_colony.html">get_colony</a></span><span class="op">(</span></span>
@@ -241,18 +241,17 @@ paternity and maternity assignment as calculated by COLONY2.</p>
 <span><span class="co">#&gt; 64            1 MSV17F  M20AM  M273P   2</span></span>
 <span><span class="co">#&gt; 65            1 MSV1MH  M20AM  M273P   2</span></span></code></pre></div>
 <p><strong>CUSTOM PEDIGREE DATA</strong></p>
-<p>In cases when the pedigree was not reconstructed with COLONY2
-software you must use the <code><a href="../reference/get_ped.html">get_ped()</a></code> function. Under the
-hood the <code><a href="../reference/get_colony.html">get_colony()</a></code> and <code><a href="../reference/get_ped.html">get_ped()</a></code> are very
-similar, the latter having a little less functionalities, because it is
-primarily designed so that any pedigree data can be used in downstream
-analysis. When using <code><a href="../reference/get_ped.html">get_ped()</a></code> function it is important to
-note that the <code>ped</code> parameter (the reconstructed pedigree)
-has to be formatted as a basic pedigree with four columns corresponding
-to offspring (has to be named OffspringID), father (has to be named
-FatherID), mother (has to be named MotherID) and family (has to be named
-ClusterIndex). Unknown parents should be represented by <code>NA</code>
-values.</p>
+<p>In cases when the pedigree was not reconstructed with COLONY software
+you must use the <code><a href="../reference/get_ped.html">get_ped()</a></code> function. Under the hood the
+<code><a href="../reference/get_colony.html">get_colony()</a></code> and <code><a href="../reference/get_ped.html">get_ped()</a></code> are very similar,
+the latter having a little less functionalities, because it is primarily
+designed so that any pedigree data can be used in downstream analysis.
+When using <code><a href="../reference/get_ped.html">get_ped()</a></code> function it is important to note that
+the <code>ped</code> parameter (the reconstructed pedigree) has to be
+formatted as a basic pedigree with four columns corresponding to
+offspring (has to be named OffspringID), father (has to be named
+FatherID) and mother (has to be named MotherID). Unknown parents should
+be represented by <code>NA</code> values.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ped</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  OffspringID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -266,8 +265,7 @@ values.</p>
 <span>  MotherID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="st">"M273P"</span>, <span class="st">"M273P"</span>, <span class="st">"M273P"</span>, <span class="st">"M273P"</span>, <span class="st">"M273P"</span>,</span>
 <span>    <span class="st">"M273P"</span>, <span class="st">"M273P"</span>, <span class="st">"M273P"</span>, <span class="st">"M273P"</span>, <span class="st">"M273P"</span>, <span class="st">"M273P"</span>, <span class="st">"M273P"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  ClusterIndex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">14</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span></span>
@@ -275,21 +273,21 @@ values.</p>
 <span>    ped <span class="op">=</span> <span class="va">ped</span>,</span>
 <span>    sampledata <span class="op">=</span> <span class="va">wolf_samples</span></span>
 <span>    <span class="op">)</span></span>
-<span><span class="co">#&gt;    ClusterIndex     id father mother sex</span></span>
-<span><span class="co">#&gt; 1             1  M273P   &lt;NA&gt;   &lt;NA&gt;   2</span></span>
-<span><span class="co">#&gt; 2             1  M20AM   &lt;NA&gt;   &lt;NA&gt;   1</span></span>
-<span><span class="co">#&gt; 3             1  M2757  M20AM  M273P   2</span></span>
-<span><span class="co">#&gt; 4             1  M2ALK  M20AM  M273P   2</span></span>
-<span><span class="co">#&gt; 5             1  M2ETE  M20AM  M273P   2</span></span>
-<span><span class="co">#&gt; 6             1  M2EUJ  M20AM  M273P   2</span></span>
-<span><span class="co">#&gt; 7             1 MSV00E  M20AM  M273P   1</span></span>
-<span><span class="co">#&gt; 8             1 MSV018  M20AM  M273P   1</span></span>
-<span><span class="co">#&gt; 9             1 MSV05L  M20AM  M273P   1</span></span>
-<span><span class="co">#&gt; 10            1 MSV0M6  M20AM  M273P   1</span></span>
-<span><span class="co">#&gt; 11            1 MSV0T4  M20AM  M273P   1</span></span>
-<span><span class="co">#&gt; 12            1 MSV0T7  M20AM  M273P   1</span></span>
-<span><span class="co">#&gt; 13            1 MSV0TJ  M20AM  M273P   2</span></span>
-<span><span class="co">#&gt; 14            1 MSV0UL  M20AM  M273P   1</span></span></code></pre></div>
+<span><span class="co">#&gt;        id father mother sex</span></span>
+<span><span class="co">#&gt; 1   M273P   &lt;NA&gt;   &lt;NA&gt;   2</span></span>
+<span><span class="co">#&gt; 2   M20AM   &lt;NA&gt;   &lt;NA&gt;   1</span></span>
+<span><span class="co">#&gt; 3   M2757  M20AM  M273P   2</span></span>
+<span><span class="co">#&gt; 4   M2ALK  M20AM  M273P   2</span></span>
+<span><span class="co">#&gt; 5   M2ETE  M20AM  M273P   2</span></span>
+<span><span class="co">#&gt; 6   M2EUJ  M20AM  M273P   2</span></span>
+<span><span class="co">#&gt; 7  MSV00E  M20AM  M273P   1</span></span>
+<span><span class="co">#&gt; 8  MSV018  M20AM  M273P   1</span></span>
+<span><span class="co">#&gt; 9  MSV05L  M20AM  M273P   1</span></span>
+<span><span class="co">#&gt; 10 MSV0M6  M20AM  M273P   1</span></span>
+<span><span class="co">#&gt; 11 MSV0T4  M20AM  M273P   1</span></span>
+<span><span class="co">#&gt; 12 MSV0T7  M20AM  M273P   1</span></span>
+<span><span class="co">#&gt; 13 MSV0TJ  M20AM  M273P   2</span></span>
+<span><span class="co">#&gt; 14 MSV0UL  M20AM  M273P   1</span></span></code></pre></div>
 <p>The output of the <code><a href="../reference/get_colony.html">get_colony()</a></code> and
 <code><a href="../reference/get_ped.html">get_ped()</a></code> functions can can be formatted in different ways
 to facilitate downstream analysis with other R packages for pedigree
@@ -385,13 +383,13 @@ fams) or a list with two objects (ped and fams). In the examples below
 we will present each of the two data frames separately.</p>
 <p>The result of <code><a href="../reference/org_fams.html">org_fams()</a></code> function introduces us to two
 important concepts within the context of this package: <em>family</em>
-and <em>polygamy cluster</em>. In the <strong>wpeR</strong> package, a
+and <em>half-sib group</em>. In the <strong>wpeR</strong> package, a
 <em>family</em> is defined as a group of animals where at least one
-parent and at least one offspring are known. Meanwhile, a <em>polygamy
-cluster</em> refers to a group of half-siblings who are either
-maternally or paternally related. In the function’s output, the
-<code>DadPclust</code> parameter groups paternal half-siblings, while
-the <code>MomPclust</code> parameter groups maternal half-siblings.</p>
+parent and at least one offspring are known. Meanwhile, a <em>half-sib
+group</em> refers to a group of half-siblings who are either maternally
+or paternally related. In the function’s output, the
+<code>DadHSgroup</code> parameter groups paternal half-siblings, while
+the <code>MomHSgroup</code> parameter groups maternal half-siblings.</p>
 <div class="section level4">
 <h4 id="pedigree">Pedigree<a class="anchor" aria-label="anchor" href="#pedigree"></a>
 </h4>
@@ -406,13 +404,13 @@ the <code>MomPclust</code> parameter groups maternal half-siblings.</p>
 <span><span class="co">#&gt; 63            1 MSV0X4  M20AM  M273P   1 M20AM_M273P     5 2019-09-03</span></span>
 <span><span class="co">#&gt; 64            1 MSV17F  M20AM  M273P   2 M20AM_M273P     5 2020-11-08</span></span>
 <span><span class="co">#&gt; 65            1 MSV1MH  M20AM  M273P   2 M20AM_M273P     5 2021-02-25</span></span>
-<span><span class="co">#&gt;      LastSeen IsDead DadPclust MomPclust polyCluster</span></span>
-<span><span class="co">#&gt; 60 2020-02-09   TRUE      &lt;NA&gt;      &lt;NA&gt;           4</span></span>
-<span><span class="co">#&gt; 61 2019-12-28   TRUE      &lt;NA&gt;      &lt;NA&gt;           4</span></span>
-<span><span class="co">#&gt; 62 2020-07-15  FALSE      &lt;NA&gt;      &lt;NA&gt;           4</span></span>
-<span><span class="co">#&gt; 63 2019-10-23   TRUE      &lt;NA&gt;      &lt;NA&gt;           4</span></span>
-<span><span class="co">#&gt; 64 2020-12-04  FALSE      &lt;NA&gt;      &lt;NA&gt;           4</span></span>
-<span><span class="co">#&gt; 65 2021-07-15  FALSE      &lt;NA&gt;      &lt;NA&gt;           4</span></span></code></pre></div>
+<span><span class="co">#&gt;      LastSeen IsDead DadHSgroup MomHSgroup hsGroup</span></span>
+<span><span class="co">#&gt; 60 2020-02-09   TRUE       &lt;NA&gt;       &lt;NA&gt;       4</span></span>
+<span><span class="co">#&gt; 61 2019-12-28   TRUE       &lt;NA&gt;       &lt;NA&gt;       4</span></span>
+<span><span class="co">#&gt; 62 2020-07-15  FALSE       &lt;NA&gt;       &lt;NA&gt;       4</span></span>
+<span><span class="co">#&gt; 63 2019-10-23   TRUE       &lt;NA&gt;       &lt;NA&gt;       4</span></span>
+<span><span class="co">#&gt; 64 2020-12-04  FALSE       &lt;NA&gt;       &lt;NA&gt;       4</span></span>
+<span><span class="co">#&gt; 65 2021-07-15  FALSE       &lt;NA&gt;       &lt;NA&gt;       4</span></span></code></pre></div>
 <p>The <code>ped</code> output is just an extend version of pedigree
 obtained by <code><a href="../reference/get_colony.html">get_colony()</a></code> function. Apart from common
 pedigree information individual, mother, father, sex, family),
@@ -432,11 +430,11 @@ with ⁠_⁠,</li>
 <code>IsDead</code>: logical value (TRUE/FALSE) that identifies if
 the individual is dead,</li>
 <li>
-<code>DadPclust</code>: identifier of fathers polygamy cluster,</li>
+<code>DadHSgroup</code>: identifier of paternal half-sib group,</li>
 <li>
-<code>MomPclust</code>: identifier of mothers polygamy cuter,</li>
+<code>MomHSgroup</code>: identifier of maternal half-sib group,</li>
 <li>
-<code>polyCluster</code>: polygamy cluster of the individual.</li>
+<code>hsGroup</code>: half-sib group of the individual.</li>
 </ul>
 </div>
 <div class="section level4">
@@ -446,20 +444,20 @@ the individual is dead,</li>
 <code class="sourceCode R"><span><span class="va">fams_org</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/org_fams.html">org_fams</a></span><span class="op">(</span>ped <span class="op">=</span> <span class="va">ped_colony</span>, sampledata <span class="op">=</span> <span class="va">sampledata</span>, output <span class="op">=</span> <span class="st">"fams"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">fams_org</span><span class="op">)</span></span>
-<span><span class="co">#&gt;         parents   father   mother FamID   FamStart     FamEnd FamDead DadPclust</span></span>
-<span><span class="co">#&gt; 7   M228J_M200F    M228J    M200F     1 2017-01-25 2018-08-22    TRUE      &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 15 MSV00E_M28LU   MSV00E    M28LU     2 2020-08-16 2021-03-05   FALSE      &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 24  M2772_M28TU    M2772    M28TU     3 2019-08-28 2021-04-23   FALSE      &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 33  M2AM8_M200F    M2AM8    M200F     4 2018-10-29 2021-03-23   FALSE      &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 51  M20AM_M273P    M20AM    M273P     5 2018-01-05 2020-08-02   FALSE      &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; NA      Unknown *Unknown #Unknown     0 2015-07-27 2021-04-23   FALSE      &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;    MomPclust polyCluster</span></span>
-<span><span class="co">#&gt; 7     MomP_1           1</span></span>
-<span><span class="co">#&gt; 15      &lt;NA&gt;           2</span></span>
-<span><span class="co">#&gt; 24      &lt;NA&gt;           3</span></span>
-<span><span class="co">#&gt; 33    MomP_1           1</span></span>
-<span><span class="co">#&gt; 51      &lt;NA&gt;           4</span></span>
-<span><span class="co">#&gt; NA      &lt;NA&gt;           0</span></span></code></pre></div>
+<span><span class="co">#&gt;         parents   father   mother FamID   FamStart     FamEnd FamDead</span></span>
+<span><span class="co">#&gt; 7   M228J_M200F    M228J    M200F     1 2017-01-25 2018-08-22    TRUE</span></span>
+<span><span class="co">#&gt; 15 MSV00E_M28LU   MSV00E    M28LU     2 2020-08-16 2021-03-05   FALSE</span></span>
+<span><span class="co">#&gt; 24  M2772_M28TU    M2772    M28TU     3 2019-08-28 2021-04-23   FALSE</span></span>
+<span><span class="co">#&gt; 33  M2AM8_M200F    M2AM8    M200F     4 2018-10-29 2021-03-23   FALSE</span></span>
+<span><span class="co">#&gt; 51  M20AM_M273P    M20AM    M273P     5 2018-01-05 2020-08-02   FALSE</span></span>
+<span><span class="co">#&gt; NA      Unknown *Unknown #Unknown     0 2015-07-27 2021-04-23   FALSE</span></span>
+<span><span class="co">#&gt;    DadHSgroup MomHSgroup hsGroup</span></span>
+<span><span class="co">#&gt; 7        &lt;NA&gt;     MomP_1       1</span></span>
+<span><span class="co">#&gt; 15       &lt;NA&gt;       &lt;NA&gt;       2</span></span>
+<span><span class="co">#&gt; 24       &lt;NA&gt;       &lt;NA&gt;       3</span></span>
+<span><span class="co">#&gt; 33       &lt;NA&gt;     MomP_1       1</span></span>
+<span><span class="co">#&gt; 51       &lt;NA&gt;       &lt;NA&gt;       4</span></span>
+<span><span class="co">#&gt; NA       &lt;NA&gt;       &lt;NA&gt;       0</span></span></code></pre></div>
 <p>The <code>fams</code> output contains information about the families
 to which individuals in the pedigree belong. The families are described
 by:</p>
@@ -484,14 +482,14 @@ members was collected<sup>1</sup>,</li>
 <code>FamDead</code>: logical value (TRUE/FALSE) that identifies if
 the family does not exist any more,</li>
 <li>
-<code>DadPclust</code>: identifier that connects families that share
-the same father,</li>
+<code>DadHSgroup</code>: Identifier connecting families that share
+the same father.</li>
 <li>
-<code>MomPclust</code>: identifier that connects families that share
-the same mother,</li>
+<code>MomHSgroup</code>: Identifier connecting families that share
+the same mother.</li>
 <li>
-<code>polyCluster</code>: numeric value that connects families that
-share one of the parents.</li>
+<code>hsGroup</code>: Numeric value connecting families that share
+one of the parents.</li>
 </ul>
 <p><sup>1</sup><small><code>famStart</code> and <code>famEnd</code>
 columns, estimate a time window for the family based solely on sample
@@ -552,20 +550,20 @@ can be defined as a vector with parameter <em>datacolumns</em>.</p>
 <span><span class="co">#&gt; 57   M28MM     M228J          M 2017-08-18 Saliva 45.67397 14.11150 2016-09-30</span></span>
 <span><span class="co">#&gt; 58   M2C36     M228J          M 2018-02-09 Tissue 45.67033 14.15404 2016-09-30</span></span>
 <span><span class="co">#&gt; 10 EX.1JH0     M200F          F 2015-07-27 Saliva 45.75250 14.14653 2015-07-27</span></span>
-<span><span class="co">#&gt;      LastSeen IsDead plottingID FamID polyCluster  rep later_rep isPolygamous</span></span>
-<span><span class="co">#&gt; 54 2018-02-09   TRUE          1     1           1 TRUE     FALSE        FALSE</span></span>
-<span><span class="co">#&gt; 55 2018-02-09   TRUE          1     1           1 TRUE     FALSE        FALSE</span></span>
-<span><span class="co">#&gt; 56 2018-02-09   TRUE          1     1           1 TRUE     FALSE        FALSE</span></span>
-<span><span class="co">#&gt; 57 2018-02-09   TRUE          1     1           1 TRUE     FALSE        FALSE</span></span>
-<span><span class="co">#&gt; 58 2018-02-09   TRUE          1     1           1 TRUE     FALSE        FALSE</span></span>
-<span><span class="co">#&gt; 10 2018-08-22  FALSE          2     1           1 TRUE     FALSE         TRUE</span></span>
-<span><span class="co">#&gt;     dead first_sample last_sample IsReference</span></span>
-<span><span class="co">#&gt; 54 FALSE         TRUE       FALSE       FALSE</span></span>
-<span><span class="co">#&gt; 55 FALSE        FALSE       FALSE        TRUE</span></span>
-<span><span class="co">#&gt; 56 FALSE        FALSE       FALSE       FALSE</span></span>
-<span><span class="co">#&gt; 57 FALSE        FALSE       FALSE       FALSE</span></span>
-<span><span class="co">#&gt; 58  TRUE        FALSE        TRUE       FALSE</span></span>
-<span><span class="co">#&gt; 10 FALSE         TRUE       FALSE       FALSE</span></span></code></pre></div>
+<span><span class="co">#&gt;      LastSeen IsDead plottingID FamID hsGroup  rep later_rep isPolygamous  dead</span></span>
+<span><span class="co">#&gt; 54 2018-02-09   TRUE          1     1       1 TRUE     FALSE        FALSE FALSE</span></span>
+<span><span class="co">#&gt; 55 2018-02-09   TRUE          1     1       1 TRUE     FALSE        FALSE FALSE</span></span>
+<span><span class="co">#&gt; 56 2018-02-09   TRUE          1     1       1 TRUE     FALSE        FALSE FALSE</span></span>
+<span><span class="co">#&gt; 57 2018-02-09   TRUE          1     1       1 TRUE     FALSE        FALSE FALSE</span></span>
+<span><span class="co">#&gt; 58 2018-02-09   TRUE          1     1       1 TRUE     FALSE        FALSE  TRUE</span></span>
+<span><span class="co">#&gt; 10 2018-08-22  FALSE          2     1       1 TRUE     FALSE         TRUE FALSE</span></span>
+<span><span class="co">#&gt;    first_sample last_sample IsReference</span></span>
+<span><span class="co">#&gt; 54         TRUE       FALSE       FALSE</span></span>
+<span><span class="co">#&gt; 55        FALSE       FALSE        TRUE</span></span>
+<span><span class="co">#&gt; 56        FALSE       FALSE       FALSE</span></span>
+<span><span class="co">#&gt; 57        FALSE       FALSE       FALSE</span></span>
+<span><span class="co">#&gt; 58        FALSE        TRUE       FALSE</span></span>
+<span><span class="co">#&gt; 10         TRUE       FALSE       FALSE</span></span></code></pre></div>
 <p>The <code><a href="../reference/plot_table.html">plot_table()</a></code> function output adds additional
 information to sample metadata which include:</p>
 <ul>
@@ -577,8 +575,8 @@ individual can be included in more than one family,</li>
 <code>FamID</code>: Identifier number of family that individual
 belongs to,</li>
 <li>
-<code>polyCluster</code>: Identifier number for the polygamy cluster
-of individual,</li>
+<code>hsGroup</code>: Numeric. Identifier number for the half-sib
+group of individual.</li>
 <li>
 <code>rep</code>: Is individual reproductive in current family,
 (current family defined with FamID for a particular entry),</li>
@@ -624,7 +622,7 @@ data visualization stage involves two functions:
 <code><a href="../reference/ped_satplot.html">ped_satplot()</a></code> function, is the representation of the
 occurrence of samples for each individual (y-axis) trough time (x-axis).
 Furthermore the individuals are first grouped by families and then by
-polygamy clusters. Within each family, the individuals are arranged from
+half-sib groups. Within each family, the individuals are arranged from
 top to bottom based on the date of their first sample collection. At the
 bottom of each family, the animal that was initially detected is
 positioned, followed by subsequent animals in chronological order. This
