@@ -158,7 +158,7 @@ ppsParLines <- function(ppsData) {
         ID = dadcount,
         pair = i,
         fam = offspringRefs$FamID[i],
-        plyClust = offspringRefs$polyCluster[i],
+        plyClust = offspringRefs$hsGroup[i],
         relation = "paternity",
         child = child$AnimalRef,
         parent = father$AnimalRef,
@@ -180,7 +180,7 @@ ppsParLines <- function(ppsData) {
         ID = momcount,
         pair = i,
         fam = offspringRefs$FamID[i],
-        plyClust = offspringRefs$polyCluster[i],
+        plyClust = offspringRefs$hsGroup[i],
         relation = "maternity",
         child = child$AnimalRef,
         parent = mother$AnimalRef,
@@ -220,7 +220,7 @@ ppsParLines <- function(ppsData) {
 
 ppsMvPoints <- function(ppsData) {
   # columns to be removed for movelines, movepoints and refpoints to remove spatial data duplication
-  dupCols <- c("plottingID", "FamID", "polyCluster")
+  dupCols <- c("plottingID", "FamID", "hsGroup")
 
   #### Offspring####
 
@@ -296,7 +296,7 @@ ppsMvPoints <- function(ppsData) {
 
 ppsRefPoints <- function(ppsData) {
   # columns to be removed for movelines, movepoints and refpoints to remove spatial data duplication
-  dupCols <- c("plottingID", "FamID", "polyCluster")
+  dupCols <- c("plottingID", "FamID", "hsGroup")
 
   #### Offspring####
 
@@ -374,7 +374,7 @@ ppsMvLines <- function(ppsData) {
   AnimalRef <- NULL
 
   # columns to be removed for movelines, movepoints and refpoints to remove spatial data duplication
-  dupCols <- c("plottingID", "FamID", "polyCluster")
+  dupCols <- c("plottingID", "FamID", "hsGroup")
 
 
   #### Offspring####

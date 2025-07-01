@@ -9,3 +9,7 @@ inst/doc
 /doc/
 /Meta/
 docs
+README.qmd
+dev/
+inst/WORDLIST
+tests/spelling.R

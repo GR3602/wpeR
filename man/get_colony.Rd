@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_colony.R
 \name{get_colony}
 \alias{get_colony}
-\title{Organizes COLONY2 output}
+\title{Organizes COLONY output}
 \usage{
 get_colony(
   colony_project_path,
@@ -12,7 +12,7 @@ get_colony(
 )
 }
 \arguments{
-\item{colony_project_path}{Character string. Path to the folder where COLONY2 output files are saved.
+\item{colony_project_path}{Character string. Path to the folder where COLONY output files are saved.
 Has to include file path and project name (see Details).}
 
 \item{sampledata}{Data frame. Metadata for all genetic samples that belong
@@ -35,7 +35,7 @@ mother and father, sex and family of individual. Column names and arrangement de
 output (\code{out} parameter).
 }
 \description{
-Extends \code{BestConfig_Ordered} output from \href{https://www.zsl.org/about-zsl/resources/software/colony}{COLONY2}
+Extends \code{BestConfig_Ordered} output from \href{https://www.zsl.org/about-zsl/resources/software/colony}{COLONY}
 pedigree reconstruction software with additional data about individuals included
 in pedigree. The function adds missing parents to \code{OffspringID}, assigns
 sex to each individual included in \code{OffspringID} and adds the computed
@@ -47,17 +47,17 @@ The function also prepares data so that the output of the function can be direct
 \href{https://bioconductor.org/packages/FamAgg/}{\code{FamAgg}} packages.
 }
 \details{
-COLONY2 output tables needed for this function (\code{.BestConfig_Ordered},
+COLONY output tables needed for this function (\code{.BestConfig_Ordered},
 \code{.Maternity} and \code{.Paternity}) are read directly
 from the colony output folder and do not need to be imported into R session.
 The path to the outputs is defined with \code{colony_project_path} parameter.
 When defining \code{colony_project_path} the user needs to define a complete path to
 the directory where colony outputs are stored and also the file name
-(file name of COLONY2 outputs equals the project name \cr
-eg. /path/to/the/COLONY2/output/folder/COLONY2_project_name).
+(file name of COLONY outputs equals the project name \cr
+eg. /path/to/the/COLONY/output/folder/COLONY_project_name).
 }
 \examples{
-# Define the path to COLONY2 output
+# Define the path to COLONY output
 path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
 
 # Get pedigree data in FamAgg format

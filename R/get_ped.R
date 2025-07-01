@@ -2,7 +2,7 @@
 #'
 #' @description
 #'  Offers an alternative to [`get_colony()`] function in cases where the pedigree
-#'  was not reconstructed with [COLONY 2](https://www.zsl.org/about-zsl/resources/software/colony)
+#'  was not reconstructed with [COLONY](https://www.zsl.org/about-zsl/resources/software/colony)
 #'  software. It takes a pedigree dataframe and assigns sex to each individual.
 #'  The function also prepares data so that the output of the function can be directly analyzed with
 #'  [`kinship2`](https://cran.r-project.org/package=kinship2),
@@ -11,19 +11,14 @@
 #'
 #' @details
 #'  The custom pedigree specified through the `ped` parameter should mirror the
-#'  structure of a COLONY2 pedigree and share the same column names.
-#'  It should consist of four columns for each offspring:
-#'  `OffspringID`, `FatherID`, `MotherID` and `ClusterIndex`. In the context of
-#'  COLONY2 result, the `ClusterIndex` refers to a group of offspring that may
-#'  share common parents or ancestors and are analyzed together. If your
-#'  your pedigree does not include such information you can fill this column with
-#'  the same numeric value (eg. 1, see examples) or any (numeric) information
-#'  about other family structure present in your pedigree. When considering
+#'  structure of a COLONY pedigree and share the same column names.
+#'  It should consist of three columns for each offspring:
+#'  `OffspringID`, `FatherID`, `MotherID`. When considering
 #'  unknown parents they should be represented by `NA` values.
 #'
 #'
 #' @param ped Data frame. Pedigree data frame with the most basic structure.
-#'   Four columns corresponding to offspring, father, mother and cluster (see
+#'   Three columns corresponding to offspring, father and mother (see
 #'   Details). Unknown parents should be represented by `NA` values.
 #' @param sampledata Data frame. Metadata for all genetic samples that belong
 #'   to the individuals included in pedigree reconstruction analysis.
@@ -55,8 +50,7 @@
 #'   MotherID = c(
 #'     NA, NA, "M273P", "M273P", "M273P", "M273P", "M273P",
 #'     "M273P", "M273P", "M273P", "M273P", "M273P", "M273P", "M273P"
-#'   ),
-#'   ClusterIndex = c(rep(1, 14))
+#'   )
 #' )
 #' #Get pedigree data in FamAgg format
 #' get_ped(
@@ -71,11 +65,9 @@ get_ped <- function(ped, sampledata, out = "FamAgg") {
   umothers <- unique(ped$MotherID[!ped$MotherID %in%
                                     ped$OffspringID])
   ufathers <- data.frame(ufathers, as.factor(rep(0, length(ufathers))),
-                         as.factor(rep(0, length(ufathers))), ped$ClusterIndex[match(ufathers,
-                                                                                     ped$FatherID)])
+                         as.factor(rep(0, length(ufathers))))
   umothers <- data.frame(umothers, as.factor(rep(0, length(umothers))),
-                         as.factor(rep(0, length(umothers))), ped$ClusterIndex[match(umothers,
-                                                                                     ped$MotherID)])
+                         as.factor(rep(0, length(umothers))))
   names(ufathers) <- names(ped)
   names(umothers) <- names(ped)
   ped <- rbind(ped, ufathers, umothers)
@@ -125,7 +117,6 @@ get_ped <- function(ped, sampledata, out = "FamAgg") {
 
   if (out == "FamAgg") {
     pedtable <- data.frame(
-      ClusterIndex = ped$ClusterIndex,
       id = ped$OffspringID, father = ped$FatherID,
       mother = ped$MotherID, sex = ped$sex
     )
@@ -138,8 +129,7 @@ get_ped <- function(ped, sampledata, out = "FamAgg") {
   if (out == "kinship2") {
     output <- data.frame(
       id = ped$OffspringID, dadid = ped$FatherID,
-      momid = ped$MotherID, sex = ped$sex,
-      ClusterIndex = ped$ClusterIndex
+      momid = ped$MotherID, sex = ped$sex
     )
     return(output)
   }

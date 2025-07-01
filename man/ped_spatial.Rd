@@ -28,7 +28,7 @@ ped_spatial(
 Available outputs: list: all spatial data returned as list, gis: all spatial data
 returned as georeferenced files.}
 
-\item{fullsibdata}{Data frame with COLONY2 full-sibling data.}
+\item{fullsibdata}{Data frame with COLONY full-sibling data.}
 
 \item{sibthreshold}{Numeric. P-value threshold for sibship assignment.}
 

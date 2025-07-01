@@ -14,8 +14,8 @@ test_that("ped data frame has correct columns", {
   result <- org_fams(ped_colony, sampledata, output = "ped")
   expect_s3_class(result, "data.frame")
   colnams <- c("ClusterIndex", "id", "father", "mother", "sex", "parents", "FamID",
-               "FirstSeen", "LastSeen", "IsDead", "DadPclust", "MomPclust",
-               "polyCluster")
+               "FirstSeen", "LastSeen", "IsDead", "DadHSgroup", "MomHSgroup",
+               "hsGroup")
   expect_true(all(colnams %in% names(result)))
 })
 
@@ -23,7 +23,7 @@ test_that("fams data frame has correct columns", {
   result <- org_fams(ped_colony, sampledata, output = "fams")
   expect_s3_class(result, "data.frame")
   colnams <- c("parents", "father", "mother", "FamID", "FamStart", "FamEnd",
-               "FamDead", "DadPclust", "MomPclust", "polyCluster")
+               "FamDead", "DadHSgroup", "MomHSgroup", "hsGroup")
   expect_true(all(colnams %in% names(result)))
 })
 

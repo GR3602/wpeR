@@ -8,7 +8,7 @@ get_ped(ped, sampledata, out = "FamAgg")
 }
 \arguments{
 \item{ped}{Data frame. Pedigree data frame with the most basic structure.
-Four columns corresponding to offspring, father, mother and cluster (see
+Three columns corresponding to offspring, father and mother (see
 Details). Unknown parents should be represented by \code{NA} values.}
 
 \item{sampledata}{Data frame. Metadata for all genetic samples that belong
@@ -29,7 +29,7 @@ output (\code{out} parameter).
 }
 \description{
 Offers an alternative to \code{\link[=get_colony]{get_colony()}} function in cases where the pedigree
-was not reconstructed with \href{https://www.zsl.org/about-zsl/resources/software/colony}{COLONY 2}
+was not reconstructed with \href{https://www.zsl.org/about-zsl/resources/software/colony}{COLONY}
 software. It takes a pedigree dataframe and assigns sex to each individual.
 The function also prepares data so that the output of the function can be directly analyzed with
 \href{https://cran.r-project.org/package=kinship2}{\code{kinship2}},
@@ -38,14 +38,9 @@ The function also prepares data so that the output of the function can be direct
 }
 \details{
 The custom pedigree specified through the \code{ped} parameter should mirror the
-structure of a COLONY2 pedigree and share the same column names.
-It should consist of four columns for each offspring:
-\code{OffspringID}, \code{FatherID}, \code{MotherID} and \code{ClusterIndex}. In the context of
-COLONY2 result, the \code{ClusterIndex} refers to a group of offspring that may
-share common parents or ancestors and are analyzed together. If your
-your pedigree does not include such information you can fill this column with
-the same numeric value (eg. 1, see examples) or any (numeric) information
-about other family structure present in your pedigree. When considering
+structure of a COLONY pedigree and share the same column names.
+It should consist of three columns for each offspring:
+\code{OffspringID}, \code{FatherID}, \code{MotherID}. When considering
 unknown parents they should be represented by \code{NA} values.
 }
 \examples{
@@ -62,8 +57,7 @@ ped <- data.frame(
   MotherID = c(
     NA, NA, "M273P", "M273P", "M273P", "M273P", "M273P",
     "M273P", "M273P", "M273P", "M273P", "M273P", "M273P", "M273P"
-  ),
-  ClusterIndex = c(rep(1, 14))
+  )
 )
 #Get pedigree data in FamAgg format
 get_ped(

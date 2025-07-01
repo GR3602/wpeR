@@ -5,7 +5,7 @@
 #'
 #' @param plottable Data frame. Output of [`plot_table()`] function.
 #' @param famSpacing Y-axis spacing between families. Should be even number!
-#' @param pClustSpacing Y-axis spacing between families. Should be even number!
+#' @param hsGroupSpacing Y-axis spacing between half-sib groups. Should be even number!
 #' @param xWhiteSpace Spacing on the X-axis at the beginning and end of the plot.
 #' @param xlabel X-axis label.
 #' @param ylabel Y-axis label.
@@ -57,7 +57,7 @@
 #'
 #'
 ped_satplot <- function(plottable,
-                        famSpacing = 2, pClustSpacing = 2,
+                        famSpacing = 2, hsGroupSpacing = 2,
                         xWhiteSpace = 100,
                         xlabel = "Date", ylabel = "Animal",
                         title = "", subtitle = "",
@@ -69,7 +69,7 @@ ped_satplot <- function(plottable,
                      plottingID = plottable$plottingID,
                      sex = plottable$GeneticSex,
                      fam = plottable$FamID,
-                     polyCluster = plottable$polyCluster,
+                     hsGroup = plottable$hsGroup,
                      isPolygamous = plottable$isPolygamous,
                      rep = plottable$rep,
                      later_rep = plottable$later_rep,
@@ -80,7 +80,7 @@ ped_satplot <- function(plottable,
   # solution found https://www.r-bloggers.com/2019/08/no-visible-binding-for-global-variable/
   first <- polyFirst <- famFirst <- Y <- yaxis <- animal <- plottingID <- sex <- NULL
 
-  famlines <- NULL # family / polycluster separation lines
+  famlines <- NULL # family / hsGroup separation lines
 
 
 
@@ -90,9 +90,9 @@ ped_satplot <- function(plottable,
   data$first <- vapply(data$animal, function(x)
     as.Date(min(data$date[data$animal == x], na.rm = TRUE), origin = "1970-01-01"),
     numeric(1))
-  ## first polycluster of the animal
-  data$polyFirst <- vapply(data$polyCluster, function(x)
-    as.Date(min(data$date[data$polyCluster == x], na.rm = TRUE), origin = "1970-01-01"),
+  ## first hsGroup of the animal
+  data$polyFirst <- vapply(data$hsGroup, function(x)
+    as.Date(min(data$date[data$hsGroup == x], na.rm = TRUE), origin = "1970-01-01"),
     numeric(1))
   ## first family of the animal
   data$famFirst <- vapply(data$fam, function(x)
@@ -101,8 +101,8 @@ ped_satplot <- function(plottable,
 
   # order data correctly, based on columns created above
   #dataOrdered <- data |>
-    #dplyr::arrange(polyFirst, polyCluster, famFirst, fam, first, plottingID, date)
-  dataOrdered <- dplyr::arrange(data, polyFirst, polyCluster, famFirst, fam, first, plottingID, date)
+    #dplyr::arrange(polyFirst, hsGroup, famFirst, fam, first, plottingID, date)
+  dataOrdered <- dplyr::arrange(data, polyFirst, hsGroup, famFirst, fam, first, plottingID, date)
 
   # make Y coordinate for each plottingID
   dataOrdered$yaxis <- ordered(dataOrdered$plottingID,
@@ -110,30 +110,30 @@ ped_satplot <- function(plottable,
   levels(dataOrdered$yaxis) <- 1:length(levels(dataOrdered$yaxis))
   dataOrdered$yaxis <- as.numeric(dataOrdered$yaxis)
 
-  # make line/label for the first polycluster/family
+  # make line/label for the first hsGroup/family
   famlines <- rbind(famlines, data.frame(Y = 1,
-                                         type = "polyCluster",
+                                         type = "hsGroup",
                                          fam = dataOrdered$fam[1],
-                                         polyCluster = dataOrdered$polyCluster[1]))
+                                         hsGroup = dataOrdered$hsGroup[1]))
   dataOrdered$yaxis <- dataOrdered$yaxis + famSpacing
 
-  # make Y-axis gaps between polyclusters/families, prepare data for drawing lines
+  # make Y-axis gaps between hsGroups/families, prepare data for drawing lines
   for (i in 1:(nrow(dataOrdered) - 1)) {
     if (dataOrdered$fam[i] != dataOrdered$fam[i + 1]) {
       dataOrdered$yaxis[(i + 1):nrow(dataOrdered)] <- dataOrdered$yaxis[(i + 1):nrow(dataOrdered)] + famSpacing
       plY <- dataOrdered$yaxis[i] + famSpacing / 2
       plType <- "Family"
       fam <- dataOrdered$fam[i + 1]
-      polyCluster <- dataOrdered$polyCluster[i + 1]
+      hsGroup <- dataOrdered$hsGroup[i + 1]
 
-      if (dataOrdered$polyCluster[i] != dataOrdered$polyCluster[i + 1]) {
-        dataOrdered$yaxis[(i + 1):nrow(dataOrdered)] <- dataOrdered$yaxis[(i + 1):nrow(dataOrdered)] + pClustSpacing
+      if (dataOrdered$hsGroup[i] != dataOrdered$hsGroup[i + 1]) {
+        dataOrdered$yaxis[(i + 1):nrow(dataOrdered)] <- dataOrdered$yaxis[(i + 1):nrow(dataOrdered)] + hsGroupSpacing
         plY <- dataOrdered$yaxis[i] + famSpacing / 2
-        plType <- "polyCluster"
+        plType <- "hsGroup"
         fam <- dataOrdered$fam[i + 1]
-        polyCluster <- dataOrdered$polyCluster[i + 1]
+        hsGroup <- dataOrdered$hsGroup[i + 1]
       }
-      famlines <- rbind(famlines, data.frame(Y = plY, type = plType, fam, polyCluster))
+      famlines <- rbind(famlines, data.frame(Y = plY, type = plType, fam, hsGroup))
     }
   }
 
@@ -194,7 +194,7 @@ ped_satplot <- function(plottable,
 
   if (!is.null(famlines)) {
     p <- p + geom_hline(
-      yintercept = famlines$Y[famlines$type == "polyCluster"],
+      yintercept = famlines$Y[famlines$type == "hsGroup"],
       color = "yellow", linewidth = 1
       ) +
       geom_hline(
@@ -204,7 +204,7 @@ ped_satplot <- function(plottable,
       geom_label(
         data = famlines, aes(x = rep(minDate, nrow(famlines)),
                              y = Y,
-                             label = paste("PCL:", polyCluster, "FAM:", fam, sep = "")),
+                             label = paste("HSG:", hsGroup, "FAM:", fam, sep = "")),
         size = fam_label_size, color = "darkgreen",
         hjust = 0.5, vjust = 0.5, fontface = "bold"
       )

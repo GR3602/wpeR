@@ -16,7 +16,7 @@
 #' @param output Character vector specifying the desired output type ('list' - default or 'gis').
 #' Available outputs: list: all spatial data returned as list, gis: all spatial data
 #' returned as georeferenced files.
-#' @param fullsibdata Data frame with COLONY2 full-sibling data.
+#' @param fullsibdata Data frame with COLONY full-sibling data.
 #' @param sibthreshold Numeric. P-value threshold for sibship assignment.
 #' @param path System path for storing georeferenced files.
 #' @param filename Common name for all georeferenced files.

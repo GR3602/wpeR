@@ -1,7 +1,7 @@
-#' Organizes COLONY2 output
+#' Organizes COLONY output
 #'
 #' @description
-#'  Extends `BestConfig_Ordered` output from [COLONY2](https://www.zsl.org/about-zsl/resources/software/colony)
+#'  Extends `BestConfig_Ordered` output from [COLONY](https://www.zsl.org/about-zsl/resources/software/colony)
 #'  pedigree reconstruction software with additional data about individuals included
 #'  in pedigree. The function adds missing parents to `OffspringID`, assigns
 #'  sex to each individual included in `OffspringID` and adds the computed
@@ -13,18 +13,18 @@
 #'  [`FamAgg`](https://bioconductor.org/packages/FamAgg/) packages.
 #'
 #' @details
-#'  COLONY2 output tables needed for this function (`.BestConfig_Ordered`,
+#'  COLONY output tables needed for this function (`.BestConfig_Ordered`,
 #'  `.Maternity` and `.Paternity`) are read directly
 #'  from the colony output folder and do not need to be imported into R session.
 #'  The path to the outputs is defined with `colony_project_path` parameter.
 #'  When defining `colony_project_path` the user needs to define a complete path to
 #'  the directory where colony outputs are stored and also the file name
-#'  (file name of COLONY2 outputs equals the project name \cr
-#'  eg. /path/to/the/COLONY2/output/folder/COLONY2_project_name).
+#'  (file name of COLONY outputs equals the project name \cr
+#'  eg. /path/to/the/COLONY/output/folder/COLONY_project_name).
 #'
 #'
 #'
-#' @param colony_project_path Character string. Path to the folder where COLONY2 output files are saved.
+#' @param colony_project_path Character string. Path to the folder where COLONY output files are saved.
 #'   Has to include file path and project name (see Details).
 #' @param sampledata Data frame. Metadata for all genetic samples that belong
 #'   to the individuals included in pedigree reconstruction analysis.
@@ -47,7 +47,7 @@
 #' @export
 #'
 #' @examples
-#' # Define the path to COLONY2 output
+#' # Define the path to COLONY output
 #' path <- paste0(system.file("extdata", package = "wpeR"), "/wpeR_samplePed")
 #'
 #' # Get pedigree data in FamAgg format

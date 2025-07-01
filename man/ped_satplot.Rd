@@ -7,7 +7,7 @@
 ped_satplot(
   plottable,
   famSpacing = 2,
-  pClustSpacing = 2,
+  hsGroupSpacing = 2,
   xWhiteSpace = 100,
   xlabel = "Date",
   ylabel = "Animal",
@@ -25,7 +25,7 @@ ped_satplot(
 
 \item{famSpacing}{Y-axis spacing between families. Should be even number!}
 
-\item{pClustSpacing}{Y-axis spacing between families. Should be even number!}
+\item{hsGroupSpacing}{Y-axis spacing between half-sib groups. Should be even number!}
 
 \item{xWhiteSpace}{Spacing on the X-axis at the beginning and end of the plot.}
 
