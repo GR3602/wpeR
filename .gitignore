@@ -13,3 +13,4 @@ README.qmd
 dev/
 inst/WORDLIST
 tests/spelling.R
+cran-comments.md
