@@ -8,7 +8,7 @@ Authors@R: c(
   )
 Description: Provides tools for analyzing pedigree data of wild
     populations. While primarily designed to process outputs from the
-    [COLONY](https://www.zsl.org/about-zsl/resources/software/colony) 
+    [COLONY]<https://www.zsl.org/about-zsl/resources/software/colony> 
     pedigree reconstruction software, it can also accommodate
     data from other sources. By linking reconstructed pedigrees with
     genetic sample metadata, wpeR produces spatial and temporal
