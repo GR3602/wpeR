@@ -17,6 +17,13 @@ genetic relationships within wild animal populations.
 
 ## Installation
 
+wpeR is available on CRAN:
+
+    install.packages("wpeR")
+
+Alternatively, you can install the latest development version from
+GitHub:
+
     devtools::install_github("GR3602/wpeR")
 
 ## Key Features
@@ -98,7 +105,7 @@ The wpeR package requires two main input datasets for analysis:
 ![image](man/figures/ks2_pedigree_exmpl.png)
 
     ## Create spatial files
-    <!-- ps <- ped_spatial(pt) -->
+    ps <- ped_spatial(pt)
     summary(ps)
 
 <table style="border-collapse: collapse; width: 100%; background-color: white;">

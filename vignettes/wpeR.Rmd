@@ -24,8 +24,12 @@ knitr::opts_chunk$set(
 
 Welcome to the **wpeR** vignette! **wpeR** is an R package designed for analyzing wild pedigree data. Pedigree reconstruction is a powerful tool for understanding the genetic structure of wild populations, but it can also generate large and complex datasets that can be difficult to analyze. **wpeR** provides a streamlined solution for exploring and visualizing this type of data, allowing the user to gain insights into the genetic relationships between individuals in wild populations. In this vignette, we will introduce the main features of **wpeR** and demonstrate how they can be used to analyze and interpret wild pedigrees.
 
-To get started install the the latest development of the package from GitHub:
+To get started, you can install the stable release of the package from CRAN:
+```{r eval=FALSE}
+install.packages("wpeR")
+```
 
+Alternatively, you can install the package from GitHub:
 ```{r, eval = FALSE}
 devtools::install_github("GR3602/wpeR")
 ```
