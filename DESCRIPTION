@@ -1,7 +1,7 @@
 Type: Package
 Package: wpeR
 Title: Streamlined Analysis of Wild Pedigree Data
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("Tomaz", "Skrbinsek", role = "aut"),
     person("Gregor", "Simcic", , "grega0simcic@gmail.com", role = c("aut", "cre"))
