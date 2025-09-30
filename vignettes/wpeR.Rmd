@@ -115,7 +115,7 @@ tail(ped_colony)
 
 **CUSTOM PEDIGREE DATA**
 
-In cases when the pedigree was not reconstructed with COLONY software you must use the `get_ped()` function. Under the hood the `get_colony()` and `get_ped()` are very similar, the latter having a little less functionalities, because it is primarily designed so that any pedigree data can be used in downstream analysis. When using `get_ped()` function it is important to note that the `ped` parameter (the reconstructed pedigree) has to be formatted as a basic pedigree with four columns corresponding to offspring (has to be named OffspringID), father (has to be named FatherID) and mother (has to be named MotherID). Unknown parents should be represented by `NA` values.
+In cases when the pedigree was not reconstructed with COLONY software you must use the `get_ped()` function. Under the hood the `get_colony()` and `get_ped()` are very similar, the latter having a little less functionalities, because it is primarily designed so that any pedigree data can be used in downstream analysis. When using `get_ped()` function it is important to note that the `ped` parameter (the reconstructed pedigree) has to be formatted as a basic pedigree with three columns corresponding to offspring (has to be named OffspringID), father (has to be named FatherID) and mother (has to be named MotherID). Unknown parents should be represented by `NA` values.
 
 ```{r}
 ped <- data.frame(
@@ -227,14 +227,14 @@ The `fams` output contains information about the families to which individuals i
   -   `father`: identifier code of the father,
   -   `mother`: identifier code of the mother,
   -   `FamID`: numeric value that identifies a particular family,
-  -   `famStart`: date when the first sample of any of the family members was collected^1^,
-  -   `famEnd`: date when the last sample of any of the family members was collected^1^,
+  -   `famStart`: date when the first sample of any of the offspring was collected^1^,
+  -   `famEnd`: date when the last sample from either the mother or the father was collected^1^,
   -   `FamDead`: logical value (TRUE/FALSE) that identifies if the family does not exist any more,
   -   `DadHSgroup`: Identifier connecting families that share the same father.
   -   `MomHSgroup`: Identifier connecting families that share the same mother.
   -   `hsGroup`: Numeric value connecting families that share one of the parents.
   
-^1^<small>`famStart` and `famEnd` columns, estimate a time window for the family based solely on sample collection dates provided in `sampledata`. `famStart` indicates the date of the earliest sample collected from any offspring belonging to that family. `famEnd` indicates the date of the latest sample collected from either the mother or the father of that family. It is important to recognize that this method relies on observation (sampling) dates. Consequently, `famEnd` (last parental sample date) can precede `famStart` (first offspring sample date), creating a biologically impossible sequence and a negative calculated family timespan. Users should interpret the interval between `famStart` and `famEnd` with this understanding.</small>
+^1^<small>`famStart` and `famEnd` columns, estimate a time window for the family based solely on sample collection dates provided in `sampledata`. `famStart` indicates the date of the earliest sample collected from any offspring belonging to that family. `famEnd` indicates the date of the last sample collected from either the mother or the father of that family. It is important to recognize that this method relies on observation (sampling) dates. Consequently, `famEnd` (last parental sample date) can precede `famStart` (first offspring sample date), creating a biologically impossible sequence and a negative calculated family timespan. Users should interpret the interval between `famStart` and `famEnd` with this understanding.</small>
 
 
 

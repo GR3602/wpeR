@@ -508,25 +508,29 @@ ppsMvPolygons <- function(ppsData, MvPoints) {
     motherMovePolygons <- sf::st_sf(1, sf::st_sfc(sf::st_polygon())) # dummy... empty object
     warning("No mothers included in dataset.
           Creating empty sf data frame -> motherMovePolygons!")
-  }
-
-  motherMovePoints <- MvPoints$motherMovePoints
-
-  motherMovePolygons <- motherMovePoints|>
-    dplyr::group_by(AnimalRef) |>
-    dplyr::summarise(no_mvPoints = dplyr::n()) |>
-    sf::st_convex_hull()
-
-  if(length(which(motherMovePolygons$no_mvPoints > 2)) <= nrow(motherMovePolygons)) {
-    #motherMovePolygons <- motherMovePolygons[which(motherMovePolygons$no_mvPoints > 2),]
-    corr_geom <- which(!(sf::st_geometry_type(motherMovePolygons) %in% excl_geom))
-    motherMovePolygons <- motherMovePolygons[corr_geom,]
-
   } else {
-    motherMovePolygons <- sf::st_sf(1, sf::st_sfc(sf::st_polygon())) # dummy... empty object
-    warning("Not enough mother samples to create at least one polygon.
+
+    motherMovePoints <- MvPoints$motherMovePoints
+
+    motherMovePolygons <- motherMovePoints|>
+      dplyr::group_by(AnimalRef) |>
+      dplyr::summarise(no_mvPoints = dplyr::n()) |>
+      sf::st_convex_hull()
+
+    if(length(which(motherMovePolygons$no_mvPoints > 2)) <= nrow(motherMovePolygons)) {
+      #motherMovePolygons <- motherMovePolygons[which(motherMovePolygons$no_mvPoints > 2),]
+      corr_geom <- which(!(sf::st_geometry_type(motherMovePolygons) %in% excl_geom))
+      motherMovePolygons <- motherMovePolygons[corr_geom,]
+
+    } else {
+      motherMovePolygons <- sf::st_sf(1, sf::st_sfc(sf::st_polygon())) # dummy... empty object
+      warning("Not enough mother samples to create at least one polygon.
             Creating empty sf data frame -> motherMovePolygons!")
+    }
+
   }
+
+
 
   #### Father####
 
@@ -534,24 +538,28 @@ ppsMvPolygons <- function(ppsData, MvPoints) {
     fatherMovePolygons <- sf::st_sf(1, sf::st_sfc(sf::st_polygon())) # dummy... empty object
     warning("No fathers included in dataset.
           Creating empty sf data frame -> fatherMovePolygons!")
-  }
-
-  fatherMovePoints <- MvPoints$fatherMovePoints
-
-  fatherMovePolygons <- fatherMovePoints|>
-    dplyr::group_by(AnimalRef) |>
-    dplyr::summarise(no_mvPoints = dplyr::n()) |>
-    sf::st_convex_hull()
-
-  if(length(which(fatherMovePolygons$no_mvPoints > 2)) <= nrow(fatherMovePolygons)) {
-    #fatherMovePolygons <- fatherMovePolygons[which(fatherMovePolygons$no_mvPoints > 2), ]
-    corr_geom <- which(!(sf::st_geometry_type(fatherMovePolygons) %in% excl_geom))
-    fatherMovePolygons <- fatherMovePolygons[corr_geom,]
   } else {
-    fatherMovePolygons <- sf::st_sf(1, sf::st_sfc(sf::st_polygon())) # dummy... empty object
-    warning("Not enough father samples to create at least one polygon.
+
+    fatherMovePoints <- MvPoints$fatherMovePoints
+
+    fatherMovePolygons <- fatherMovePoints|>
+      dplyr::group_by(AnimalRef) |>
+      dplyr::summarise(no_mvPoints = dplyr::n()) |>
+      sf::st_convex_hull()
+
+    if(length(which(fatherMovePolygons$no_mvPoints > 2)) <= nrow(fatherMovePolygons)) {
+      #fatherMovePolygons <- fatherMovePolygons[which(fatherMovePolygons$no_mvPoints > 2), ]
+      corr_geom <- which(!(sf::st_geometry_type(fatherMovePolygons) %in% excl_geom))
+      fatherMovePolygons <- fatherMovePolygons[corr_geom,]
+    } else {
+      fatherMovePolygons <- sf::st_sf(1, sf::st_sfc(sf::st_polygon())) # dummy... empty object
+      warning("Not enough father samples to create at least one polygon.
             Creating empty sf data frame -> fatherMovePolygons!")
+    }
+
   }
+
+
 
 
   #### Offspring####
@@ -560,24 +568,26 @@ ppsMvPolygons <- function(ppsData, MvPoints) {
     offspringMovePolygons <- sf::st_sf(1, sf::st_sfc(sf::st_polygon())) # dummy... empty object
     warning("No offspring included in dataset.
           Creating empty sf data frame -> offspringMovePolygons!")
-  }
-
-  offspringMovePoints <- MvPoints$offspringMovePoints
-
-  offspringMovePolygons <- offspringMovePoints|>
-    dplyr::group_by(AnimalRef) |>
-    dplyr::summarise(no_mvPoints = dplyr::n()) |>
-    sf::st_convex_hull()
-
-  if(length(which(offspringMovePolygons$no_mvPoints > 2)) <= nrow(offspringMovePolygons)) {
-    #offspringMovePolygons <- offspringMovePolygons[which(offspringMovePolygons$no_mvPoints > 2),]
-    corr_geom <- which(!(sf::st_geometry_type(offspringMovePolygons) %in% excl_geom))
-    offspringMovePolygons <- offspringMovePolygons[corr_geom,]
   } else {
-    offspringMovePolygons <- sf::st_sf(1, sf::st_sfc(sf::st_polygon())) # dummy... empty object
-    warning("Not enough offspring samples to create at least one polygon.
+    offspringMovePoints <- MvPoints$offspringMovePoints
+
+    offspringMovePolygons <- offspringMovePoints|>
+      dplyr::group_by(AnimalRef) |>
+      dplyr::summarise(no_mvPoints = dplyr::n()) |>
+      sf::st_convex_hull()
+
+    if(length(which(offspringMovePolygons$no_mvPoints > 2)) <= nrow(offspringMovePolygons)) {
+      #offspringMovePolygons <- offspringMovePolygons[which(offspringMovePolygons$no_mvPoints > 2),]
+      corr_geom <- which(!(sf::st_geometry_type(offspringMovePolygons) %in% excl_geom))
+      offspringMovePolygons <- offspringMovePolygons[corr_geom,]
+    } else {
+      offspringMovePolygons <- sf::st_sf(1, sf::st_sfc(sf::st_polygon())) # dummy... empty object
+      warning("Not enough offspring samples to create at least one polygon.
             Creating empty sf data frame -> offspringMovePolygons!")
+    }
   }
+
+
 
 
   return(list(
