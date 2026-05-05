@@ -32,7 +32,8 @@ that the sample belongs to.}
 \item{lng}{A vector of longitude coordinates in the WGS84 coordinate system
 (EPSG: 4326).}
 
-\item{SType}{A vector of sample types eg.: scat, hair, tissue.}
+\item{SType}{A vector of sample types eg.: scat, hair, tissue. Also
+used to determine individual's status (see Details)}
 
 \item{extraCols}{A vector of extra column names that the user wants to include
 in sampledata data frame (see Details).}
@@ -60,6 +61,11 @@ inputs (Sample, Date, AnimalRef...) have to be defined as a vector extracted fro
 data frame column (eg. Sample = dataframe$column) and the \code{extraCols} parameter is defined,
 as a vector of column names form the same data frame (eg. extraCols = c(column1, column2,
 column3)).
+
+The \code{SType} field is critical for temporal analysis. Functions like
+\code{\link[=anim_timespan]{anim_timespan()}} rely on these labels (specifically which sample types are
+defined as "dead" by the user) to determine an individual's status at the
+point of sampling.
 }
 \examples{
 sampledata <- check_sampledata(

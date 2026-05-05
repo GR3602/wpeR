@@ -57,7 +57,7 @@ library(wpeR)
     -   Identifier code of the particular individual that the sample belongs to.
     -   Genetic sex coded as `M` for males, `F` for females and `NA` for unknown sex.
     -   Geographic location from where the sample was collected, as latitude and longitude in WGS84 coordinate system (EPSG: 4326).
-    -   Sample type (eg: scat, urine, tissue)<br />
+    -   Sample type (eg: scat, urine, tissue) the sample type labels are used by downstream functions to infer whether an animal was alive or dead at the time of collection.<br />
 
 Correctly formatted genetic samples metadata is crucial for the proper functioning of **wpeR** functions. To ensure that your genetic samples metadata conforms to the package's rules, the package includes `check_sampledata()` function. This function performs a series of checks and validations on your input data to verify its integrity and compatibility. If all the validations are passed the `check_sampledata()` function outputs the sample metadata data frame that can be seamlessly used in downstream analyses.
 
@@ -168,6 +168,7 @@ plot(ped_ks2, symbolsize = 1.5, cex = 0.4)
 ## Animal timespan
 
 `anim_timespan()` function creates 'first seen' and 'last seen' columns for each animal in the pedigree by examining the dates of all genetic samples associated with that animal. This is an important step in obtaining a temporal perspective of the pedigree, as it allows other functions to work with time frame over which each animal was observed. Besides that the functions determines if animal is dead based on predefined sample type eg. tissue.
+By using the dead argument, users specify which sample types (e.g., "Tissue" from a carcass) indicate a mortality event. An individual is then recorded as "dead" at the point that specific sample type was collected.
 
 ```{r}
 animal_ts <- anim_timespan(
