@@ -21,7 +21,7 @@
 #'
 #' @importFrom ggplot2 ggplot aes geom_line geom_point geom_text geom_hline
 #' @importFrom ggplot2 geom_label ggtitle labs expand_limits theme theme_bw
-#' @importFrom ggplot2 scale_colour_brewer ylab xlab scale_x_date
+#' @importFrom ggplot2 scale_colour_brewer ylab xlab scale_x_date geom_rect
 #' @export
 #'
 #' @examples
@@ -167,6 +167,16 @@ ped_satplot <- function(plottable,
       data = dataOrdered[dataOrdered$isPolygamous == TRUE, ],
                aes(y = yaxis, x = as.Date(date)),
                shape = 5, size = 2, color = "purple") +
+    geom_rect(
+      data = dataOrdered[dataOrdered$isPolygamous == TRUE, ],
+              aes(xmin = min(as.Date(date)) - 25, #- xWhiteSpace,
+                  xmax = max(as.Date(date)) + 25, #+ xWhiteSpace,
+                  ymin = yaxis - 0.5,
+                  ymax = yaxis + 0.5,
+                  fill = sex),
+               alpha = 0.03,
+      show.legend = FALSE)+
+
     geom_point(
       data = dataOrdered[dataOrdered$later_rep == TRUE, ],
                aes(y = yaxis, x = as.Date(date)),
