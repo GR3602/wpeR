@@ -60,6 +60,7 @@ It also expands the pedigree data by adding information about the family that ea
 family in which the individual is the reproductive animal.
 }
 \details{
+\strong{Families and Half-sib Groups}
 The result of \code{org_fams()} function introduces us to two important concepts
 within the context of this package: family and half-sib group. A family in the
 output of this function is defined as a group of animals where at least one
@@ -68,6 +69,15 @@ group of half-siblings, either maternally or paternally related. In the
 function output the \code{DadHSgroup} groups paternal half-siblings and \code{MomHSgroup}
 maternal half-siblings.
 
+\strong{Lineage Isolation for Visualization}
+The \code{DadHSgroup} and \code{MomHSgroup} identifiers are usefull for managing pedigree
+visualization in long-lived or polygamous species. By using \code{DadHSgroup} or
+\code{MomHSgroup}, users can identify all \code{FamID}s or individuals associated with a specific parent.
+This vector of IDs or individuals of interest can then be passed to the
+\code{plot_fams} or \code{plot_indivs} argument in \code{\link[=plot_table]{plot_table()}} to isolate and visualize
+specific paternal or maternal lineages, preventing visual clutter in \code{\link[=ped_satplot]{ped_satplot()}}.
+
+\strong{Temporal Estimation (famStart and famEnd)}
 The \code{fams} output dataframe contains \code{famStart} and \code{famEnd} columns, which estimate
 a time window for the family based solely on sample collection dates provided in \code{sampledata}.
 \code{famStart} marks the date of the earliest sample collected from any offspring

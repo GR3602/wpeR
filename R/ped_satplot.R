@@ -40,13 +40,15 @@
 #' ped_colony <- get_colony(path, sampledata, rm_obsolete_parents = TRUE, out = "FamAgg")
 #' # Organize families and expand pedigree data using the org_fams function.
 #' org_tables <- org_fams(ped_colony, sampledata, output = "both")
+#'
 #' # Prepare data for plotting.
+#' # Plot subset of families
 #' pt <- plot_table(plot_fams = 1,
-#'   org_tables$fams,
-#'   org_tables$ped,
-#'   sampledata,
-#'   deadSample = c("Tissue")
-#' )
+#'                  all_fams = org_tables$fams,
+#'                  ped = org_tables$ped,
+#'                  sampledata = sampledata,
+#'                  deadSample = c("Tissue")
+#'                 )
 #'
 #' # Run the function.
 #' # Get a temporal pedigree plot.
@@ -54,8 +56,17 @@
 #'
 #'
 #'
+#' # Plot table for a subset of individuals
+#' pt_subset <- plot_table(plot_indivs = "M200F",
+#'                         all_fams = org_tables$fams,
+#'                         ped = org_tables$ped,
+#'                         sampledata = sampledata,
+#'                         deadSample = c("Tissue")
+#'                        )
 #'
-#'
+#' # Run the function.
+#' # Get a temporal pedigree plot.
+#' ped_satplot(plottable = pt_subset)
 ped_satplot <- function(plottable,
                         famSpacing = 2, hsGroupSpacing = 2,
                         xWhiteSpace = 100,

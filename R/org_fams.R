@@ -6,6 +6,7 @@
 #'  family in which the individual is the reproductive animal.
 #'
 #' @details
+#'  **Families and Half-sib Groups**
 #'  The result of `org_fams()` function introduces us to two important concepts
 #'  within the context of this package: family and half-sib group. A family in the
 #'  output of this function is defined as a group of animals where at least one
@@ -14,6 +15,17 @@
 #'  function output the `DadHSgroup` groups paternal half-siblings and `MomHSgroup`
 #'  maternal half-siblings.
 #'
+#'  **Lineage Isolation for Visualization**
+#'  The `DadHSgroup` and `MomHSgroup` identifiers are usefull for managing pedigree
+#'  visualization in long-lived or polygamous species. By using `DadHSgroup` or
+#'  `MomHSgroup`, users can identify all `FamID`s or individuals associated with a specific parent.
+#'  This vector of IDs or individuals of interest can then be passed to the
+#'  `plot_fams` or `plot_indivs` argument in [plot_table()] to isolate and visualize
+#'  specific paternal or maternal lineages, preventing visual clutter in [ped_satplot()].
+#'
+#'
+#'
+#'  **Temporal Estimation (famStart and famEnd)**
 #'  The `fams` output dataframe contains `famStart` and `famEnd` columns, which estimate
 #'  a time window for the family based solely on sample collection dates provided in `sampledata`.
 #'  `famStart` marks the date of the earliest sample collected from any offspring
@@ -23,6 +35,8 @@
 #'  can precede `famStart` (first offspring sample date), creating a biologically impossible sequence
 #'  and a negative calculated family timespan. Users should interpret the interval
 #'  between `famStart` and `famEnd` with this understanding.
+#'
+#'
 #'
 #'
 #' @param ped Data frame. `FamAgg` output of [`get_colony()`] or [`get_ped()`] function.
