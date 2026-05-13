@@ -168,43 +168,47 @@ plot_table <- function(plot_fams = NULL,
   ## Even though the loop is segmented it does the same things for all animals.
   for (i in seq_len(nrow(sel_fams))) {
     # Get reproductive animals, write in outdata
-    if (!grepl("//*", sel_fams$father[i])) {
+    if (!is.na(sel_fams$father[i]) && !grepl("//*", sel_fams$father[i])) {
       fatherSamples <- sampledata[sampledata$AnimalRef == sel_fams$father[i], datacolumns]
 
-      fatherSamples$plottingID <- rep(plottingID, nrow(fatherSamples))
+      n_rows <- nrow(fatherSamples)
+
+      fatherSamples$plottingID <- rep(plottingID, n_rows)
       plottingID <- plottingID + 1
 
-      fatherSamples$FamID <- rep(sel_fams$FamID[i], nrow(fatherSamples))
-      fatherSamples$hsGroup <- rep(sel_fams$hsGroup[i], nrow(fatherSamples))
-      fatherSamples$rep <- rep(TRUE, nrow(fatherSamples))
+      fatherSamples$FamID <- rep(sel_fams$FamID[i], n_rows)
+      fatherSamples$hsGroup <- rep(sel_fams$hsGroup[i], n_rows)
+      fatherSamples$rep <- rep(TRUE, n_rows)
       # does the animal become reproductive later
-      fatherSamples$later_rep <- rep(FALSE, nrow(fatherSamples))
+      fatherSamples$later_rep <- rep(FALSE, n_rows)
 
       if (!is.na(sel_fams$DadHSgroup[i])) {
-        fatherSamples$isPolygamous <- rep(TRUE, nrow(fatherSamples))
+        fatherSamples$isPolygamous <- rep(TRUE, n_rows)
       } else {
-        fatherSamples$isPolygamous <- rep(FALSE, nrow(fatherSamples))
+        fatherSamples$isPolygamous <- rep(FALSE, n_rows)
       } # if Dad polygamous cluster is not NA, then TRUE
 
       outdata <- rbind(outdata, fatherSamples)
     }
 
-    if (!grepl("#", sel_fams$mother[i])) {
+    if (!is.na(sel_fams$mother[i]) && !grepl("#", sel_fams$mother[i])) {
       motherSamples <- sampledata[sampledata$AnimalRef == sel_fams$mother[i], datacolumns]
 
-      motherSamples$plottingID <- rep(plottingID, nrow(motherSamples))
+      n_rows <- nrow(motherSamples)
+
+      motherSamples$plottingID <- rep(plottingID, n_rows)
       plottingID <- plottingID + 1
 
-      motherSamples$FamID <- rep(sel_fams$FamID[i], nrow(motherSamples))
-      motherSamples$hsGroup <- rep(sel_fams$hsGroup[i], nrow(motherSamples))
-      motherSamples$rep <- rep(TRUE, nrow(motherSamples))
+      motherSamples$FamID <- rep(sel_fams$FamID[i], n_rows)
+      motherSamples$hsGroup <- rep(sel_fams$hsGroup[i], n_rows)
+      motherSamples$rep <- rep(TRUE, n_rows)
       # does the animal become reproductive later
-      motherSamples$later_rep <- rep(FALSE, nrow(motherSamples))
+      motherSamples$later_rep <- rep(FALSE, n_rows)
 
       if (!is.na(sel_fams$MomHSgroup[i])) {
-        motherSamples$isPolygamous <- rep(TRUE, nrow(motherSamples))
+        motherSamples$isPolygamous <- rep(TRUE, n_rows)
       } else {
-        motherSamples$isPolygamous <- rep(FALSE, nrow(motherSamples))
+        motherSamples$isPolygamous <- rep(FALSE, n_rows)
       } # if Mom polygamous cluster is not NA, then TRUE
 
       outdata <- rbind(outdata, motherSamples)
@@ -216,21 +220,23 @@ plot_table <- function(plot_fams = NULL,
     for (j in seq_len(nrow(sub_ped))) {
       offspringSamples <- sampledata[sampledata$AnimalRef == sub_ped$id[j], datacolumns]
 
-      offspringSamples$plottingID <- rep(plottingID, nrow(offspringSamples))
+      n_rows <- nrow(offspringSamples)
+
+      offspringSamples$plottingID <- rep(plottingID, n_rows)
       plottingID <- plottingID + 1
 
-      offspringSamples$FamID <- rep(sel_fams$FamID[i], nrow(offspringSamples))
-      offspringSamples$hsGroup <- rep(sel_fams$hsGroup[i], nrow(offspringSamples))
-      offspringSamples$rep <- rep(FALSE, nrow(offspringSamples))
+      offspringSamples$FamID <- rep(sel_fams$FamID[i], n_rows)
+      offspringSamples$hsGroup <- rep(sel_fams$hsGroup[i], n_rows)
+      offspringSamples$rep <- rep(FALSE, n_rows)
 
       if (sum(grepl(sub_ped$id[j], all_fams$father) | grepl(sub_ped$id[j], all_fams$mother)) > 0) {
-        offspringSamples$later_rep <- rep(TRUE, nrow(offspringSamples))
+        offspringSamples$later_rep <- rep(TRUE, n_rows)
       } # the animal becomes reproductive later
       else {
-        offspringSamples$later_rep <- rep(FALSE, nrow(offspringSamples))
+        offspringSamples$later_rep <- rep(FALSE, n_rows)
       }
 
-      offspringSamples$isPolygamous <- rep(FALSE, nrow(offspringSamples))
+      offspringSamples$isPolygamous <- rep(FALSE, n_rows)
 
       outdata <- rbind(outdata, offspringSamples)
     }
