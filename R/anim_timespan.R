@@ -4,10 +4,8 @@
 #' Takes data frame of all samples and returns the dates of individuals first
 #' and last sample.
 #' Besides that the functions determines if animal is dead based on a column that flags
-#' samples that represent mortality, (eg. all tissue samples represent are taken from dead
+#' samples representing mortality, (eg. all tissue samples are taken from dead
 #' animals)
-#'
-#'
 #'
 #' @param individual_id
 #'   Column in the dataframe of all samples containing
@@ -36,7 +34,7 @@
 #' anim_timespan(
 #'   individual_id = wolf_samples$AnimalRef,
 #'   sample_date = wolf_samples$Date,
-#'   mortality_sample = wolf_samples$SType == "Tissue"
+#'   mortality_sample = wolf_samples$IsMortality
 #' )
 
 

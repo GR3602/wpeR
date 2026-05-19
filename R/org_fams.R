@@ -90,7 +90,7 @@
 #' animal_ts <- anim_timespan(
 #'   wolf_samples$AnimalRef,
 #'   wolf_samples$Date,
-#'   wolf_samples$SType == c("Tissue")
+#'   wolf_samples$IsMortality
 #' )
 #' # Add animal timespan to the sampledata
 #' sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE)

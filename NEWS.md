@@ -3,6 +3,8 @@
 * plot_table() added functionality to filter families based on indiviudal ids
 (parameter plot_indivs )
 * ped_satplot() added new visual representation for polygamous individuals
+* anim_timespan() new logic for marking dead animals, now uses TRUE/FALSE vector instead
+of sampletype
 
 # wpeR 0.1.1
 
