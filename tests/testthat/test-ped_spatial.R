@@ -10,8 +10,7 @@ org_tables <- org_fams(ped_colony, sampledata, output = "both")
 pt <- plot_table(plot_fams = 1,
                  all_fams = org_tables$fams,
                  ped = org_tables$ped,
-                 sampledata = sampledata,
-                 deadSample = c("Tissue", "Decomposing Tissue", "Blood")
+                 sampledata = sampledata
 )
 
 

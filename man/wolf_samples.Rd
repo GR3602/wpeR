@@ -5,7 +5,7 @@
 \alias{wolf_samples}
 \title{Wolf monitoring genetic samples metadata}
 \format{
-A data frame with 407 rows and 7 columns:
+A data frame with 407 rows and 8 columns:
 \describe{
 \item{Sample}{Sample unique identifier code}
 \item{Date}{Date of sample collection (format: \code{YYYY-MM-DD})}
@@ -14,6 +14,9 @@ A data frame with 407 rows and 7 columns:
 \item{lat}{latitude (N-S) of the sample (CRS: WGS84; EPSG: 4326)}
 \item{lng}{longitude (W-E) of the sample (CRS: WGS84; EPSG: 4326)}
 \item{SType}{Type of the sample. (\verb{Direct Saliva, Scat, Urine, Saliva, Tissue, Decomposing Tissue, Blood}) }
+\item{IsMortality}{ A logical column (TRUE/FALSE) that marks samples collected from dead animals.
+TRUE = mortality event (e.g., a tissue sample from a carcass),
+FALSE = non-mortality sample (e.g., scat, hair, saliva from a live animal).}
 }
 }
 \source{

@@ -86,7 +86,6 @@
 #'   all_fams = org_tables$fams,
 #'   ped = org_tables$ped,
 #'   sampledata = sampledata,
-#'   deadSample = c("Tissue")
 #' )
 #'
 #' # Run the function

@@ -11,8 +11,7 @@ plot_table(
   ped,
   sampledata,
   datacolumns = c("Sample", "AnimalRef", "GeneticSex", "Date", "SType", "lat", "lng",
-    "FirstSeen", "LastSeen", "IsDead"),
-  deadSample = c("Tissue")
+    "FirstSeen", "LastSeen", "IsDead", "IsMortality")
 )
 }
 \arguments{
@@ -34,9 +33,6 @@ For description of \code{sampledata} structure and sample information needed for
 
 \item{datacolumns}{Vector of column names included \code{sampledata} that are needed to produce
 this functions output (see Details).}
-
-\item{deadSample}{Single value or vector of different lethal sample types.
-Defaults to c("Tissue").}
 }
 \value{
 Extended \code{sampledata} data frame that includes all columns defined in \code{datacolumns}
@@ -80,8 +76,10 @@ and sample metadata data for visual (\code{\link[=ped_satplot]{ped_satplot()}}) 
 (default = \code{SType}, see \code{\link[=check_sampledata]{check_sampledata()}} function),
 \item date of first and last sample of individual in \code{Date} format
 (default = \code{FirstSeen} and \code{LastSeen}, see \code{\link[=anim_timespan]{anim_timespan()}} function),
-\item value identifying if if the individual is dead; logical
+\item value identifying if the individual is dead; logical
 (default = \code{IsDead}, see \code{\link[=anim_timespan]{anim_timespan()}} function).
+\item value identifying if this particular sample represents a mortality sample
+(default = \code{IsMortality}, , see \code{\link[=check_sampledata]{check_sampledata()}} function)
 }
 }
 
@@ -124,7 +122,6 @@ pt <- plot_table(plot_fams = "all",
   all_fams = org_tables$fams,
   ped = org_tables$ped,
   sampledata = sampledata,
-  deadSample = c("Tissue")
 )
 
 
@@ -132,8 +129,7 @@ pt <- plot_table(plot_fams = "all",
 pt_subset <- plot_table(plot_indivs = "M200F",
                         all_fams = org_tables$fams,
                         ped = org_tables$ped,
-                        sampledata = sampledata,
-                        deadSample = c("Tissue")
+                        sampledata = sampledata
                        )
 
 }

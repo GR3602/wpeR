@@ -19,8 +19,10 @@
 #'   (default = `SType`, see [`check_sampledata()`] function),
 #'   - date of first and last sample of individual in `Date` format
 #'       (default = `FirstSeen` and `LastSeen`, see [`anim_timespan()`] function),
-#'   - value identifying if if the individual is dead; logical
+#'   - value identifying if the individual is dead; logical
 #'       (default = `IsDead`, see [`anim_timespan()`] function).
+#'   - value identifying if this particular sample represents a mortality sample
+#'       (default = `IsMortality`, see [`check_sampledata()`] function)
 #'
 #'
 #' **Filtering Options**
@@ -50,8 +52,6 @@
 #' For description of `sampledata` structure and sample information needed for `plot_table()` see Details.
 #' @param datacolumns Vector of column names included `sampledata` that are needed to produce
 #' this functions output (see Details).
-#' @param deadSample Single value or vector of different lethal sample types.
-#' Defaults to c("Tissue").
 #'
 #' @return
 #' Extended `sampledata` data frame that includes all columns defined in `datacolumns`
@@ -96,7 +96,6 @@
 #'   all_fams = org_tables$fams,
 #'   ped = org_tables$ped,
 #'   sampledata = sampledata,
-#'   deadSample = c("Tissue")
 #' )
 #'
 #'
@@ -104,8 +103,7 @@
 #' pt_subset <- plot_table(plot_indivs = "M200F",
 #'                         all_fams = org_tables$fams,
 #'                         ped = org_tables$ped,
-#'                         sampledata = sampledata,
-#'                         deadSample = c("Tissue")
+#'                         sampledata = sampledata
 #'                        )
 #'
 plot_table <- function(plot_fams = NULL,
@@ -115,8 +113,8 @@ plot_table <- function(plot_fams = NULL,
                        sampledata,
                        datacolumns = c("Sample", "AnimalRef", "GeneticSex",
                                        "Date", "SType", "lat", "lng",
-                                       "FirstSeen", "LastSeen", "IsDead"),
-                       deadSample = c("Tissue")) {
+                                       "FirstSeen", "LastSeen", "IsDead",
+                                       "IsMortality")) {
 
   # Determine target families based on inputs
   target_fams <- c()
@@ -242,8 +240,8 @@ plot_table <- function(plot_fams = NULL,
   } # fams loop
 
   # mark mortality samples
-  # based on deadSample vectors and sample type adds column isDead (TRUE/FALSE)
-  outdata$dead <- outdata$SType %in% deadSample
+  # mark mortality samples based on IsMortality column
+  outdata$dead <- outdata$IsMortality
 
   # mark first sample, mark last sample
   # new columns first_sample, last_sample, IsReference, at first all FALSE

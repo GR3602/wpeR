@@ -12,6 +12,7 @@ check_sampledata(
   lat,
   lng,
   SType,
+  IsMortality = NULL,
   extraCols = NULL
 )
 }
@@ -32,19 +33,22 @@ that the sample belongs to.}
 \item{lng}{A vector of longitude coordinates in the WGS84 coordinate system
 (EPSG: 4326).}
 
-\item{SType}{A vector of sample types eg.: scat, hair, tissue. Also
-used to determine individual's status (see Details)}
+\item{SType}{A vector of sample types eg.: scat, hair, tissue.}
+
+\item{IsMortality}{Optional logical vector of the same length as the input vectors.
+\code{TRUE} marks samples that represent a mortality event (e.g. from a dead animal).
+Defaults to \code{NULL}.}
 
 \item{extraCols}{A vector of extra column names that the user wants to include
 in sampledata data frame (see Details).}
 }
 \value{
-A data frame with at least 7 columns and a number of rows equal to the length
-of the input vector. Each column corresponds to one of the input parameters.
-If the function executes without warnings or errors, the result from
-\code{check_sampledata()} can be used as an input parameter for other functions
-within this package: \code{\link[=get_colony]{get_colony()}}, \code{\link[=get_ped]{get_ped()}}, \code{\link[=org_fams]{org_fams()}}
-and \code{\link[=plot_table]{plot_table()}}.
+A data frame with a number of rows equal to the length of the input vectors.
+Each column corresponds to one of the input parameters. If \code{IsMortality} is
+provided, it is included as an additional column. If the function executes
+without warnings or errors, the result from \code{check_sampledata()} can be used
+as an input parameter for other functions within this package:
+\code{\link[=get_colony]{get_colony()}}, \code{\link[=get_ped]{get_ped()}}, \code{\link[=org_fams]{org_fams()}} and \code{\link[=plot_table]{plot_table()}}.
 }
 \description{
 Verifies the consistency of columns in the genetic sample metadata and
@@ -62,10 +66,9 @@ data frame column (eg. Sample = dataframe$column) and the \code{extraCols} param
 as a vector of column names form the same data frame (eg. extraCols = c(column1, column2,
 column3)).
 
-The \code{SType} field is critical for temporal analysis. Functions like
-\code{\link[=anim_timespan]{anim_timespan()}} rely on these labels (specifically which sample types are
-defined as "dead" by the user) to determine an individual's status at the
-point of sampling.
+The \code{IsMortality} column is a logical vector that flags samples
+representing a mortality event (e.g. from a dead animal). It is used
+by \code{\link[=anim_timespan]{anim_timespan()}} to determine the death status of individuals.
 }
 \examples{
 sampledata <- check_sampledata(
@@ -75,7 +78,8 @@ sampledata <- check_sampledata(
   GeneticSex = wolf_samples$GeneticSex,
   lat = wolf_samples$lat,
   lng = wolf_samples$lng,
-  SType = wolf_samples$SType
+  SType = wolf_samples$SType,
+  IsMortality = wolf_samples$IsMortality
 )
 
 }

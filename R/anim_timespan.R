@@ -3,9 +3,8 @@
 #' @description
 #' Takes data frame of all samples and returns the dates of individuals first
 #' and last sample.
-#' Besides that the functions determines if animal is dead based on a column that flags
-#' samples representing mortality, (eg. all tissue samples are taken from dead
-#' animals)
+#' Besides that the function determines if an individual is dead based on the
+#' mortality_sample column.
 #'
 #' @param individual_id
 #'   Column in the dataframe of all samples containing

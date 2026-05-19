@@ -8,8 +8,7 @@ org_tables <- org_fams(ped_colony, sampledata, output = "both")
 pt <- plot_table(plot_fams = "all",
            all_fams = org_tables$fams,
            ped = org_tables$ped,
-           sampledata = sampledata,
-           deadSample = c("Tissue", "Decomposing Tissue", "Blood"))
+           sampledata = sampledata)
 
 
 test_that("Number of individuals is the same as in pedigree",{

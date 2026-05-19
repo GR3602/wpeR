@@ -8,8 +8,7 @@ org_tables <- org_fams(ped_colony, sampledata, output = "both")
 pt <- plot_table(plot_fams = "all",
                  all_fams = org_tables$fams,
                  ped = org_tables$ped,
-                 sampledata = sampledata,
-                 deadSample = "Tissue")
+                 sampledata = sampledata)
 
 test_that("Is plot produced", {
  # test.plot <- ped_satplot(pt$Date, pt$AnimalRef, pt$plottingID, pt$GeneticSex, pt$FamID,
