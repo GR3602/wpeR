@@ -16,6 +16,8 @@
 #' @param ylegend Vertical position of the legend.
 #' @param text_size Plot text size.
 #' @param fam_label_size Family label text size.
+#' @param polyHighlight Logical. Show semi-transparent background for polygamous
+#'   individuals. Default is `TRUE`.
 #'
 #' @return A graphical representation of detected family members trough time.
 #'
@@ -73,7 +75,8 @@ ped_satplot <- function(plottable,
                         xlabel = "Date", ylabel = "Animal",
                         title = "", subtitle = "",
                         LegendLabel = "Sex", xlegend = 0.2, ylegend = 0.94,
-                        text_size = 2.5, fam_label_size = 2) {
+                        text_size = 2.5, fam_label_size = 2,
+                        polyHighlight = TRUE) {
 
   data <- data.frame(date = plottable$Date,
                      animal = plottable$AnimalRef,
@@ -177,17 +180,21 @@ ped_satplot <- function(plottable,
     geom_point(
       data = dataOrdered[dataOrdered$isPolygamous == TRUE, ],
                aes(y = yaxis, x = as.Date(date)),
-               shape = 5, size = 2, color = "purple") +
-    geom_rect(
+               shape = 5, size = 2, color = "purple")
+
+  if (polyHighlight) {
+    p <- p + geom_rect(
       data = dataOrdered[dataOrdered$isPolygamous == TRUE, ],
-              aes(xmin = min(as.Date(date)) - 25, #- xWhiteSpace,
-                  xmax = max(as.Date(date)) + 25, #+ xWhiteSpace,
+              aes(xmin = min(as.Date(date)) - 25,
+                  xmax = max(as.Date(date)) + 25,
                   ymin = yaxis - 0.5,
                   ymax = yaxis + 0.5,
                   fill = sex),
                alpha = 0.03,
-      show.legend = FALSE)+
+      show.legend = FALSE)
+  }
 
+  p <- p +
     geom_point(
       data = dataOrdered[dataOrdered$later_rep == TRUE, ],
                aes(y = yaxis, x = as.Date(date)),
@@ -200,7 +207,7 @@ ped_satplot <- function(plottable,
       data = dataOrdered[dataOrdered$first_sample == TRUE, ],
       aes(y = yaxis, x = as.Date(date), label = animal),
       size = text_size, hjust = 1, vjust = 0.5, nudge_x = -15
-    ) + # , label.padding = unit(0.1, "lines"))+
+    ) +
     ggtitle(title, subtitle = subtitle) +
     labs(colour = LegendLabel) +
     expand_limits(x = c(min(dataOrdered$date) - xWhiteSpace, max(dataOrdered$date + xWhiteSpace))) +
