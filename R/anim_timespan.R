@@ -3,8 +3,9 @@
 #' @description
 #' Takes data frame of all samples and returns the dates of individuals first
 #' and last sample.
-#' Besides that the functions determines if animal is dead based on predefined
-#' sample type eg. tissue.
+#' Besides that the functions determines if animal is dead based on a column that flags
+#' samples that represent mortality, (eg. all tissue samples represent are taken from dead
+#' animals)
 #'
 #'
 #'
@@ -16,14 +17,12 @@
 #'   Column in the dataframe of all samples containing
 #'   the date of sample collection.
 #'   Must be in `Date` format. Defined as `dataframe$column`.
-#' @param sample_type
-#'   Column in the dataframe of all samples containing the data
-#'   on the type (eg. scat, tissue, saliva) of particular sample.
-#'   Defined as `dataframe$column`.
-#' @param dead
-#'   Single value or vector of different lethal sample types. If no lethal
-#'   samples are included in the sampledata the dead parameter can be set to `FALSE` (dead = `FALSE`).
-#'   Defaults to "Tissue".
+#' @param mortality_sample
+#'   Logical vector or column in the dataframe of all samples that
+#'   identifies samples that represent a mortality event (e.g. from a dead animal).
+#'   `TRUE` values mark mortality samples.
+#'   Defined as `dataframe$column` or a standalone logical vector the same length
+#'   as `individual_id`.
 #'
 #' @return
 #' A data frame with four columns and one row for each `individual_id`.
@@ -37,19 +36,14 @@
 #' anim_timespan(
 #'   individual_id = wolf_samples$AnimalRef,
 #'   sample_date = wolf_samples$Date,
-#'   sample_type = wolf_samples$SType,
-#'   dead = c("Tissue")
+#'   mortality_sample = wolf_samples$SType == "Tissue"
 #' )
 
 
+anim_timespan <- function(individual_id, sample_date, mortality_sample) {
 
-anim_timespan <- function(individual_id, sample_date, sample_type, dead = "Tissue") {
-
-  if (any(dead != FALSE)){
-    if (!all(dead %in% unique(sample_type), na.rm = TRUE)) {
-      warning("one or more lethal sample type, defined with dead parameter,
-      are not present in the sample_type vector")
-    }
+  if (!any(mortality_sample, na.rm = TRUE)) {
+    message("No mortality samples flagged in the dataset, all individuals will be treated as still alive.")
   }
 
   unique_ind <- unique(individual_id)
@@ -65,7 +59,6 @@ anim_timespan <- function(individual_id, sample_date, sample_type, dead = "Tissu
 
   for (individual in unique_ind) {
     ind_dates <- sample_date[individual_id == individual]
-    ind_sample_types <- sample_type[individual_id == individual]
 
     out_individual <- c(out_individual, individual)
 
@@ -78,7 +71,7 @@ anim_timespan <- function(individual_id, sample_date, sample_type, dead = "Tissu
     out_firstseen <- c(out_firstseen, first)
     out_lastseen <- c(out_lastseen, last)
 
-    out_isdead <- c(out_isdead, sum(dead %in% ind_sample_types) > 0)
+    out_isdead <- c(out_isdead, any(mortality_sample[individual_id == individual], na.rm = TRUE))
   }
 
   out_firstseen <- as.Date(out_firstseen, origin = "1970-01-01")

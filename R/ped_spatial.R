@@ -71,8 +71,7 @@
 #' # Get animal timespan data using the anim_timespan() function.
 #' animal_ts <- anim_timespan(wolf_samples$AnimalRef,
 #'   wolf_samples$Date,
-#'   wolf_samples$SType,
-#'   dead = c("Tissue")
+#'   wolf_samples$SType == c("Tissue")
 #' )
 #' # Add animal timespan to the sampledata
 #' sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE)

@@ -4,7 +4,7 @@
 \alias{anim_timespan}
 \title{Get dates of individuals first and last sample}
 \usage{
-anim_timespan(individual_id, sample_date, sample_type, dead = "Tissue")
+anim_timespan(individual_id, sample_date, mortality_sample)
 }
 \arguments{
 \item{individual_id}{Column in the dataframe of all samples containing
@@ -15,13 +15,11 @@ Defined as \code{dataframe$column}.}
 the date of sample collection.
 Must be in \code{Date} format. Defined as \code{dataframe$column}.}
 
-\item{sample_type}{Column in the dataframe of all samples containing the data
-on the type (eg. scat, tissue, saliva) of particular sample.
-Defined as \code{dataframe$column}.}
-
-\item{dead}{Single value or vector of different lethal sample types. If no lethal
-samples are included in the sampledata the dead parameter can be set to \code{FALSE} (dead = \code{FALSE}).
-Defaults to "Tissue".}
+\item{mortality_sample}{Logical vector or column in the dataframe of all samples that
+identifies samples that represent a mortality event (e.g. from a dead animal).
+\code{TRUE} values mark mortality samples.
+Defined as \code{dataframe$column} or a standalone logical vector the same length
+as \code{individual_id}.}
 }
 \value{
 A data frame with four columns and one row for each \code{individual_id}.
@@ -32,14 +30,14 @@ logical (\code{TRUE/FALSE}) value that identifies if the individual is dead (\co
 \description{
 Takes data frame of all samples and returns the dates of individuals first
 and last sample.
-Besides that the functions determines if animal is dead based on predefined
-sample type eg. tissue.
+Besides that the functions determines if animal is dead based on a column that flags
+samples that represent mortality, (eg. all tissue samples represent are taken from dead
+animals)
 }
 \examples{
 anim_timespan(
   individual_id = wolf_samples$AnimalRef,
   sample_date = wolf_samples$Date,
-  sample_type = wolf_samples$SType,
-  dead = c("Tissue")
+  mortality_sample = wolf_samples$SType == "Tissue"
 )
 }

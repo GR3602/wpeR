@@ -17,7 +17,8 @@ ped_satplot(
   xlegend = 0.2,
   ylegend = 0.94,
   text_size = 2.5,
-  fam_label_size = 2
+  fam_label_size = 2,
+  polyHighlight = TRUE
 )
 }
 \arguments{
@@ -46,6 +47,9 @@ ped_satplot(
 \item{text_size}{Plot text size.}
 
 \item{fam_label_size}{Family label text size.}
+
+\item{polyHighlight}{Logical. Show semi-transparent background for polygamous
+individuals. Default is \code{TRUE}.}
 }
 \value{
 A graphical representation of detected family members trough time.
@@ -59,8 +63,7 @@ arranged by families included in data frame created by \code{\link[=plot_table]{
 # Get animal timespan data using the anim_timespan() function.
 animal_ts <- anim_timespan(wolf_samples$AnimalRef,
   wolf_samples$Date,
-  wolf_samples$SType,
-  dead = c("Tissue")
+  wolf_samples$SType == c("Tissue")
 )
 # Add animal timespan to the sampledata
 sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE)
