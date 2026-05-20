@@ -63,8 +63,7 @@ The wpeR package requires two main input datasets for analysis:
     # Get animal timespan data using the anim_timespan() function.
     animal_ts <- anim_timespan(wolf_samples$AnimalRef,
                                wolf_samples$Date,
-                               wolf_samples$SType,
-                               dead = c("Tissue"))
+                               wolf_samples$IsMortality)
 
     # Add animal timespan to the sampledata
     sampledata <- merge(wolf_samples, animal_ts, by.x = "AnimalRef", by.y = "ID", all.x = TRUE)
@@ -81,8 +80,7 @@ The wpeR package requires two main input datasets for analysis:
     pt <- plot_table(plot_fams = 1,
                      org_tables$fams,
                      org_tables$ped,
-                     sampledata,
-                     deadSample = c("Tissue"))
+                     sampledata)
                      
 
     ####VISUALIZATION####                 
