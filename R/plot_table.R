@@ -69,7 +69,6 @@
 #'   * `dead`: Logical. Is individual dead.
 #'   * `first_sample`: Logical. Is this particular sample the first sample of the individual.
 #'   * `last_sample`: Logical. Is this particular sample the last sample of the individual.
-#'   * `isReference`: Logical. Is this particular sample reference sample of individual.
 #'
 #' @export
 #'
@@ -247,7 +246,7 @@ plot_table <- function(plot_fams = NULL,
   # new columns first_sample, last_sample, IsReference, at first all FALSE
   outdata$first_sample <- rep(FALSE, nrow(outdata))
   outdata$last_sample <- rep(FALSE, nrow(outdata))
-  outdata$IsReference <- rep(FALSE, nrow(outdata))
+  #outdata$IsReference <- rep(FALSE, nrow(outdata))
 
   ## fills in columns created above
   for (i in 1:(nrow(outdata))) {
@@ -259,7 +258,7 @@ plot_table <- function(plot_fams = NULL,
       if (outdata$Date[i] == minDt) outdata$first_sample[i] <- TRUE
       if (outdata$Date[i] == maxDt) outdata$last_sample[i] <- TRUE
     }
-    if (outdata$Sample[i] == outdata$AnimalRef[i]) outdata$IsReference[i] <- TRUE
+    #if (outdata$Sample[i] == outdata$AnimalRef[i]) outdata$IsReference[i] <- TRUE
   }
 
   # samples that have only NA's for data
