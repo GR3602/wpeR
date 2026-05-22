@@ -114,6 +114,12 @@ ped_spatial <- function(plottable,
     time.limit.moves = time.limit.moves
   )
 
+  all_empty <- all(vapply(data, nrow, integer(1)) == 0)
+  if (all_empty) {
+    warning("No data available for spatial representation after filtering. Returning NULL.")
+    return(invisible(NULL))
+  }
+
   ParLines <- ppsParLines(data)
 
   MvPoints <- ppsMvPoints(ppsData = data)
