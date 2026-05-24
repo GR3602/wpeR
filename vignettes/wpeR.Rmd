@@ -37,7 +37,8 @@ devtools::install_github("GR3602/wpeR")
 You should be now able to load **wpeR**.
 
 ```{r setup}
-library(wpeR)
+#library(wpeR)
+devtools::load_all()
 ```
 
 # Input data
@@ -404,7 +405,7 @@ An example of combining the `plot_fams` and  `plot_indivs`, you get a union of a
 listed in `plot_fams` and all the families that the individual from `plot_indivs` is
 a part of.
 
-```{r}
+```{r fig.width=6.5, fig.height=6}
 pt <- plot_table(
   plot_fams = c(1,4),
   plot_indivs = "M28LU",
@@ -841,9 +842,9 @@ library(leaflet)
 library(leaflet.providers)
 
 pt <- plot_table(plot_fams = c(1:5),
-                        fams_org,
-                        ped_org,
-                        sampledata
+                all_fams = fams_org,
+                ped = ped_org,
+                sampledata = sampledata
                         )
 
 ps <- ped_spatial(pt,

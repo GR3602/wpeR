@@ -8,6 +8,7 @@ anim_timespan() & plot_table() functions
 * anim_timespan() new logic for marking dead animals, now uses TRUE/FALSE vector instead
 of sampletype
 * plot_table() dead sample logic simplified with IsMortality column
+* ped_spatial() empty file return when no data
 
 # wpeR 0.1.1
 

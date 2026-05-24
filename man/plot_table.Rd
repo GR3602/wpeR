@@ -51,7 +51,6 @@ can be included in more than one family.
 \item \code{dead}: Logical. Is individual dead.
 \item \code{first_sample}: Logical. Is this particular sample the first sample of the individual.
 \item \code{last_sample}: Logical. Is this particular sample the last sample of the individual.
-\item \code{isReference}: Logical. Is this particular sample reference sample of individual.
 }
 }
 \description{
@@ -79,7 +78,7 @@ and sample metadata data for visual (\code{\link[=ped_satplot]{ped_satplot()}}) 
 \item value identifying if the individual is dead; logical
 (default = \code{IsDead}, see \code{\link[=anim_timespan]{anim_timespan()}} function).
 \item value identifying if this particular sample represents a mortality sample
-(default = \code{IsMortality}, , see \code{\link[=check_sampledata]{check_sampledata()}} function)
+(default = \code{IsMortality}, see \code{\link[=check_sampledata]{check_sampledata()}} function)
 }
 }
 
