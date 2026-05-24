@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Introduction to wpeR package • wpeR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to wpeR package">
 </head>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">wpeR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,11 +47,11 @@
 
 
 
-<link href="wpeR_files/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<link href="wpeR_files/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
 <script src="wpeR_files/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="wpeR_files/leaflet-1.3.1/leaflet.css" rel="stylesheet">
 <script src="wpeR_files/leaflet-1.3.1/leaflet.js"></script><link href="wpeR_files/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
 <script src="wpeR_files/proj4-2.6.2/proj4.min.js"></script><script src="wpeR_files/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="wpeR_files/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
-<script src="wpeR_files/leaflet-binding-2.2.3/leaflet.js"></script><script src="wpeR_files/leaflet-providers-2.0.0/leaflet-providers_2.0.0.js"></script><script src="wpeR_files/leaflet-providers-plugin-2.2.3/leaflet-providers-plugin.js"></script><div class="row">
+<script src="wpeR_files/leaflet-binding-2.2.3/leaflet.js"></script><script src="wpeR_files/leaflet-providers-3.0.0/leaflet-providers.js"></script><script src="wpeR_files/leaflet-providers-plugin-2.2.3/leaflet-providers-plugin.js"></script><div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Introduction to wpeR package</h1>
@@ -120,7 +120,9 @@ to.</li>
 females and <code>NA</code> for unknown sex.</li>
 <li>Geographic location from where the sample was collected, as latitude
 and longitude in WGS84 coordinate system (EPSG: 4326).</li>
-<li>Sample type (eg: scat, urine, tissue)<br>
+<li>Sample type eg: scat, urine, tissue.</li>
+<li>Logical (˙TRUE˙/<code>FALSE</code>) column marking samples collected
+from dead animals (eg: tissue from a carcass).<br>
 </li>
 </ul>
 </li>
@@ -147,7 +149,8 @@ can link the columns in the data frame with the parameters of the
 <span>  GeneticSex <span class="op">=</span> <span class="va">wolf_samples</span><span class="op">$</span><span class="va">GeneticSex</span>,</span>
 <span>  lat <span class="op">=</span> <span class="va">wolf_samples</span><span class="op">$</span><span class="va">lat</span>,</span>
 <span>  lng <span class="op">=</span> <span class="va">wolf_samples</span><span class="op">$</span><span class="va">lng</span>,</span>
-<span>  SType <span class="op">=</span> <span class="va">wolf_samples</span><span class="op">$</span><span class="va">SType</span></span>
+<span>  SType <span class="op">=</span> <span class="va">wolf_samples</span><span class="op">$</span><span class="va">SType</span>,</span>
+<span>  IsMortality <span class="op">=</span> <span class="va">wolf_samples</span><span class="op">$</span><span class="va">IsMortality</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>If there are no errors or warnings during the execution of the
 <code><a href="../reference/check_sampledata.html">check_sampledata()</a></code> function, it indicates that the genetic
@@ -156,13 +159,13 @@ frame, in downstream analyses. Example of properly formatted sample
 metadata with all required columns looks like this:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sampledata</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   Sample       Date AnimalRef GeneticSex      lat      lng SType</span></span>
-<span><span class="co">#&gt; 1  M10XC 2017-11-16     M10XC          M 45.70766 14.12922  Scat</span></span>
-<span><span class="co">#&gt; 2  M0PXH 2017-11-22     M10XC          M 45.71356 14.10497  Scat</span></span>
-<span><span class="co">#&gt; 3  M0PFL 2017-12-22     M10XC          M 45.69898 14.07907  Scat</span></span>
-<span><span class="co">#&gt; 4  M1J47 2019-08-20     M1J47          M 45.70854 14.09644  Scat</span></span>
-<span><span class="co">#&gt; 5  M1HF2 2019-08-31     M1J47          M 45.69930 14.05550  Scat</span></span>
-<span><span class="co">#&gt; 6 MSV163 2020-07-17     M1J47          M 45.71804 14.14319  Scat</span></span></code></pre></div>
+<span><span class="co">#&gt;   Sample       Date AnimalRef GeneticSex      lat      lng SType IsMortality</span></span>
+<span><span class="co">#&gt; 1  M10XC 2017-11-16     M10XC          M 45.70766 14.12922  Scat       FALSE</span></span>
+<span><span class="co">#&gt; 2  M0PXH 2017-11-22     M10XC          M 45.71356 14.10497  Scat       FALSE</span></span>
+<span><span class="co">#&gt; 3  M0PFL 2017-12-22     M10XC          M 45.69898 14.07907  Scat       FALSE</span></span>
+<span><span class="co">#&gt; 4  M1J47 2019-08-20     M1J47          M 45.70854 14.09644  Scat       FALSE</span></span>
+<span><span class="co">#&gt; 5  M1HF2 2019-08-31     M1J47          M 45.69930 14.05550  Scat       FALSE</span></span>
+<span><span class="co">#&gt; 6 MSV163 2020-07-17     M1J47          M 45.71804 14.14319  Scat       FALSE</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="the-workflow">The workflow<a class="anchor" aria-label="anchor" href="#the-workflow"></a>
@@ -322,7 +325,7 @@ packages.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ped_ks2</span>, symbolsize <span class="op">=</span> <span class="fl">1.5</span>, cex <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span></span></code></pre></div>
-<p><img src="wpeR_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;"></p>
+<p><img src="wpeR_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="672" style="display: block; margin: auto;"></p>
 <pre><code><span><span class="co">#&gt; Did not plot the following people: M2AM8</span></span></code></pre>
 </div>
 </div>
@@ -334,14 +337,16 @@ seen’ columns for each animal in the pedigree by examining the dates of
 all genetic samples associated with that animal. This is an important
 step in obtaining a temporal perspective of the pedigree, as it allows
 other functions to work with time frame over which each animal was
-observed. Besides that the functions determines if animal is dead based
-on predefined sample type eg. tissue.</p>
+observed. Besides that, the function determines if an animal is dead
+based on the <code>mortality_sample</code> argument. This argument takes
+a logical vector that marks samples collected from dead animals
+(e.g. tissue from a carcass). If at least one of the animal’s samples is
+flagged as a mortality sample, the animal is marked as dead.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">animal_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/anim_timespan.html">anim_timespan</a></span><span class="op">(</span></span>
 <span>  individual_id <span class="op">=</span> <span class="va">wolf_samples</span><span class="op">$</span><span class="va">AnimalRef</span>,</span>
 <span>  sample_date <span class="op">=</span> <span class="va">wolf_samples</span><span class="op">$</span><span class="va">Date</span>,</span>
-<span>  sample_type <span class="op">=</span> <span class="va">wolf_samples</span><span class="op">$</span><span class="va">SType</span>,</span>
-<span>  dead <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Tissue"</span><span class="op">)</span></span>
+<span>  mortality_sample <span class="op">=</span> <span class="va">wolf_samples</span><span class="op">$</span><span class="va">IsMortality</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">animal_ts</span><span class="op">)</span></span>
@@ -361,20 +366,20 @@ facilitates downstream analysis.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sampledata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">wolf_samples</span>, <span class="va">animal_ts</span>, by.x <span class="op">=</span> <span class="st">"AnimalRef"</span>, by.y <span class="op">=</span> <span class="st">"ID"</span>, all.x <span class="op">=</span> <span class="cn">TRUE</span> <span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sampledata</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   AnimalRef Sample       Date GeneticSex      lat      lng SType  FirstSeen</span></span>
-<span><span class="co">#&gt; 1     M10XC  M10XC 2017-11-16          M 45.70766 14.12922  Scat 2017-11-16</span></span>
-<span><span class="co">#&gt; 2     M10XC  M0PXH 2017-11-22          M 45.71356 14.10497  Scat 2017-11-16</span></span>
-<span><span class="co">#&gt; 3     M10XC  M0PFL 2017-12-22          M 45.69898 14.07907  Scat 2017-11-16</span></span>
-<span><span class="co">#&gt; 4     M1J47  M1J47 2019-08-20          M 45.70854 14.09644  Scat 2019-08-20</span></span>
-<span><span class="co">#&gt; 5     M1J47  M1HF2 2019-08-31          M 45.69930 14.05550  Scat 2019-08-20</span></span>
-<span><span class="co">#&gt; 6     M1J47 MSV163 2020-07-17          M 45.71804 14.14319  Scat 2019-08-20</span></span>
-<span><span class="co">#&gt;     LastSeen IsDead</span></span>
-<span><span class="co">#&gt; 1 2017-12-22  FALSE</span></span>
-<span><span class="co">#&gt; 2 2017-12-22  FALSE</span></span>
-<span><span class="co">#&gt; 3 2017-12-22  FALSE</span></span>
-<span><span class="co">#&gt; 4 2021-01-07  FALSE</span></span>
-<span><span class="co">#&gt; 5 2021-01-07  FALSE</span></span>
-<span><span class="co">#&gt; 6 2021-01-07  FALSE</span></span></code></pre></div>
+<span><span class="co">#&gt;   AnimalRef Sample       Date GeneticSex      lat      lng SType IsMortality</span></span>
+<span><span class="co">#&gt; 1     M10XC  M10XC 2017-11-16          M 45.70766 14.12922  Scat       FALSE</span></span>
+<span><span class="co">#&gt; 2     M10XC  M0PXH 2017-11-22          M 45.71356 14.10497  Scat       FALSE</span></span>
+<span><span class="co">#&gt; 3     M10XC  M0PFL 2017-12-22          M 45.69898 14.07907  Scat       FALSE</span></span>
+<span><span class="co">#&gt; 4     M1J47  M1J47 2019-08-20          M 45.70854 14.09644  Scat       FALSE</span></span>
+<span><span class="co">#&gt; 5     M1J47  M1HF2 2019-08-31          M 45.69930 14.05550  Scat       FALSE</span></span>
+<span><span class="co">#&gt; 6     M1J47 MSV163 2020-07-17          M 45.71804 14.14319  Scat       FALSE</span></span>
+<span><span class="co">#&gt;    FirstSeen   LastSeen IsDead</span></span>
+<span><span class="co">#&gt; 1 2017-11-16 2017-12-22  FALSE</span></span>
+<span><span class="co">#&gt; 2 2017-11-16 2017-12-22  FALSE</span></span>
+<span><span class="co">#&gt; 3 2017-11-16 2017-12-22  FALSE</span></span>
+<span><span class="co">#&gt; 4 2019-08-20 2021-01-07  FALSE</span></span>
+<span><span class="co">#&gt; 5 2019-08-20 2021-01-07  FALSE</span></span>
+<span><span class="co">#&gt; 6 2019-08-20 2021-01-07  FALSE</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="organize-families">Organize families<a class="anchor" aria-label="anchor" href="#organize-families"></a>
@@ -522,30 +527,45 @@ with the <code><a href="../reference/plot_table.html">plot_table()</a></code> fu
 outputs of previous functions (<code>fams</code> and <code>ped</code>
 from the <code><a href="../reference/org_fams.html">org_fams()</a></code> function) with sample metadata, with
 all three data frames serving as inputs.</p>
-<p>The function offers flexibility in selecting families for
-visualization through the <code>plot_fams</code> parameter. To include
-all families included in the pedigree, <code>plot_fams</code> should be
-set to “all” (which is the default). For plotting a subset of families,
-provide a numeric vector of the desired FamIDs, which are the family
-identification numbers generated by <code><a href="../reference/org_fams.html">org_fams()</a></code> and can be
-seen in the <code>fams</code> output table.</p>
+<p>The function offers filtering options to isolate specific parts of
+your pedigree for visualization via two arguments:</p>
+<ul>
+<li>
+<strong><code>plot_fams</code></strong>: Accepts a numeric vector of
+specific <code>FamID</code> numbers (generated by
+<code><a href="../reference/org_fams.html">org_fams()</a></code>) to plot only those families.</li>
+<li>
+<strong><code>plot_indivs</code></strong>: Accepts a character
+vector of individual identifiers. The function automatically identifies
+and includes any families where these individuals appear as a parent
+(father/mother) or offspring.</li>
+</ul>
+<blockquote>
+<p><strong>Default Behavior:</strong> If both <code>plot_fams</code> and
+<code>plot_indivs</code> are left as <code>NULL</code> (the default),
+all families in the pedigree are included. If you provide values for
+both arguments, the function will return the <strong>union</strong> of
+the families identified by both filters.</p>
+</blockquote>
 <p>In order for the <code><a href="../reference/plot_table.html">plot_table()</a></code> function to work sample
 metadata has to include some specific information, most of them are
 already defined in the Input data part of this vignette, apart form them
 the sample metadata must also include columns on the date of first and
 last sample of individual and logical value identifying if the
 individual is dead. All this additional information can be added by
-<code><a href="../reference/anim_timespan.html">anim_timespan()</a></code> function (see Animal timespan). If the
-information stored in sample data does not use default column names (to
-see them check documentation <code><a href="../reference/plot_table.html">?plot_table</a></code>) the custom names
-can be defined as a vector with parameter <em>datacolumns</em>.</p>
+<code><a href="../reference/anim_timespan.html">anim_timespan()</a></code> function (see <em>Animal timespan</em>
+section). If your sample data uses non-standard column headers, you can
+map your custom names by passing a character vector to the
+<code>datacolumns</code> parameter. You can review the default expected
+column names by checking the function documentation
+(<code><a href="../reference/plot_table.html">?plot_table</a></code>).</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_table.html">plot_table</a></span><span class="op">(</span></span>
-<span>  plot_fams <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  plot_fams <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  plot_indivs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  all_fams <span class="op">=</span> <span class="va">fams_org</span>,</span>
 <span>  ped <span class="op">=</span> <span class="va">ped_org</span>,</span>
-<span>  sampledata <span class="op">=</span> <span class="va">sampledata</span>,</span>
-<span>  deadSample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Tissue"</span><span class="op">)</span></span>
+<span>  sampledata <span class="op">=</span> <span class="va">sampledata</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pt</span><span class="op">)</span></span>
@@ -556,20 +576,20 @@ can be defined as a vector with parameter <em>datacolumns</em>.</p>
 <span><span class="co">#&gt; 57   M28MM     M228J          M 2017-08-18 Saliva 45.67397 14.11150 2016-09-30</span></span>
 <span><span class="co">#&gt; 58   M2C36     M228J          M 2018-02-09 Tissue 45.67033 14.15404 2016-09-30</span></span>
 <span><span class="co">#&gt; 10 EX.1JH0     M200F          F 2015-07-27 Saliva 45.75250 14.14653 2015-07-27</span></span>
-<span><span class="co">#&gt;      LastSeen IsDead plottingID FamID hsGroup  rep later_rep isPolygamous  dead</span></span>
-<span><span class="co">#&gt; 54 2018-02-09   TRUE          1     1       1 TRUE     FALSE        FALSE FALSE</span></span>
-<span><span class="co">#&gt; 55 2018-02-09   TRUE          1     1       1 TRUE     FALSE        FALSE FALSE</span></span>
-<span><span class="co">#&gt; 56 2018-02-09   TRUE          1     1       1 TRUE     FALSE        FALSE FALSE</span></span>
-<span><span class="co">#&gt; 57 2018-02-09   TRUE          1     1       1 TRUE     FALSE        FALSE FALSE</span></span>
-<span><span class="co">#&gt; 58 2018-02-09   TRUE          1     1       1 TRUE     FALSE        FALSE  TRUE</span></span>
-<span><span class="co">#&gt; 10 2018-08-22  FALSE          2     1       1 TRUE     FALSE         TRUE FALSE</span></span>
-<span><span class="co">#&gt;    first_sample last_sample IsReference</span></span>
-<span><span class="co">#&gt; 54         TRUE       FALSE       FALSE</span></span>
-<span><span class="co">#&gt; 55        FALSE       FALSE        TRUE</span></span>
-<span><span class="co">#&gt; 56        FALSE       FALSE       FALSE</span></span>
-<span><span class="co">#&gt; 57        FALSE       FALSE       FALSE</span></span>
-<span><span class="co">#&gt; 58        FALSE        TRUE       FALSE</span></span>
-<span><span class="co">#&gt; 10         TRUE       FALSE       FALSE</span></span></code></pre></div>
+<span><span class="co">#&gt;      LastSeen IsDead IsMortality plottingID FamID hsGroup  rep later_rep</span></span>
+<span><span class="co">#&gt; 54 2018-02-09   TRUE       FALSE          1     1       1 TRUE     FALSE</span></span>
+<span><span class="co">#&gt; 55 2018-02-09   TRUE       FALSE          1     1       1 TRUE     FALSE</span></span>
+<span><span class="co">#&gt; 56 2018-02-09   TRUE       FALSE          1     1       1 TRUE     FALSE</span></span>
+<span><span class="co">#&gt; 57 2018-02-09   TRUE       FALSE          1     1       1 TRUE     FALSE</span></span>
+<span><span class="co">#&gt; 58 2018-02-09   TRUE        TRUE          1     1       1 TRUE     FALSE</span></span>
+<span><span class="co">#&gt; 10 2018-08-22  FALSE       FALSE          2     1       1 TRUE     FALSE</span></span>
+<span><span class="co">#&gt;    isPolygamous  dead first_sample last_sample</span></span>
+<span><span class="co">#&gt; 54        FALSE FALSE         TRUE       FALSE</span></span>
+<span><span class="co">#&gt; 55        FALSE FALSE        FALSE       FALSE</span></span>
+<span><span class="co">#&gt; 56        FALSE FALSE        FALSE       FALSE</span></span>
+<span><span class="co">#&gt; 57        FALSE FALSE        FALSE       FALSE</span></span>
+<span><span class="co">#&gt; 58        FALSE  TRUE        FALSE        TRUE</span></span>
+<span><span class="co">#&gt; 10         TRUE FALSE         TRUE       FALSE</span></span></code></pre></div>
 <p>The <code><a href="../reference/plot_table.html">plot_table()</a></code> function output adds additional
 information to sample metadata which include:</p>
 <ul>
@@ -599,9 +619,6 @@ sample of individual,</li>
 <li>
 <code>last_sample</code>: Is this particular sample the last sample
 of individual,</li>
-<li>
-<code>isReference</code>: Is this particular sample reference sample
-of individual.</li>
 </ul>
 <p>Apart from adding additional information to sample metadata,
 <code><a href="../reference/plot_table.html">plot_table()</a></code> also duplicates sample entries (rows) for
@@ -641,60 +658,101 @@ the individual. This connection remains intact even during periods where
 no samples of that particular individual were collected. Each sample can
 be additional marked to represent any additional characteristics of a
 particular individual (eg. reproductive animal, polygamous animal).
-Additionally, certain samples can be marked to indicate mortality (eg.
-tissue samples).</p>
-<p><img src="wpeR_files/figure-html/ped_satplot%20legend-1.png" width="700" style="display: block; margin: auto;"></p>
+Additionally, samples that have <code>IsMortality</code> flag are marked
+to indicate mortality.</p>
+<p><img src="wpeR_files/figure-html/ped_satplot%20legend-1.png" class="r-plt" alt="" width="700" style="display: block; margin: auto;"></p>
 <p>Before we get started with the first plot it is important to look
 back at <code><a href="../reference/plot_table.html">plot_table()</a></code> function and the previously mentioned
-<em>plot_fams</em> parameter. This parameter allow us to select a subset
-of families that we would like to plot. In the below example just one
-family (FamID = 4) is selected for plotting.</p>
+<em>plot_fams</em> and <em>plot_indivs</em> parameter. This parameter
+allow us to select a subset of families that we would like to plot. In
+the below example just one family (FamID = 4) is selected for
+plotting.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_table.html">plot_table</a></span><span class="op">(</span></span>
 <span>  plot_fams <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  plot_indivs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  all_fams <span class="op">=</span> <span class="va">fams_org</span>,</span>
 <span>  ped <span class="op">=</span> <span class="va">ped_org</span>,</span>
-<span>  sampledata <span class="op">=</span> <span class="va">sampledata</span>,</span>
-<span>  deadSample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Tissue"</span>, <span class="st">"Decomposing Tissue"</span>, <span class="st">"Blood"</span><span class="op">)</span></span>
+<span>  sampledata <span class="op">=</span> <span class="va">sampledata</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ped_satplot.html">ped_satplot</a></span><span class="op">(</span><span class="va">pt</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sp</span> </span></code></pre></div>
-<p><img src="wpeR_files/figure-html/unnamed-chunk-16-1.png" width="624" style="display: block; margin: auto;"></p>
+<p><img src="wpeR_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="" width="624" style="display: block; margin: auto;"></p>
+<p>An example of all families connected to M28LU indiviudal. you can
+also specify multiple individuals within a vector ˙plot_indivs = c(ind1,
+ind2, …)˙</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_table.html">plot_table</a></span><span class="op">(</span></span>
+<span>  plot_fams <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  plot_indivs <span class="op">=</span> <span class="st">"M28LU"</span>,</span>
+<span>  all_fams <span class="op">=</span> <span class="va">fams_org</span>,</span>
+<span>  ped <span class="op">=</span> <span class="va">ped_org</span>,</span>
+<span>  sampledata  <span class="op">=</span> <span class="va">sampledata</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ped_satplot.html">ped_satplot</a></span><span class="op">(</span><span class="va">pt</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sp</span> </span></code></pre></div>
+<p><img src="wpeR_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" alt="" width="624" style="display: block; margin: auto;"></p>
 <p>An example of two families that share the same mother (FamID = 1
 &amp; 4)</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_table.html">plot_table</a></span><span class="op">(</span></span>
 <span>  plot_fams <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">4</span><span class="op">)</span>,</span>
 <span>  all_fams <span class="op">=</span> <span class="va">fams_org</span>,</span>
 <span>  ped <span class="op">=</span> <span class="va">ped_org</span>,</span>
-<span>  sampledata <span class="op">=</span> <span class="va">sampledata</span>,</span>
-<span>  deadSample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Tissue"</span>, <span class="st">"Decomposing Tissue"</span>, <span class="st">"Blood"</span><span class="op">)</span></span>
+<span>  sampledata <span class="op">=</span> <span class="va">sampledata</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ped_satplot.html">ped_satplot</a></span><span class="op">(</span><span class="va">pt</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sp</span></span></code></pre></div>
-<p><img src="wpeR_files/figure-html/unnamed-chunk-17-1.png" width="624" style="display: block; margin: auto;"></p>
+<p><img src="wpeR_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" alt="" width="624" style="display: block; margin: auto;"></p>
+<p>The same plot can be also achieved by specifiing the individual of
+interest polygamous mother <em>M200F</em> in the
+<code>plot_indivs</code> parameter</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>pt <span class="ot">&lt;-</span> <span class="fu">plot_table</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>  <span class="at">plot_indivs =</span> <span class="st">"M200F"</span></span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>  <span class="at">all_fams =</span> fams_org,</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>  <span class="at">ped =</span> ped_org,</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>  <span class="at">sampledata =</span> sampledata</span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>)</span></code></pre></div>
+<p>An example of combining the <code>plot_fams</code> and
+<code>plot_indivs</code>, you get a union of all the families listed in
+<code>plot_fams</code> and all the families that the individual from
+<code>plot_indivs</code> is a part of.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_table.html">plot_table</a></span><span class="op">(</span></span>
+<span>  plot_fams <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">4</span><span class="op">)</span>,</span>
+<span>  plot_indivs <span class="op">=</span> <span class="st">"M28LU"</span>,</span>
+<span>  all_fams <span class="op">=</span> <span class="va">fams_org</span>,</span>
+<span>  ped <span class="op">=</span> <span class="va">ped_org</span>,</span>
+<span>  sampledata  <span class="op">=</span> <span class="va">sampledata</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ped_satplot.html">ped_satplot</a></span><span class="op">(</span><span class="va">pt</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sp</span> </span></code></pre></div>
+<p><img src="wpeR_files/figure-html/unnamed-chunk-20-1.png" class="r-plt" alt="" width="624" style="display: block; margin: auto;"></p>
 <p>Technically, there is no limit to the number of families that can be
 plotted in this manner. However, as the number of families increases,
 the complexity of the graph intensifies, making it progressively more
 challenging to comprehend. This can be observed in the example of five
 families, two of which share a reproductive animal.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_table.html">plot_table</a></span><span class="op">(</span></span>
 <span>  plot_fams <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>,</span>
 <span>  all_fams <span class="op">=</span> <span class="va">fams_org</span>,</span>
 <span>  ped <span class="op">=</span> <span class="va">ped_org</span>,</span>
 <span>  sampledata <span class="op">=</span> <span class="va">sampledata</span>,</span>
-<span>  deadSample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Tissue"</span>, <span class="st">"Decomposing Tissue"</span>, <span class="st">"Blood"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ped_satplot.html">ped_satplot</a></span><span class="op">(</span><span class="va">pt</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sp</span></span></code></pre></div>
-<p><img src="wpeR_files/figure-html/unnamed-chunk-18-1.png" width="624" style="display: block; margin: auto;"></p>
+<p><img src="wpeR_files/figure-html/unnamed-chunk-21-1.png" class="r-plt" alt="" width="624" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="spatial-files">Spatial files<a class="anchor" aria-label="anchor" href="#spatial-files"></a>
@@ -709,13 +767,13 @@ automatically removes samples without coordinates, as they cannot be
 plotted.</p>
 <p>By utilizing the default function parameters, the ped_spatial()
 function produces a list containing 14 <code>sf</code> objects.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_table.html">plot_table</a></span><span class="op">(</span></span>
 <span>  plot_fams <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  all_fams <span class="op">=</span> <span class="va">fams_org</span>,</span>
 <span>  ped <span class="op">=</span> <span class="va">ped_org</span>,</span>
 <span>  sampledata <span class="op">=</span> <span class="va">sampledata</span>,</span>
-<span>  deadSample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Tissue"</span>, <span class="st">"Decomposing Tissue"</span>, <span class="st">"Blood"</span><span class="op">)</span></span>
+<span>  </span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ped_spatial.html">ped_spatial</a></span><span class="op">(</span><span class="va">pt</span><span class="op">)</span></span>
@@ -779,7 +837,7 @@ animal based on its sample locations.</li>
 <code>FullsibLines</code> object in the output list. The
 <code>FullsibLines</code> is a LINESTRING object connecting reference
 samples of full siblings.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fullsibdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">path</span>,<span class="st">".FullSibDyad"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ped_spatial.html">ped_spatial</a></span><span class="op">(</span><span class="va">pt</span>, fullsibdata <span class="op">=</span> <span class="va">fullsibdata</span><span class="op">)</span></span>
@@ -815,7 +873,7 @@ limits solely to offspring reference and movement points, -
 offspring reference and movement points, - <code>time.limit.moves</code>
 parameter permits the application of time limits to the movement lines
 of all individuals.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ps_tl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ped_spatial.html">ped_spatial</a></span><span class="op">(</span></span>
 <span>  plottable <span class="op">=</span> <span class="va">pt</span>,</span>
 <span>  time.limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2017-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2018-01-01"</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -862,13 +920,12 @@ individuals and samples the maps generated from these data can appear
 complex and cluttered, especially if the time.limits parameter is not
 employed. This parameter is crucial in refining the visualizations,
 enhancing their clarity and interpretability.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_table.html">plot_table</a></span><span class="op">(</span></span>
 <span>  plot_fams <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  all_fams <span class="op">=</span> <span class="va">fams_org</span>,</span>
 <span>  ped <span class="op">=</span> <span class="va">ped_org</span>,</span>
-<span>  sampledata <span class="op">=</span> <span class="va">sampledata</span>,</span>
-<span>  deadSample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Tissue"</span>, <span class="st">"Decomposing Tissue"</span>, <span class="st">"Blood"</span><span class="op">)</span></span>
+<span>  sampledata <span class="op">=</span> <span class="va">sampledata</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ped_spatial.html">ped_spatial</a></span><span class="op">(</span><span class="va">pt</span><span class="op">)</span></span>
@@ -881,7 +938,7 @@ enhancing their clarity and interpretability.</p>
 <span>  time.limit.moves <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="wpeR_files/figure-html/unnamed-chunk-23-1.png" alt="Temporal plot, showing all individuals and samples of the plotted family.
+<img src="wpeR_files/figure-html/unnamed-chunk-26-1.png" class="r-plt" alt="Temporal plot, showing all individuals and samples of the plotted family.
  Orange dashed rectangle encopasses samples that fall within defined time limits." width="624"><p class="caption">
 Temporal plot, showing all individuals and samples of the plotted
 family. Orange dashed rectangle encopasses samples that fall within
@@ -889,23 +946,23 @@ defined time limits.
 </p>
 </div>
 <br><div class="figure" style="text-align: center">
-<img src="wpeR_files/figure-html/ggplot%20legend-1.png" alt="Legend explaining symbols used for spatial pedigree representation." width="700"><p class="caption">
+<img src="wpeR_files/figure-html/ggplot%20legend-1.png" class="r-plt" alt="Legend explaining symbols used for spatial pedigree representation." width="700"><p class="caption">
 Legend explaining symbols used for spatial pedigree representation.
 </p>
 </div>
 <br><div class="figure" style="text-align: center">
-<img src="wpeR_files/figure-html/unnamed-chunk-24-1.png" alt="Spatial pedigree representation. a) all samples, b) time window." width="100%"><p class="caption">
+<img src="wpeR_files/figure-html/unnamed-chunk-27-1.png" class="r-plt" alt="Spatial pedigree representation. a) all samples, b) time window." width="100%"><p class="caption">
 Spatial pedigree representation. a) all samples, b) time window.
 </p>
 </div>
 <br><div class="figure" style="text-align: center">
-<img src="wpeR_files/figure-html/unnamed-chunk-25-1.png" alt="Movement of reproductive animals as inffered from collected samples. a) all samples, b) time window." width="100%"><p class="caption">
+<img src="wpeR_files/figure-html/unnamed-chunk-28-1.png" class="r-plt" alt="Movement of reproductive animals as inffered from collected samples. a) all samples, b) time window." width="100%"><p class="caption">
 Movement of reproductive animals as inffered from collected samples. a)
 all samples, b) time window.
 </p>
 </div>
 <br><div class="figure" style="text-align: center">
-<img src="wpeR_files/figure-html/unnamed-chunk-26-1.png" alt="Movement of offspring as inffered from collected samples. a) all samples, b) time window." width="100%"><p class="caption">
+<img src="wpeR_files/figure-html/unnamed-chunk-29-1.png" class="r-plt" alt="Movement of offspring as inffered from collected samples. a) all samples, b) time window." width="100%"><p class="caption">
 Movement of offspring as inffered from collected samples. a) all
 samples, b) time window.
 </p>
@@ -915,15 +972,15 @@ samples, b) time window.
 <div class="section level5">
 <h5 id="leaflet">leaflet<a class="anchor" aria-label="anchor" href="#leaflet"></a>
 </h5>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/leaflet/" class="external-link">leaflet</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/leaflet.providers/" class="external-link">leaflet.providers</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_table.html">plot_table</a></span><span class="op">(</span>plot_fams <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>,</span>
-<span>                        <span class="va">fams_org</span>,</span>
-<span>                        <span class="va">ped_org</span>,</span>
-<span>                        <span class="va">sampledata</span>,</span>
-<span>                        deadSample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Tissue"</span>, <span class="st">"Decomposing Tissue"</span>, <span class="st">"Blood"</span><span class="op">)</span><span class="op">)</span></span>
+<span>                all_fams <span class="op">=</span> <span class="va">fams_org</span>,</span>
+<span>                ped <span class="op">=</span> <span class="va">ped_org</span>,</span>
+<span>                sampledata <span class="op">=</span> <span class="va">sampledata</span></span>
+<span>                        <span class="op">)</span></span>
 <span></span>
 <span><span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ped_spatial.html">ped_spatial</a></span><span class="op">(</span><span class="va">pt</span>,</span>
 <span>                  time.limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-07-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2021-06-30"</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -950,19 +1007,18 @@ the <em>path</em> parameter, users can store the georeferenced files in
 the designated folder. This allows for seamless integration and
 utilization of the pedigree data with GIS software, unlocking a wide
 range of spatial analysis capabilities and visualization options.</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>pt <span class="ot">&lt;-</span> <span class="fu">plot_table</span>(</span>
-<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>  <span class="at">plot_fams =</span> <span class="dv">1</span></span>
-<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>  <span class="at">all_fams =</span> fams_org,</span>
-<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a>  <span class="at">ped =</span> ped_org,</span>
-<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>  <span class="at">sampledata =</span> sampledata,</span>
-<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>  <span class="at">deadSample =</span> <span class="fu">c</span>(<span class="st">"Tissue"</span>, <span class="st">"Decomposing Tissue"</span>, <span class="st">"Blood"</span>)</span>
-<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a>)</span>
-<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a></span>
-<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a>ps <span class="ot">&lt;-</span> <span class="fu">ped_spatial</span>(</span>
-<span id="cb25-10"><a href="#cb25-10" tabindex="-1"></a>  <span class="at">plottable =</span> pt,</span>
-<span id="cb25-11"><a href="#cb25-11" tabindex="-1"></a>  <span class="at">output =</span> <span class="st">"gis"</span>,</span>
-<span id="cb25-12"><a href="#cb25-12" tabindex="-1"></a>  <span class="at">path =</span> <span class="st">"/folder/where/GIS/files/shuld/be/saved/"</span></span>
-<span id="cb25-13"><a href="#cb25-13" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>pt <span class="ot">&lt;-</span> <span class="fu">plot_table</span>(</span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>  <span class="at">plot_fams =</span> <span class="dv">1</span></span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>  <span class="at">all_fams =</span> fams_org,</span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>  <span class="at">ped =</span> ped_org,</span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a>  <span class="at">sampledata =</span> sampledata</span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a>)</span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a>ps <span class="ot">&lt;-</span> <span class="fu">ped_spatial</span>(</span>
+<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a>  <span class="at">plottable =</span> pt,</span>
+<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a>  <span class="at">output =</span> <span class="st">"gis"</span>,</span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>  <span class="at">path =</span> <span class="st">"/folder/where/GIS/files/shuld/be/saved/"</span></span>
+<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a>)</span></code></pre></div>
 <p>The created GIS files follow the same structure as described above,
 just the output file names are different:</p>
 <table class="table">
@@ -1060,7 +1116,7 @@ same meta data table, respectively. The other two are vectors in ´Date´
 format one corresponding to start and the other to end of the time
 periods of interest. It is worth noting that the function refers to
 these time periods as “seasons” in its terminology.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">seasons</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2017-01-01"</span><span class="op">)</span>,</span>
@@ -1099,7 +1155,7 @@ time periods. It conveys the information on all detected animals, newly
 detected animals, recaptured animals and skipped animals. For the
 purpose a more detailed explanation, we will drop the row and column
 names.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="va">dyn_mat</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      [,1] [,2] [,3] [,4]</span></span>
 <span><span class="co">#&gt; [1,]   13    8    6   13</span></span>
@@ -1126,7 +1182,7 @@ time periods. The function takes six parameters. First two are the same
 as described above. The other parameters correspond to strings in
 <code>Date</code> format defining the start and end of time periods of
 interest.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/nbtw_seasons.html">nbtw_seasons</a></span><span class="op">(</span></span>
 <span> animal_id <span class="op">=</span> <span class="va">wolf_samples</span><span class="op">$</span><span class="va">AnimalRef</span>,</span>
 <span> capture_date <span class="op">=</span> <span class="va">wolf_samples</span><span class="op">$</span><span class="va">Date</span>,</span>
@@ -1158,7 +1214,7 @@ number of animals detected in season 1 but not in season 2.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
