@@ -37,8 +37,7 @@ devtools::install_github("GR3602/wpeR")
 You should be now able to load **wpeR**.
 
 ```{r setup}
-#library(wpeR)
-devtools::load_all()
+library(wpeR)
 ```
 
 # Input data

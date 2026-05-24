@@ -1,4 +1,4 @@
-# wper 0.2.0 —> need to bump
+# wper 0.2.0
 * documentation edits for clarifications
 * plot_table() added functionality to filter families based on indiviudal ids
 (parameter plot_indivs )
